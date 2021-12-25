@@ -1,0 +1,217 @@
+---
+title: "Measured Variable Path Analysis"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+---
+
+In this tutorial, we are going to use `lavaan` for measured variable path analysis.
+
+---
+
+## Load the pacakges
+
+```{r, message=FALSE,warning=FALSE}
+library(lavaan)
+library(lavaanPlot)
+```
+<br>
+
+## Example 1
+
+In this example, there are 4 measured variables: ReadSC1, MathSC1, Goals2, and SATmath. 
+
+```{r, echo = FALSE, out.width='40%'}
+cormat <- '
+1.000
+-.173 1.000
+.122 .163 1.000
+-.049 .556 .385 1.000'
+
+Cmat <- getCov(cormat)
+
+dat.sdev = c(1.274, 1.397, 1.276, 37.087)
+Dmat = diag(dat.sdev)
+covmat = Dmat%*%Cmat%*%Dmat
+
+# assign row and column names to the covariance matrix
+rownames(covmat) = c("ReadSC1", "MathSC1", "Goals2", "SATmath")
+colnames(covmat)= rownames(covmat)
+
+mvpa.model1='
+Goals2~ReadSC1+MathSC1
+SATmath~Goals2+ReadSC1+MathSC1
+'
+
+mvpa.fit.1=sem(mvpa.model1,sample.cov=covmat,sample.nobs = 1000)
+lavaanPlot(model = mvpa.fit.1, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = F)
+
+```
+
+
+### Import the data
+
+In this example, our data is a correlation matrix. For more information about the data, please refer back to the course slides. 
+
+We can read the lower half of the correlation matrix into R and make it symmetric using the `getCov()` function. But we need to further convert it to a variance-covariance matrix before `lavaan` can use it as the input data. With the correlation matrix and sample standard deviations, you can easily compute the variance-covariance matrix. We then assign variable names to the covariance matrix, which is required for `lavaan` to work properly. 
+
+```{r}
+cormat <- '
+1.000
+-.173 1.000
+.122 .163 1.000
+-.049 .556 .385 1.000'
+
+# convert to a symmetric correaltion matrix
+Cmat <- getCov(cormat)
+
+# sample standard deviations
+dat.sdev <- c(1.274, 1.397, 1.276, 37.087)
+Dmat <- diag(dat.sdev)
+covmat <- Dmat %*% Cmat %*% Dmat      # compute the covariance matrix
+
+# assign row and column names to the covariance matrix
+rownames(covmat) <- c("ReadSC1", "MathSC1", "Goals2", "SATmath")
+colnames(covmat) <- rownames(covmat)
+covmat
+```
+
+<br>
+
+### Write the model syntax
+
+Now we tell `lavaan` what our model looks like. Like the MLR example, we use the tilde `~` operator to tell `lavaan` that we wish to regress Goals2 on ReadSC1 and MathSC1. We also want to regress SATmath on all the other three variables. We use the double tilde `~~` to tell `lavaan` that we wish to estimate the variances of the independent variables. We also allow the two exogenous variables to covary.  
+
+
+```{r}
+mvpa.model1 <- '
+
+# regressions
+Goals2 ~ ReadSC1 + MathSC1
+SATmath ~ Goals2 + ReadSC1 + MathSC1
+
+# variances and covariances
+ReadSC1 ~~ ReadSC1 + MathSC1
+MathSC1 ~~ MathSC1
+
+'
+```
+
+<br>
+
+### Fit the model to the data
+
+After you specify the model syntax, you can fit the model to the variance-covariance matrix using the `sem()` function. In this function, we first specify the model syntax. Then we tell `lavaan` that our data is a variance-covariance matrix using the `sample.cov = ` argument. We also tell `lavaan` that our sample size is 1000.
+
+
+```{r}
+mvpa.fit.1 <- sem(mvpa.model1, sample.cov = covmat, sample.nobs = 1000)
+```
+
+<br>
+
+### Summarize the results
+
+Next you can summarize the results using the `summary()`function. To get more info on the model fit measures, you can use the optional argument `fit.measures = TRUE`. To take a look at the standardzied parameter estimates, you can use the optional argument `standardized = TRUE`. The standardized solutions are listed in the column labeled "Std.all".
+
+
+```{r}
+summary(mvpa.fit.1, fit.measures = T, standardized = T)
+```
+
+---
+
+## Example 2
+
+
+In the second example, there are 3 measured variables of interest: ReadSC1, MathSC1, and SATmath. 
+
+```{r, echo = FALSE, out.width='30%'}
+cormat <- '
+1.000
+-.173 1.000
+-.049 .556 1.000'
+
+Cmat <- getCov(cormat)
+
+dat.sdev <- c(1.274,1.397,37.087)
+Dmat <- diag(dat.sdev)
+covmat <- Dmat %*% Cmat %*% Dmat
+
+# assign row and column names to the covariance matrix
+rownames(covmat) <- c("ReadSC1", "MathSC1","SATmath")
+colnames(covmat) <- rownames(covmat)
+
+mvpa.model2 <- '
+MathSC1~ReadSC1
+SATmath~MathSC1
+'
+
+mvpa.fit.2 <- sem(mvpa.model2,sample.cov=covmat,sample.nobs = 1000)
+lavaanPlot(model = mvpa.fit.2, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = F)
+
+```
+
+
+### Import the data
+
+In this example, our data is still a correlation matrix. Similarly, we first read in the lower half of the correlation matrix and convert it to a full symmetrix covariance matrix. 
+
+```{r}
+# read in lower half of the correlation matrix
+cormat <- '
+1.000
+-.173 1.000
+-.049 .556 1.000'
+
+Cmat <- getCov(cormat)
+
+# convert it to variance-covariance matrix
+dat.sdev <- c(1.274,1.397,37.087)
+Dmat <- diag(dat.sdev)
+covmat <- Dmat %*% Cmat %*% Dmat
+
+# assign row and column names to the covariance matrix
+rownames(covmat) <- c("ReadSC1", "MathSC1","SATmath")
+colnames(covmat) <- rownames(covmat)
+covmat
+```
+
+<br>
+
+### Write the model syntax
+
+Now we tell `lavaan` what our model looks like using the model syntax. 
+
+```{r}
+mvpa.model2 <- '
+MathSC1 ~ ReadSC1
+SATmath ~ MathSC1
+'
+```
+
+<br>
+
+### Fit the model to the data
+
+After you specify the model syntax, you can fit the model to the variance-covariance matrix using the `sem()` function. In this function, we first specify the model syntax. Then we tell `lavaan` that our data is a variance-covariance matrix using the `sample.cov = ` argument. We also tell `lavaan` that our sample size is 1000.
+
+
+```{r}
+mvpa.fit.2 <- sem(mvpa.model2, sample.cov=covmat, sample.nobs = 1000)
+```
+
+<br>
+
+### Summarize the results
+
+Next you can summarize the results using the `summary()`function. To get more info on the model fit measures, you can use the optional argument `fit.measures = TRUE`. To take a look at the standardzied parameter estimates, you can use the optional argument `standardized = TRUE`. The standardized solutions are listed in the column labeled "Std.all".
+
+
+```{r}
+summary(mvpa.fit.2, fit.measures = T, standardized = T)
+```
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

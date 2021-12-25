@@ -1,0 +1,44 @@
+---
+title: "Structured Means Analysis Exercise"
+output:
+  html_document:
+    toc: true
+    toc_float: false
+    toc_depth: 4
+---
+
+```{r,echo=F}
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/SEM2019/SEM Second Course Mplus 2019/Advanced Exercises/3. Means Exercises"
+```
+
+```{r, warning = F, message = F}
+library(lavaan)
+setwd(mypath)  # change it to the path of your own data folder
+
+chinese <- read.delim("ENGLISHchineseread.txt", sep = "\t", header = F)
+korean <- read.delim("ENGLISHkoreanread.txt", sep = "\t", header = F)
+
+chinese$country <- 1
+korean$country <- 2
+
+both.data <- rbind(chinese, korean)
+colnames(both.data) <- c('read1', 'read2', 'read3', 'country')
+
+
+
+language.model <- '
+read =~ 1*read1 + c(a,a)*read2 + c(b,b)*read3
+
+read ~ c(0,NA)*1
+
+read1 ~ c(c,c)*1
+read2 ~ c(d,d)*1
+read3 ~ c(e,e)*1
+'
+
+
+language.fit <- sem(language.model, both.data, group = "country")
+summary(language.fit, fit.measures = T, standardized = T)
+
+```
+

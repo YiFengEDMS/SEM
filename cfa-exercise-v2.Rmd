@@ -1,0 +1,91 @@
+---
+title: "CFA Exercise"
+output:
+  html_document:
+    toc: true
+    toc_float: false
+    toc_depth: 4
+---
+
+```{r, include = F, message = F, echo = F}
+library(lavaan)
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/SEM2019/SEM First Course Mplus 2019/Mplus Examples"
+```
+
+```{r}
+setwd(mypath)  # change it to the path of your own data folder
+data <- read.table("proficiencyraw-female.csv", sep=",", header=F)
+
+# give variable names
+colnames(data) <- c(paste0("goals",1:6), 
+                    paste0("rsc",1:5), 
+                    paste0("hsc",1:5), 
+                    paste0("msc",1:5), 
+                    paste0("ssc",1:5), 
+                    "SATvoc", 
+                    "SATcomp", 
+                    "SATlang", 
+                    "SATmath", 
+                    "SATprob", 
+                    "SATproc")
+cfa.Model <- '
+
+# measurement model
+
+RSC =~ rsc1 + rsc2 + rsc3 + rsc4 + rsc5
+HSC =~ hsc1 + hsc2 + hsc3 + hsc4 + hsc5
+MSC =~ msc1 + msc2 + msc3 + msc4 + msc5
+SSC =~ ssc1 + ssc2 + ssc3 + ssc4 + ssc5
+
+# mean structure
+rsc1~1
+rsc2~1
+rsc3~1
+rsc4~1
+rsc5~1
+hsc1~1
+hsc2~1
+hsc3~1
+hsc4~1
+hsc5~1
+msc1~1
+msc2~1
+msc3~1
+msc4~1  
+msc5~1
+ssc1~1
+ssc2~1
+ssc3~1
+ssc4~1
+ssc5~1
+
+# residual covariances
+
+rsc1~~hsc1+msc1+ssc1
+rsc2~~hsc2+msc2+ssc2
+rsc3~~hsc3+msc3+ssc3
+rsc4~~hsc4+msc4+ssc4
+rsc5~~hsc5+msc5+ssc5
+hsc1~~msc1+ssc1
+hsc2~~msc2+ssc2
+hsc3~~msc3+ssc3
+hsc4~~msc4+ssc4
+hsc5~~msc5+ssc5
+msc1~~ssc1
+msc2~~ssc2
+msc3~~ssc3
+msc4~~ssc4  
+msc5~~ssc5
+
+# covariances between the latent variables
+RSC ~~ HSC + MSC + SSC
+HSC ~~ MSC + SSC
+MSC ~~ SSC
+
+'
+cfa.Fit <- sem(cfa.Model, data = data)
+
+summary(cfa.Fit, fit.measures = T, standardized = T)
+
+```
+

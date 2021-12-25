@@ -1,0 +1,42 @@
+---
+title: "Latent Interaction Exercise"
+output:
+  html_document:
+    toc: true
+    toc_float: false
+    toc_depth: 4
+---
+
+```{r,echo=F}
+
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/SEM2019/SEM Second Course Mplus 2019/Advanced Exercises/4. Nonlinear Exercises"
+
+```
+
+```{r, message=FALSE,warning=FALSE}
+library(lavaan)
+setwd(mypath)  # change it to the path of your own data folder
+
+int.data2 <- read.delim("motivation.txt", sep = '\t', header = F)
+colnames(int.data2) <- c('motive1c', 'motive2c', 'expect1c', 'expect2c', 
+                         'value1c', 'value2c', 'expval1c', 'expval2c')
+
+int.model2 <- '
+
+expect =~ expect1c + expect2c
+value =~ value1c + value2c
+expval =~ expval1c + expval2c
+motive =~ motive1c +motive2c
+
+expval1c ~~ expect1c + value1c
+expval2c ~~ expect2c + value2c
+
+motive ~ expect + value + expval
+
+'
+
+int.fit2 <- sem(int.model2, int.data2, estimator = "MLM")
+summary(int.fit2, fit.measures = T, standardized = T)
+
+```
+

@@ -1,0 +1,39 @@
+---
+title: "MLR Path Analysis Exercise"
+output:
+  html_document:
+    toc: true
+    toc_float: false
+    toc_depth: 4
+---
+
+```{r}
+cormat <- '
+1.00
+-.03 1.00
+.39  .07 1.00
+-.05 -.23 -.13 1.00
+-.08 -.16 -.29 .34 1.00'
+
+Cmat <- getCov(cormat)
+
+dat.sdev <- c(66.50,3.80,18.40,6.70,62.48)
+
+Dmat <- diag(dat.sdev)
+covmat <- Dmat %*% Cmat %*% Dmat
+
+# assign row and column names to the covariance matrix
+rownames(covmat) <- c("Exercise", "Hardy", "Fitness", "Stress", "Illness")
+colnames(covmat) <- rownames(covmat)
+
+path.model <- '
+Illness~Fitness+Stress
+Fitness~Exercise
+Stress~Hardy
+Exercise~~Hardy
+'
+
+path.fit <- sem(path.model, sample.cov = covmat, sample.nobs = 373)
+summary(path.fit, fit.measures = T, standardized = T)
+```
+

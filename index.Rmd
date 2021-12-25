@@ -1,0 +1,122 @@
+---
+title: "Tutorials: SEM with lavaan in R"
+author:  
+- name: "[Yi Feng](https://terpconnect.umd.edu/~yifeng94/) & [Gregory R. Hancock](https://education.umd.edu/directory/gregory-r-hancock)"  
+  affiliation: "[Program in Measurement, Statistics and Evaluation](https://education.umd.edu/measurement-statistics-evaluation-program)"
+#date: "r Sys.Date()"
+output:
+  html_document:
+    fig_width: 1
+---
+
+----
+
+Hi there, welcome. This website supplies the supplementary materials for the structural equation modeling(SEM) courses taught by [Dr. Gregory R. Hancock](https://education.umd.edu/directory/gregory-r-hancock). Dr. Hancock teaches [winter short courses on SEM](https://education.umd.edu/measurement-statistics-evaluation-program#workshops) as well as [EDMS722 Structural Equation Modeling](https://www.testudo.umd.edu/) at University of Maryland, College Park. 
+
+
+In class, you have already gained a good knowledge about how to use [M*plus*](https://www.statmodel.com/) with a variety of models. Here we are going to introduce you to another useful tool that can be used to conduct latent variable analysis: [`lavvan`](http://lavaan.ugent.be/tutorial/index.html). 
+
+
+`lavaan` is a free open-source package in R that is developed for latent variable modeling. `lavaan` is a powerful tool that can accomodate most of the models you have learned in this course. The authors of `lavaan` package has developed a series of [tutorials](http://lavaan.ugent.be/tutorial/index.html) for `lavaan` users. We would recommend you to go over their tutorials if you are new to `lavaan`. After all, the developers have the best knowledge of their software package.  
+
+
+The tutorials we supply here are all based on the examples and exercises you have already seen in class, where you have practiced with Mplus. We will walk you through these examples using `lavaan` in our tutorials. Both Mplus and `lavaan` are great tools for SEM. We provide the `lavaan` tutorials here with the hope to help you better learn about SEM in this course. First, with the tutorial materials available, you can better focus on the more important contents when you are in the class. It can be frustrating and distracting when you want to focus on the lectures while R is yelling at you with some error message. We want to take that burden off you so you can enjoy your class time better. Actually, once you have had a solid grasp on the mechanisms of SEM, it will not be too difficult to translate your knowledge to a software language (Mplus, lavaan, LISREL, OpenMx, STATA...). Providing the `lavaan` materials here, in addition to the Mplus materials you have learned in class, we wish to add to your toolkit by showing you how to use `lavaan`, such that you will have an additional (free) tool at your disposal when you need to employ SEM in your own research projects.
+
+
+----
+
+**To get you started:**
+
+Before we get started, please make sure you have installed R or RStuido, as well as the `lavaan` package on your device. 
+
+1. Install the latest version of [RStudio](https://www.rstudio.com/products/rstudio/download/) or [R](https://cran.r-project.org/).
+1. Install [`lavaan`](http://lavaan.ugent.be/tutorial/install.html) from CRAN.
+
+```r
+install.packages("lavaan", dependencies=TRUE)
+library(lavaan)
+```
+
+**Important**
+
+Please make sure you have correctly set up your working directory to where your data are stored. To see your current working directory:
+
+```r
+getwd()
+```
+
+To change your working directory, you can either use the `setwd()` function, or click the "Session --> Set Working Directory" button in the menu.
+
+```r
+mypath <- "/SEM Second Course Mplus 2019/Advanced Examples/5. Growth Examples"
+setwd(mypath)
+```
+
+---
+
+<!--
+## **First Course**
+-->
+
+**In-class Examples**
+
+1. [MLR Path Analysis](mlr-example.html)
+1. [Measured Variable Path Analysis](mvpa-example.html)
+1. [Confirmatory Factor Analysis](cfa-example-v2.html)
+1. [Multitrait-Multimethod Analysis](mtmm-example.html)
+1. [Scale Reliability](reliability.html)
+1. [Latent Path Analysis](latent-pa-example.html)
+1. [Multi-group Analysis](mg-example.html)
+
+
+**Hands-on Exercises**
+
+1. [Path Analysis Exercise](mvpa-exercise.html)
+1. [Mediation Exercise](mediation-exercise.html)
+1. [APIM Exercise](APIM-exercise.html)
+1. [CFA Exercise](cfa-exercise-v2.html)
+1. [Residualized CFA Exercise](residualized-cfa-exercise.html)
+1. [Scale Reliability](reliability_exercise.html)
+1. [Latent Path Analysis Exercise](latent-pa-exercise.html) 
+1. [Two-step SEM Exercise](latent-pa-2step-exercise.html)
+1. [Multi-group CFA Exercise](mg-cfa-exercise-2.html)
+
+
+<!--
+--- 
+
+## **Second Course**:
+
+**In-class Examples**
+
+1. [Missing Data](missing-data-example.html) 
+1. [Nonnormal Continuous Data](nonnormal-data-example.html)
+1. [Ordered Categorical Data](ordered-categorical-data-example.html)
+1. [Complex Sampling](complex-multilevel-example.html)
+1. [Group Code Analysis](mimic-example.html)
+1. [Mean Structure Modeling](mean-structure-example.html)
+1. [Repeated Measure Means Models](repeated-means-example.html)
+1. [Latent Variable Moderation](interaction-example.html)
+1. [Latent Growth Models](lgm-example.html)
+1. [Latent Growth Models Extensions](lgm-extension-example.html)
+1. [Monte Carlo Power Methods](power-example.html)
+
+
+**Hands-on Exercises**
+
+1. [Structured Means Analysis Exercise](mean-structure-exercise.html)
+1. [Repeated Measure Means Exercise](repeated-means-exercise.html) 
+1. [Latent Interaction Exercise](interaction-exercise.html)
+1. [Latent Growth Models Exercise](lgm-exercise.html)
+1. [Conditional Latent Growth Models Exercise](conditional-lgm-exercise.html)
+1. [Power Analysis](power-exercise.html)
+
+-->
+
+--
+
+If you only have access to the Mplus Demo version and you are seeking for parallel R code for the corresponding exercises, please refer to "Exercise Solutions-DEMO".  
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
+

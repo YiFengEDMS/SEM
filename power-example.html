@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Monte Carlo Power Methods</title>
+
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">HOME</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    In-class Examples
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mlr-example.html">MLR Path Analysis</a>
+    </li>
+    <li>
+      <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
+    </li>
+    <li>
+      <a href="mtmm-example.html">Multitrait-Multimethod Analysis</a>
+    </li>
+    <li>
+      <a href="reliability.html">Scale Reliability</a>
+    </li>
+    <li>
+      <a href="latent-pa-example.html">Latent Path Analysis</a>
+    </li>
+    <li>
+      <a href="mg-example.html">Multi-group Analysis</a>
+    </li>
+    <li>
+      <a href="missing-data-example.html">Missing Data</a>
+    </li>
+    <li>
+      <a href="nonnormal-data-example.html">Nonnormal Continuous Data</a>
+    </li>
+    <li>
+      <a href="ordered-categorical-data-example.html">Ordered Categorical Data</a>
+    </li>
+    <li>
+      <a href="complex-multilevel-example.html">Complex Sampling</a>
+    </li>
+    <li>
+      <a href="mimic-example.html">Group Code Analysis</a>
+    </li>
+    <li>
+      <a href="mean-structure-example.html">Mean Structure Modeling</a>
+    </li>
+    <li>
+      <a href="repeated-means-example.html">Repeated Measure Means Models</a>
+    </li>
+    <li>
+      <a href="interaction-example.html">Latent Variable Moderation</a>
+    </li>
+    <li>
+      <a href="lgm-example.html">Latent Growth Models</a>
+    </li>
+    <li>
+      <a href="lgm-extension-example.html">Latent Growth Models Extensions</a>
+    </li>
+    <li>
+      <a href="power-example.html">Monte Carlo Power Methods</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mvpa-exercise.html">Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="mediation-exercise.html">Mediation Exercise</a>
+    </li>
+    <li>
+      <a href="APIM-exercise.html">APIM Exercise</a>
+    </li>
+    <li>
+      <a href="cfa-exercise-v2.html">CFA Exercise</a>
+    </li>
+    <li>
+      <a href="residualized-cfa-exercise.html">Residualized CFA Exercise</a>
+    </li>
+    <li>
+      <a href="reliability_exercise.html">Scale Reliability Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise.html">Latent Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-2step-exercise.html">Two-step SEM Exercise</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-2.html">Multi-group CFA Exercise</a>
+    </li>
+    <li>
+      <a href="mean-structure-exercise.html">Structured Means Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise.html">Repeated Measure Means Exercise</a>
+    </li>
+    <li>
+      <a href="interaction-exercise.html">Latent Interaction Exercise</a>
+    </li>
+    <li>
+      <a href="lgm-exercise.html">Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="conditional-lgm-exercise.html">Conditional Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="power-exercise.html">Power Analysis</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions-DEMO
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="cfa-exercise-DEMO.html">CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise-DEMO.html">Latent Path Analysis Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-DEMO.html">Multi-group CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise-DEMO.html">Repeated Measure Means Exercise-DEMO</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Videos.html">Tutorial Videos</a>
+</li>
+<li>
+  <a href="resources.html">Resources</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Monte Carlo Power Methods</h1>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#load-the-pacakges">Load the pacakges</a></li>
+<li><a href="#define-the-population-model">Define the population model</a></li>
+<li><a href="#define-the-analysis-model">Define the analysis model</a></li>
+<li><a href="#conduct-power-analysis">Conduct power analysis</a></li>
+</ul>
+</div>
+
+<p>In this tutorial, we are going to use <code>lavaan</code> and <code>simsem</code> for SEM power analysis based on Monte Carlo methods.</p>
+<div id="load-the-pacakges" class="section level2">
+<h2>Load the pacakges</h2>
+<pre class="r"><code>library(lavaan)
+library(simsem)
+library(semPlot)</code></pre>
+<p><br></p>
+<p>In this example, we would like to conduct power analysis for a latent variable path analysis model. The parameters of focal interest are the path coefficients and the covariance between the two exogenous latent variables.</p>
+<p><img src="power-example_files/figure-html/unnamed-chunk-2-1.png" width="80%" /></p>
+</div>
+<div id="define-the-population-model" class="section level2">
+<h2>Define the population model</h2>
+<p>We first use the <code>lavaan</code> model syntax to define our population model and supply all the parameter values. To supply the population value of a parameter, we just need to multiply the parameter with the numeric value.</p>
+<pre class="r"><code>popmodel &lt;- &#39;
+
+# measurement model 
+
+f1 =~ 0.5*v1 + (-0.7)*v2 + 0.6*v3
+f2 =~ 0.8*v4 + 0.9*v5 + (-0.6)*v6
+f3 =~ 0.938*v7 + 0.964*v8
+
+# error variances 
+
+v1 ~~ .75*v1
+v2 ~~ .51*v2 
+v3 ~~ .64*v3 
+v4 ~~ .36*v4
+v5 ~~ .19*v5 
+v6 ~~ .64*v6 
+v7 ~~ .12*v7 
+v8 ~~ .07*v8
+
+# factor (error) variances
+
+f1 ~~ 1*f1
+f2 ~~ 1*f2
+f3 ~~ 0.77*f3
+
+# structural path coefficients
+
+f3 ~ 0.2*f1 + 0.5*f2
+
+# covariance
+
+f1 ~~ (-0.3)*f2
+
+&#39;</code></pre>
+</div>
+<div id="define-the-analysis-model" class="section level2">
+<h2>Define the analysis model</h2>
+<p>Next we use the <code>lavaan</code> model syntax to define the analysis model. This is the model syntax you would write as if you have a data set at hand (we are very familiar with it already). The analysis model does not necessarily have to be the same as the population model.</p>
+<pre class="r"><code>Analyze.model &lt;- &#39;
+
+f1 =~ NA*v1 + v2 + v3
+f2 =~ NA*v4 + v5 + v6
+f3 =~ 0.938*v7 + v8
+
+v1 ~~ v1
+v2 ~~ v2 
+v3 ~~ v3 
+v4 ~~ v4
+v5 ~~ v5 
+v6 ~~ v6 
+v7 ~~ v7 
+v8 ~~ v8
+
+f1 ~~ 1*f1
+f2 ~~ 1*f2
+f3 ~~ f3
+
+f3 ~ f1 + f2
+ 
+f1 ~~ f2
+
+&#39;</code></pre>
+</div>
+<div id="conduct-power-analysis" class="section level2">
+<h2>Conduct power analysis</h2>
+<p>Last, we call up the <code>sim()</code> function available in the <code>simsem</code> R package. This function will automatically generate multiple copies of data based on the population model and fit the analysis model to the simulated data. It will output the results summarized over replications.</p>
+<p>For this example, we request <code>sim()</code> to generate 1000 copies of data, each has a sample size of 303. We also request <code>sim()</code> to use <code>lavaan</code>’s <code>sem()</code> function when fitting the analysis model to the simulated data. For more detailed information about the <code>simsem</code> package, please refer to its <a href="https://simsem.org/">webpage</a>.</p>
+<pre class="r"><code>Output &lt;- sim(1000, Analyze.model, n = 303, generate = popmodel, lavaanfun = &quot;sem&quot;)</code></pre>
+<pre class="r"><code>summary(Output)</code></pre>
+<pre><code>## RESULT OBJECT
+## Model Type
+## [1] &quot;lavaan&quot;
+## ========= Fit Indices Cutoffs ============
+##            Alpha
+## Fit Indices      0.1     0.05     0.01    0.001     Mean     SD
+##       chisq   24.665   28.256   33.828   48.013   17.338  5.943
+##       aic   5942.599 5966.065 6002.810 6034.307 5855.615 68.159
+##       bic   6013.160 6036.626 6073.371 6104.868 5926.176 68.159
+##       rmsea    0.039    0.047    0.057    0.078    0.013  0.017
+##       cfi      0.993    0.989    0.983    0.972    0.998  0.004
+##       tli      0.988    0.982    0.973    0.955    1.000  0.009
+##       srmr     0.037    0.041    0.046    0.057    0.028  0.007
+## ========= Parameter Estimates and Standard Errors ============
+##        Estimate Average Estimate SD Average SE Power (Not equal 0) Std Est Std Est SD
+## f1=~v1            0.493       0.069      0.069               1.000   0.494      0.063
+## f1=~v2           -0.702       0.077      0.075               1.000  -0.704      0.066
+## f1=~v3            0.600       0.072      0.071               1.000   0.601      0.062
+## f2=~v4            0.800       0.054      0.053               1.000   0.801      0.031
+## f2=~v5            0.899       0.052      0.051               1.000   0.900      0.029
+## f2=~v6           -0.598       0.056      0.055               1.000  -0.599      0.042
+## f3=~v8            0.964       0.065      0.060               1.000   0.965      0.030
+## v1~~v1            0.747       0.076      0.074               1.000   0.752      0.062
+## v2~~v2            0.497       0.094      0.090               0.988   0.501      0.093
+## v3~~v3            0.630       0.079      0.079               1.000   0.635      0.075
+## v4~~v4            0.356       0.047      0.047               1.000   0.358      0.050
+## v5~~v5            0.189       0.050      0.048               0.959   0.190      0.052
+## v6~~v6            0.635       0.056      0.057               1.000   0.639      0.050
+## v7~~v7            0.117       0.054      0.050               0.645   0.118      0.056
+## v8~~v8            0.068       0.056      0.052               0.301   0.069      0.057
+## f3~~f3            0.767       0.092      0.086               1.000   0.765      0.052
+## f3~f1             0.196       0.071      0.071               0.792   0.196      0.070
+## f3~f2             0.498       0.069      0.068               1.000   0.498      0.057
+## f1~~f2           -0.296       0.075      0.071               0.971  -0.296      0.075
+##        Std Ave SE Average Param Average Bias Coverage
+## f1=~v1      0.061         0.500       -0.007    0.948
+## f1=~v2      0.064        -0.700       -0.002    0.955
+## f1=~v3      0.061         0.600        0.000    0.947
+## f2=~v4      0.031         0.800        0.000    0.942
+## f2=~v5      0.028         0.900       -0.001    0.942
+## f2=~v6      0.042        -0.600        0.002    0.950
+## f3=~v8      0.028         0.964        0.000    0.940
+## v1~~v1      0.060         0.750       -0.003    0.941
+## v2~~v2      0.090         0.510       -0.013    0.951
+## v3~~v3      0.074         0.640       -0.010    0.947
+## v4~~v4      0.049         0.360       -0.004    0.938
+## v5~~v5      0.050         0.190       -0.001    0.954
+## v6~~v6      0.050         0.640       -0.005    0.944
+## v7~~v7      0.051         0.120       -0.003    0.951
+## v8~~v8      0.053         0.070       -0.002    0.952
+## f3~~f3      0.051         0.770       -0.003    0.931
+## f3~f1       0.070         0.200       -0.004    0.946
+## f3~f2       0.057         0.500       -0.002    0.948
+## f1~~f2      0.071        -0.300        0.004    0.933
+## ========= Correlation between Fit Indices ============
+##        chisq    aic    bic  rmsea    cfi    tli   srmr
+## chisq  1.000  0.074  0.074  0.924 -0.903 -0.998  0.715
+## aic    0.074  1.000  1.000  0.086 -0.077 -0.072  0.028
+## bic    0.074  1.000  1.000  0.086 -0.077 -0.072  0.028
+## rmsea  0.924  0.086  0.086  1.000 -0.934 -0.924  0.649
+## cfi   -0.903 -0.077 -0.077 -0.934  1.000  0.898 -0.606
+## tli   -0.998 -0.072 -0.072 -0.924  0.898  1.000 -0.718
+## srmr   0.715  0.028  0.028  0.649 -0.606 -0.718  1.000
+## ================== Replications =====================
+## Number of replications = 1000 
+## Number of converged replications = 874 
+## Number of nonconverged replications: 
+##    1. Nonconvergent Results = 0 
+##    2. Nonconvergent results from multiple imputation = 0 
+##    3. At least one SE were negative or NA = 0 
+##    4. Nonpositive-definite latent or observed (residual) covariance matrix 
+##       (e.g., Heywood case or linear dependency) = 126</code></pre>
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+
+</div>
+</div>
+
+<hr>
+© Copyright 2021 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

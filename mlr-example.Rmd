@@ -1,0 +1,82 @@
+---
+title: "MLR Path Analysis"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 2
+---
+
+In this tutorial, we are going to use `lavaan` for a multiple linear regression path analysis.
+
+---
+
+## Load the pacakges
+
+```{r, message=FALSE,warning=FALSE}
+library(lavaan)
+```
+<br>
+
+## Import the data
+
+For this example, our data is a variance-covariance matrix for three observed variables: ReadSC1, MathSC1, Goals2. For more information about the data, please refer back to the course slides. 
+
+
+We use the following code to read the variance-covariance matrix into R. We first create an object called `mlr.lower` which contains the lower diagonal elements of the covariance matrix. We then use the `getCov()` function in `lavaan` to convert the matrix to a $3\times3$ full symmetric covariance matrix with variable names. If you have a full covariance matrix to begin with, you can directly import the matrix without the need to convert it.
+
+```{r}
+mlr.lower <- '
+1.623
+-.308 1.951
+.198 .290 1.627'
+
+(mlr.cov <- getCov(mlr.lower, names = c("ReadSC1", "MathSC1", "Goals2")))
+
+```
+
+<br>
+
+## Write the model syntax
+
+In order for `lavaan` to fit a model to the data, you need to tell `lavaan` what the model is. To communicate with `lavaan`, you would need to speak its language -- the `lavaan` model syntax. The model syntax describes the model to be estimated. It usually consists of multiple formulas. Depending on the operator being used, different formulas carry different meanings. In this example, we use the tilde `~` to tell `lavaan` that we wish to regress Goals2 on ReadSC1 and MathSC1. We then use the double tilde `~~` to tell `lavaan` that we wish to estimate the variances of the independent variables and the residual variance of the outcome variable. We also allow the two independent variables to covary.  
+
+
+```{r}
+mlr.model <- '
+
+# regression
+Goals2 ~ ReadSC1 + MathSC1
+
+# variance and covariances
+Goals2 ~~ Goals2
+ReadSC1 ~~ ReadSC1
+MathSC1 ~~ MathSC1
+ReadSC1 ~~ MathSC1
+'
+```
+
+<br>
+
+## Fit the model to the data
+
+After you specify the model syntax, you can fit the model to the variance-covariance matrix using the `sem()` function. In this function, we first specify the model syntax. Then we tell `lavaan` that our data is a variance-covariance matrix using the `sample.cov = ` argument. We also tell `lavaan` that our sample size is 1000.
+
+
+```{r}
+mlr.fit <- sem(mlr.model, sample.cov = mlr.cov, sample.nobs = 1000)
+```
+
+<br>
+
+## Summarize the results
+
+Next you can summarize the results using the `summary()`function. To get more info on the model fit measures, you can use the optional argument `fit.measures = TRUE`. To take a look at the standardzied parameter estimates, you can use the optional argument `standardized = TRUE`. Unstandardized solutions are displayed in the column labled "Estimate". The standardized solutions are listed in the column labeled "Std.all".
+
+```{r}
+summary(mlr.fit, fit.measures = T, standardized = T)
+```
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
+
+

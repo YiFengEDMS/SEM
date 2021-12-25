@@ -1,0 +1,98 @@
+---
+title: "Missing Data"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+---
+
+In this tutorial, we are going to use `lavaan` to deal with missing data. The example corresponds to the Eating Attitudes Test (EAT) example in your course slides.
+
+
+## Load the pacakges
+
+```{r, message=FALSE, warning=FALSE}
+library(lavaan)
+library(semPlot)
+library(semTools)
+```
+
+<br>
+
+
+## Read the data
+
+The data for this example is saved in a txt file named "EARdata.txt", which is provided as part of the course materials. You can use the `read.delim()` function to read in a txt file. There are many different ways for you to supply the file path in the `read.delim()` function call. Below I first set the working directory to the folder where my data is saved, and then I simply supply the name of the data file when calling the `read.delim()` function.
+
+To specify the numeric values that should be interpreted as missing value, we use the `na.strings = ` argument. In our example, -999999 representes missing value. 
+
+```{r,echo=F}
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/SEM2019/SEM Second Course Mplus 2019/Advanced Examples/2. Real Data Examples"
+```
+
+```{r}
+setwd(mypath)  # change it to the path of your own data folder
+eat <- read.delim("EATdata.txt", sep = "\t", header = F, na.strings = -999999)
+
+# give variable names
+colnames(eat) <- c(paste0("v",1:7), "bmi")
+
+```
+
+You can take a look at the data and get the sample statistics.
+
+```{r}
+
+# descriptive statistics
+
+str(eat)
+summary(eat)
+cor(eat, use = "pairwise.complete.obs")
+
+```
+
+<br>
+
+
+## Use FIML to estimate a CFA model
+
+
+```{r, echo = F, warnings = F, message = F, out.width='80%'}
+eat.model='
+driveft=~v1+v2+v3+v4+v5+v6+v7
+'
+
+eat.fit=sem(eat.model,data=eat,missing="fiml")
+
+semPaths(eat.fit, title = FALSE, curvePivot = TRUE, intercepts = F, optimizeLatRes = T, sizeLat = 10)
+
+```
+
+When your data contain missing values, by default `lavaan` will use listwise deletion. If it can be reasonably assumed that the missing data is MCAR or MAR, you can use full information maximum likelihood (FIML) estimation within `lavaan`. You just need to specify `missing = "fiml"` in the fitting function. 
+
+
+```{r}
+eat.model <- '
+
+driveft =~ v1 + v2 + v3 + v4 + v5 + v6 + v7
+
+'
+
+eat.fit <- sem(eat.model, data = eat, missing = "fiml")
+summary(eat.fit, fit.measures = T, standardized = T)
+
+```
+
+## Incorporate auxiliary variables
+
+To incorporate auxiliary variables, you will need to call up the `auxiliary()` function from the `semTools` package. As you can see from the output, the auxiliary variable "bmi" is correlated with the residual terms from the observed dependent variables, but not with the latent factor. 
+
+
+```{r}
+fit.aux <- auxiliary(eat.model, aux = "bmi", data = eat, estimator = "ML", missing = "FIML", fun = "sem")
+summary(fit.aux, fit.measures = T)
+```
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

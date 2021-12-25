@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Mediation Exercise</title>
+
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">HOME</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    In-class Examples
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mlr-example.html">MLR Path Analysis</a>
+    </li>
+    <li>
+      <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
+    </li>
+    <li>
+      <a href="mtmm-example.html">Multitrait-Multimethod Analysis</a>
+    </li>
+    <li>
+      <a href="reliability.html">Scale Reliability</a>
+    </li>
+    <li>
+      <a href="latent-pa-example.html">Latent Path Analysis</a>
+    </li>
+    <li>
+      <a href="mg-example.html">Multi-group Analysis</a>
+    </li>
+    <li>
+      <a href="missing-data-example.html">Missing Data</a>
+    </li>
+    <li>
+      <a href="nonnormal-data-example.html">Nonnormal Continuous Data</a>
+    </li>
+    <li>
+      <a href="ordered-categorical-data-example.html">Ordered Categorical Data</a>
+    </li>
+    <li>
+      <a href="complex-multilevel-example.html">Complex Sampling</a>
+    </li>
+    <li>
+      <a href="mimic-example.html">Group Code Analysis</a>
+    </li>
+    <li>
+      <a href="mean-structure-example.html">Mean Structure Modeling</a>
+    </li>
+    <li>
+      <a href="repeated-means-example.html">Repeated Measure Means Models</a>
+    </li>
+    <li>
+      <a href="interaction-example.html">Latent Variable Moderation</a>
+    </li>
+    <li>
+      <a href="lgm-example.html">Latent Growth Models</a>
+    </li>
+    <li>
+      <a href="lgm-extension-example.html">Latent Growth Models Extensions</a>
+    </li>
+    <li>
+      <a href="power-example.html">Monte Carlo Power Methods</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mvpa-exercise.html">Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="mediation-exercise.html">Mediation Exercise</a>
+    </li>
+    <li>
+      <a href="APIM-exercise.html">APIM Exercise</a>
+    </li>
+    <li>
+      <a href="cfa-exercise-v2.html">CFA Exercise</a>
+    </li>
+    <li>
+      <a href="residualized-cfa-exercise.html">Residualized CFA Exercise</a>
+    </li>
+    <li>
+      <a href="reliability_exercise.html">Scale Reliability Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise.html">Latent Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-2step-exercise.html">Two-step SEM Exercise</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-2.html">Multi-group CFA Exercise</a>
+    </li>
+    <li>
+      <a href="mean-structure-exercise.html">Structured Means Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise.html">Repeated Measure Means Exercise</a>
+    </li>
+    <li>
+      <a href="interaction-exercise.html">Latent Interaction Exercise</a>
+    </li>
+    <li>
+      <a href="lgm-exercise.html">Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="conditional-lgm-exercise.html">Conditional Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="power-exercise.html">Power Analysis</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions-DEMO
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="cfa-exercise-DEMO.html">CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise-DEMO.html">Latent Path Analysis Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-DEMO.html">Multi-group CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise-DEMO.html">Repeated Measure Means Exercise-DEMO</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Videos.html">Tutorial Videos</a>
+</li>
+<li>
+  <a href="resources.html">Resources</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Mediation Exercise</h1>
+
+</div>
+
+
+<pre class="r"><code>library(lavaan)
+setwd(mypath)  # change it to the path of your own data folder
+
+mediation.data &lt;- read.table(&quot;Mediation_Exercise_data.csv&quot;, sep = &quot;,&quot;, header = F)
+
+colnames(mediation.data) &lt;- c(&quot;climate&quot;,
+                           &quot;control&quot;,
+                           &quot;burnout&quot;,
+                           &quot;attitude&quot;,
+                           &quot;educout&quot;,
+                           &quot;psychout&quot;)
+
+mediation.model &lt;- &#39;
+
+ burnout ~ a*climate + b*control
+ attitude ~ c*burnout + d*climate + e*control
+ educout ~ f*attitude
+ psychout ~ g*attitude
+ 
+ educout ~~ psychout
+ 
+ ac := a*c
+ bc := b*c
+ fd := f*d
+ fe := f*e
+ fc := f*c
+ gd := g*d
+ ge := g*e
+ gc := g*c
+
+&#39;
+
+mediation.fit &lt;- sem(mediation.model, data = mediation.data, se = &quot;bootstrap&quot;)</code></pre>
+<pre class="r"><code>summary(mediation.fit, fit.measures = T, standardized = T)</code></pre>
+<pre><code>## lavaan 0.6-8 ended normally after 42 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        12
+##                                                       
+##   Number of observations                           109
+##                                                       
+## Model Test User Model:
+##                                                       
+##   Test statistic                                 3.885
+##   Degrees of freedom                                 6
+##   P-value (Chi-square)                           0.692
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                               192.120
+##   Degrees of freedom                                14
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    1.000
+##   Tucker-Lewis Index (TLI)                       1.028
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -1101.180
+##   Loglikelihood unrestricted model (H1)      -1099.238
+##                                                       
+##   Akaike (AIC)                                2226.361
+##   Bayesian (BIC)                              2258.657
+##   Sample-size adjusted Bayesian (BIC)         2220.739
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.000
+##   90 Percent confidence interval - lower         0.000
+##   90 Percent confidence interval - upper         0.096
+##   P-value RMSEA &lt;= 0.05                          0.809
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.032
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                            Bootstrap
+##   Number of requested bootstrap draws             1000
+##   Number of successful bootstrap draws            1000
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   burnout ~                                                             
+##     climate    (a)   -0.380    0.082   -4.630    0.000   -0.380   -0.409
+##     control    (b)    0.292    0.091    3.220    0.001    0.292    0.249
+##   attitude ~                                                            
+##     burnout    (c)    0.025    0.011    2.264    0.024    0.025    0.232
+##     climate    (d)    0.015    0.009    1.591    0.112    0.015    0.150
+##     control    (e)   -0.056    0.012   -4.683    0.000   -0.056   -0.443
+##   educout ~                                                             
+##     attitude   (f)    2.215    0.290    7.645    0.000    2.215    0.633
+##   psychout ~                                                            
+##     attitude   (g)    3.447    0.319   10.795    0.000    3.447    0.691
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##  .educout ~~                                                            
+##    .psychout          1.139    0.983    1.159    0.246    1.139    0.105
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .burnout          67.858    8.124    8.353    0.000   67.858    0.719
+##    .attitude          0.886    0.106    8.395    0.000    0.886    0.799
+##    .educout           8.166    1.018    8.021    0.000    8.166    0.600
+##    .psychout         14.411    1.781    8.092    0.000   14.411    0.522
+## 
+## Defined Parameters:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##     ac               -0.010    0.005   -2.021    0.043   -0.010   -0.095
+##     bc                0.007    0.004    1.753    0.080    0.007    0.058
+##     fd                0.033    0.022    1.522    0.128    0.033    0.095
+##     fe               -0.125    0.032   -3.893    0.000   -0.125   -0.281
+##     fc                0.056    0.026    2.116    0.034    0.056    0.147
+##     gd                0.052    0.033    1.572    0.116    0.052    0.103
+##     ge               -0.195    0.044   -4.449    0.000   -0.195   -0.307
+##     gc                0.087    0.037    2.345    0.019    0.087    0.160</code></pre>
+
+<hr>
+© Copyright 2021 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

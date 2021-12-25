@@ -1,0 +1,550 @@
+---
+title: "Multi-group analysis"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 4
+---
+
+In this tutorial, we are going to use `lavaan` for multi-group analysis. We are going to talk about the commonly utilized strategy, as well as the "crazy Greg method". 
+
+## Load the pacakges and read in the data
+
+The "proficiencyraw-both.csv" file is provided as part of your course materials. The dataset contains data for 1000 $9^{th}$ grade girls and 1000 $9^{th}$ grade boys. For more information about the data, please refer to your course slides.
+
+```{r, message=FALSE, warning=FALSE}
+library(lavaan)
+library(semPlot)
+```
+
+```{r,echo=F}
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/SEM2019/SEM First Course Mplus 2019/Mplus Examples"
+```
+
+```{r}
+setwd(mypath)  # set working directory to where the data file is stored
+data=read.table("proficiencyraw-both.csv", sep = ",", header = F)
+
+colnames(data) <- c('gender', paste0('goals', 1:6), paste0('rsc', 1:5), paste0('hsc', 1:5), 
+                 paste0('msc',1:5), paste0('ssc', 1:5), 'SATvoc', 'SATcomp', 
+                 'SATlang', 'satmath', 'SATprob', 'SATproc')
+
+library(psych)
+knitr::kable(describe(data))
+knitr::kable(cor(data))
+
+```
+
+---
+
+## Example 1: Measured variable path analysis
+
+### Step 1: Fit the model separately 
+
+We first fit the path model in two groups separately. Try it out yourseldf. :)
+
+### Step 2: Fit the model simultaneously
+
+Knowing that the model is tenable in each group separately, we now fit the path model two groups simultaneously. Because we are fitting the same model to each of the groups, you only need to specify one set of model syntax. To conduct multi-group analysis, you need to make sure that your data contain the grouping variable (in our example, it's "gender"). Additionally, when you call the `sem()` function, you need to specify the `group=` argument by supplying the name of the grouping variable. By default, the same model is fitted in all groups. Without further constraints, all parameters are allowed to differ between groups. 
+
+
+```{r, warning = F}
+
+step2.mg <- '
+goals2 ~ rsc1 + hsc1 + msc1 + ssc1
+satmath ~ rsc1 + msc1 + ssc1 + goals2
+
+hsc1 ~~ rsc1
+rsc1 ~~ msc1
+rsc1 ~~ ssc1
+msc1 ~~ ssc1
+hsc1 ~~ 0*msc1
+hsc1 ~~ 0*ssc1
+'
+
+step2.mg.fit <- sem(step2.mg, data = data, group = "gender")
+summary(step2.mg.fit, fit.measures = T, standardized = T)
+step2.mod <- modindices(step2.mg.fit)
+step2.mod[step2.mod$mi >= 3.481, ]
+
+```
+
+
+
+### Step 3: Test group differences 
+
+Next we test whether the path coefficients are equal across groups. Let's start with the commonly utilized strategy.
+
+#### Commonly utilized strategy 
+
+Using this strategy, we first constrain **all** the parameters of interest to be equal across groups. In order to constrain the parameters to be equal across groups, we need to give the corresponding parameters the same label. In multi-group scenario, we can still give parameters labels by multiplication. The difference is that we now need to multiply it by a vector of arguments, one for each group.
+
+```{r, warning = FALSE}
+## constrain all paths to be equal
+step3.mg <- '
+goals2 ~ c(a,a)*rsc1 + c(b,b)*hsc1 + c(c,c)*msc1 + c(d,d)*ssc1
+satmath ~ c(e,e)*rsc1 + c(f,f)*msc1 + c(g,g)*ssc1 + c(h,h)*goals2
+
+hsc1 ~~ rsc1
+rsc1 ~~ msc1
+rsc1 ~~ ssc1
+msc1 ~~ ssc1
+hsc1 ~~ 0*msc1
+hsc1 ~~ 0*ssc1
+'
+
+step3.mg.fit <- sem(step3.mg, data, group = "gender")
+summary(step3.mg.fit, fit.measures = T, standardized = T)
+step3.mod <- modindices(step3.mg.fit, sort = T)
+step3.mod[step3.mod$mi >= 3.841, ]
+
+```
+
+
+The model fit is pretty good. Let's do a likelihood ratio test to compare the fit of the two models.
+
+
+```{r}
+anova(step2.mg.fit,step3.mg.fit)
+```
+
+
+The test is not statistically significant. We can accept the constrained model and conclude that the path coefficients are equal across groups. But for illustration purpose, we can still try to free one of the paths (as we did in class with Mplus). To allow the path of msc1 --> satmath to freely vary across groups, we just need to simply remove the pre-multiplier label. 
+
+```{r, warning = F}
+
+step3.mg2 <- '
+goals2 ~ c(a,a)*rsc1 + c(b,b)*hsc1 + c(c,c)*msc1 + c(d,d)*ssc1
+satmath ~ c(e,e)*rsc1 + msc1 + c(g,g)*ssc1 + c(h,h)*goals2
+
+hsc1 ~~ rsc1
+rsc1 ~~ msc1
+rsc1 ~~ ssc1
+msc1 ~~ ssc1
+hsc1 ~~ 0*msc1
+hsc1 ~~ 0*ssc1
+'
+
+step3.mg.fit2 <- sem(step3.mg2, data,group = "gender")
+summary(step3.mg.fit2, fit.measures = T, standardized = T)
+step3.mod2 <- modindices(step3.mg.fit2, sort = T)
+step3.mod2[step3.mod2$mi >= 3.841, ]
+
+```
+
+
+```{r, out.width='80%'}
+semPaths(step3.mg.fit2, what = "eq", title = T, curvePivot = TRUE, intercepts = F, ask = FALSE, edge.label.cex = 2, sizeMan = 9, title.cex = 2)
+```
+
+#### Crazy Greg method
+
+Let's try the "crazy Greg method" in `lavaan`. :) As you will see, it is very straightforward to implement. The key of the "crazy Greg method" is to create new parameters that reflect the group difference on each of the parameters of interest. By testing whether the new parameter is different from zero, we are testing whether the corresponding parameters are different across groups. 
+
+In order to create new parameters in `lavaan`, we need to use the "`:=`" operator in the model syntax. This operator is used to define new parameters, which is written as a function of the existing model parameters. Therefore, you would need to explicitly label the existing model parameters before you can use those labels to define the new parameters. By default, the standard errors for the newly defined parameters are computed with Delta method.
+
+```{r, warning = F}
+
+crazy.greg <- '
+
+goals2 ~ c(a1,a2)*rsc1 + c(b1,b2)*hsc1 + c(c1,c2)*msc1 + c(d1,d2)*ssc1
+satmath ~ c(e1,e2)*rsc1 + c(f1,f2)*msc1 + c(g1,g2)*ssc1 + c(h1,h2)*goals2
+
+hsc1 ~~ rsc1
+rsc1 ~~ msc1
+rsc1 ~~ ssc1
+msc1 ~~ ssc1
+hsc1 ~~ 0*msc1
+hsc1 ~~ 0*ssc1
+
+# create new parameters
+
+adiff:= a1 - a2
+bdiff:= b1 - b2
+cdiff:= c1 - c2
+ddiff:= d1 - d2
+ediff:= e1 - e2
+fdiff:= f1 - f2
+gdiff:= g1 - g2
+hdiff:= h1 - h2
+'
+
+crazy.greg.fit <- sem(crazy.greg, data, group = "gender")
+summary(crazy.greg.fit, fit.measures = T)
+
+```
+
+
+---
+
+## Example 2: CFA models
+
+### Step 1: Fit the model separately 
+
+We first fit the path model in two groups separately. Go ahead and try it out yourseldf. :)
+
+### Step 2: Fit the model simultaneously
+
+Knowing that the CFA model is tenable in each group separately, we now fit the path model two groups simultaneously. Similar with the first example, we only need to supply one set of model syntax for both groups. By default, every model parameter is allowed to vary. 
+
+```{r, warning = F}
+
+cfa.mg <- '
+
+# define the latent variables
+
+RSC =~ rsc1 + rsc2 + rsc3 + rsc4 + rsc5
+HSC =~ hsc1 + hsc2 + hsc3 + hsc4 + hsc5
+MSC =~ msc1 + msc2 + msc3 + msc4 + msc5
+SSC =~ ssc1 + ssc2 + ssc3 + ssc4 + ssc5
+
+# mean structure
+
+rsc1~1
+rsc2~1
+rsc3~1
+rsc4~1
+rsc5~1
+hsc1~1
+hsc2~1
+hsc3~1
+hsc4~1
+hsc5~1
+msc1~1
+msc2~1
+msc3~1
+msc4~1  
+msc5~1
+ssc1~1
+ssc2~1
+ssc3~1
+ssc4~1
+ssc5~1
+
+# error covariances
+
+rsc1 ~~ hsc1 + msc1 + ssc1
+rsc2 ~~ hsc2 + msc2 + ssc2
+rsc3 ~~ hsc3 + msc3 + ssc3
+rsc4 ~~ hsc4 + msc4 + ssc4
+rsc5 ~~ hsc5 + msc5 + ssc5
+hsc1 ~~ msc1 + ssc1
+hsc2 ~~ msc2 + ssc2
+hsc3 ~~ msc3 + ssc3
+hsc4 ~~ msc4 + ssc4
+hsc5 ~~ msc5 + ssc5
+msc1 ~~ ssc1
+msc2 ~~ ssc2
+msc3 ~~ ssc3
+msc4 ~~ ssc4  
+msc5 ~~ ssc5 
+
+'
+
+cfa.mg.step2 <- sem(cfa.mg, data, group = "gender")
+summary(cfa.mg.step2, fit.measures = T, standardized =T)
+
+```
+
+<br>
+
+### Step 3: Test group differences 
+
+Next we test the measurement invariance across groups. We will use the commonly utilized strategy. But feel free to try using the "crazy Greg method" on your own.
+
+We first constrain all the factor loadings to be equal across the girls group and boys group. You can manually constrain the factor loadings to be equal with the label pre-multiplication method, as we did earlier on. But `lavaan` has made things easier for us. You can constrain the factor loadings to be equal by specifying the argument `group.equal = "loadings"` in the model fitting function. `lavaan` will automatically generate parameter labels for the loadings. 
+
+
+```{r, warning=F}
+
+cfa.mg.step3 <- cfa(cfa.mg, data, group = "gender", group.equal = "loadings")
+summary(cfa.mg.step3, fit.measures = T, standardized = T)
+cfa.mg.mod <- modindices(cfa.mg.step3, sort = T)
+cfa.mg.mod[cfa.mg.mod$mi >= 3.841, ]   
+
+```
+
+The model fit is pretty good. The likelihood ratio test for the two models is not significant at 0.05 level. We can stop here and conclude that the factor loadings are equal across groups (i.e., measurement invariance). But for illustration purpose, we can still try to free one of the factor loadings (as we did in class with Mplus). To be consistent with the practice in class, we now allow the factor loading of SSC --> ssc3 to freely vary across groups. 
+
+
+```{r}
+anova(cfa.mg.step2, cfa.mg.step3)
+
+```
+
+
+```{r, warning = F}
+cfa.mg.step3.2 <- cfa(cfa.mg, data, group = "gender", group.equal = "loadings", group.partial = c("SSC =~ ssc3"))
+summary(cfa.mg.step3.2, fit.measures = T, standardized = T)
+cfa.mg.mod <- modindices(cfa.mg.step3, sort = T)
+cfa.mg.mod[cfa.mg.mod$mi >= 3.841, ]   #note: different from Mplus
+
+```
+
+```{r, out.width='80%'}
+semPaths(cfa.mg.step3.2, title = T, curvePivot = TRUE, intercepts = F, ask = FALSE, edge.label.cex = 1, sizeMan = 5, title.cex = 2, sizeLat = 11)
+```
+
+
+---
+
+## Example 3: Latent variable path analysis
+
+
+### Measurement phase
+
+Assume we have confirmed that the measurement model is tenable ub each group separately, and that the model is tenable in both groups simultaneously. We proceed to test the measurement invariance using the commonly used strategy. 
+
+```{r, warning = F}
+
+lv.mg.m <- '
+
+RSC =~ rsc1 + rsc2 + rsc3 + rsc4 + rsc5
+HSC =~ hsc1 + hsc2 + hsc3 + hsc4 + hsc5
+MSC =~ msc1 + msc2 + msc3 + msc4 + msc5
+SSC =~ ssc1 + ssc2 + ssc3 + ssc4 + ssc5
+TGOAL =~ goals1 + goals2 + goals3 + goals4 + goals5 + goals6
+MATHPROF =~ satmath + SATprob + SATproc
+
+rsc1~1
+rsc2~1
+rsc3~1
+rsc4~1
+rsc5~1
+hsc1~1
+hsc2~1
+hsc3~1
+hsc4~1
+hsc5~1
+msc1~1
+msc2~1
+msc3~1
+msc4~1  
+msc5~1
+ssc1~1
+ssc2~1
+ssc3~1
+ssc4~1
+ssc5~1
+goals1~1
+goals2~1
+goals3~1
+goals4~1
+goals5~1
+goals6~1
+satmath~1
+SATprob~1
+SATproc~1
+
+rsc1 ~~ hsc1 + msc1 + ssc1
+rsc2 ~~ hsc2 + msc2 + ssc2
+rsc3 ~~ hsc3 + msc3 + ssc3
+rsc4 ~~ hsc4 + msc4 + ssc4
+rsc5 ~~ hsc5 + msc5 + ssc5
+hsc1 ~~ msc1 + ssc1
+hsc2 ~~ msc2 + ssc2
+hsc3 ~~ msc3 + ssc3
+hsc4 ~~ msc4 + ssc4
+hsc5 ~~ msc5 + ssc5
+msc1 ~~ ssc1
+msc2 ~~ ssc2
+msc3 ~~ ssc3
+msc4 ~~ ssc4  
+msc5 ~~ ssc5 
+
+'
+
+# constrain loadings to be equal
+lv.mg.m.1 <- cfa(lv.mg.m, data, group = "gender", group.equal = "loadings")  
+summary(lv.mg.m.1, fit.measures = T, standardized = T)
+lv.mg.m.mod <- modindices(lv.mg.m.1, sort = T)
+lv.mg.m.mod[lv.mg.m.mod$mi >= 3.841, ]    #differnt from Mplus
+
+```
+
+
+```r
+anova(lv.mg.m.1,lv.mg.m.nc)
+# Chi-Squared Difference Test
+# 
+#             Df    AIC    BIC  Chisq Chisq diff Df diff Pr(>Chisq)  
+# lv.mg.m.nc 664 204985 206464 760.90                                
+# lv.mg.m.1  687 204971 206321 793.19     32.296      23    0.09415 .
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+```
+
+
+The model fit is satisfactory and we can conclude measurement invariance. But let's be consistent with your in-class practice and release the loading SSC --> ssc3. 
+
+
+```{r, warning = F}
+lv.mg.m.fit <- cfa(lv.mg.m, data, group = "gender", group.equal = "loadings", group.partial = c("SSC =~ ssc3"))
+summary(lv.mg.m.fit, fit.measures = T, standardized = T)
+
+```
+
+Final CFA model:
+
+```{r, out.width='80%'}
+semPaths(lv.mg.m.fit, title = T, curvePivot = TRUE, intercepts = F, ask = FALSE, edge.label.cex = 1, sizeMan = 5, title.cex = 2, sizeLat = 11)
+```
+
+### Structural phase
+
+Assume we have already confirmed that the proposed structural model is tenable in each group separately and it is tenable in both groups simultaneously (with the final measurement model in place). We now contrain all the regression coefficients to be equal across the groups.
+
+```{r, warning = F}
+
+lv.mg.s <- '
+
+RSC =~ rsc1 + rsc2 + rsc3 + rsc4 + rsc5
+HSC =~ hsc1 + hsc2 + hsc3 + hsc4 + hsc5
+MSC =~ msc1 + msc2 + msc3 + msc4 + msc5
+SSC =~ ssc1 + ssc2 + c(a,b)*ssc3 + ssc4 + ssc5
+TGOAL =~ goals1 + goals2 + goals3 + goals4 + goals5 + goals6
+MATHPROF =~ satmath + SATprob + SATproc
+
+TGOAL ~ RSC + HSC + MSC + SSC
+MATHPROF ~ RSC + MSC + SSC + TGOAL
+
+HSC ~~ 0*MSC + 0*SSC
+
+rsc1~1
+rsc2~1
+rsc3~1
+rsc4~1
+rsc5~1
+hsc1~1
+hsc2~1
+hsc3~1
+hsc4~1
+hsc5~1
+msc1~1
+msc2~1
+msc3~1
+msc4~1  
+msc5~1
+ssc1~1
+ssc2~1
+ssc3~1
+ssc4~1
+ssc5~1
+goals1~1
+goals2~1
+goals3~1
+goals4~1
+goals5~1
+goals6~1
+satmath~1
+SATprob~1
+SATproc~1
+
+rsc1 ~~ hsc1 + msc1 + ssc1
+rsc2 ~~ hsc2 + msc2 + ssc2
+rsc3 ~~ hsc3 + msc3 + ssc3
+rsc4 ~~ hsc4 + msc4 + ssc4
+rsc5 ~~ hsc5 + msc5 + ssc5
+hsc1 ~~ msc1 + ssc1
+hsc2 ~~ msc2 + ssc2
+hsc3 ~~ msc3 + ssc3
+hsc4 ~~ msc4 + ssc4
+hsc5 ~~ msc5 + ssc5
+msc1 ~~ ssc1
+msc2 ~~ ssc2
+msc3 ~~ ssc3
+msc4 ~~ ssc4  
+msc5 ~~ ssc5 
+
+'
+
+lv.mg.fit <- cfa(lv.mg.s, data, group = "gender", group.equal = c("loadings", "regressions"))
+summary(lv.mg.fit, fit.measures = T, standardized = T)
+lv.mg.s.mod <- modindices(lv.mg.fit, sort = T)
+lv.mg.s.mod[lv.mg.s.mod$mi >= 3.841, ]  # different from Mplus
+```
+
+
+Again, let's be consistent with your in-class practice and release the SSC --> MATHPROF path. 
+
+```{r, warning = F}
+
+lv.mg.s2 <- '
+RSC =~ rsc1 + rsc2 + rsc3 + rsc4 + rsc5
+HSC =~ hsc1 + hsc2 + hsc3 + hsc4 + hsc5
+MSC =~ msc1 + msc2 + msc3 + msc4 + msc5
+SSC =~ ssc1 + ssc2 + c(a,b)*ssc3 + ssc4 + ssc5
+TGOAL =~ goals1 + goals2 + goals3 + goals4 + goals5 + goals6
+MATHPROF =~ satmath + SATprob + SATproc
+
+TGOAL~RSC + HSC + MSC + SSC
+MATHPROF~RSC + MSC + c(c,d)*SSC + TGOAL
+
+HSC ~~ 0*MSC + 0*SSC
+
+rsc1~1
+rsc2~1
+rsc3~1
+rsc4~1
+rsc5~1
+hsc1~1
+hsc2~1
+hsc3~1
+hsc4~1
+hsc5~1
+msc1~1
+msc2~1
+msc3~1
+msc4~1  
+msc5~1
+ssc1~1
+ssc2~1
+ssc3~1
+ssc4~1
+ssc5~1
+goals1~1
+goals2~1
+goals3~1
+goals4~1
+goals5~1
+goals6~1
+satmath~1
+SATprob~1
+SATproc~1
+
+rsc1 ~~ hsc1 + msc1 + ssc1
+rsc2 ~~ hsc2 + msc2 + ssc2
+rsc3 ~~ hsc3 + msc3 + ssc3
+rsc4 ~~ hsc4 + msc4 + ssc4
+rsc5 ~~ hsc5 + msc5 + ssc5
+hsc1 ~~ msc1 + ssc1
+hsc2 ~~ msc2 + ssc2
+hsc3 ~~ msc3 + ssc3
+hsc4 ~~ msc4 + ssc4
+hsc5 ~~ msc5 + ssc5
+msc1 ~~ ssc1
+msc2 ~~ ssc2
+msc3 ~~ ssc3
+msc4 ~~ ssc4  
+msc5 ~~ ssc5 
+
+'
+
+lv.mg.fit2 <- cfa(lv.mg.s2, data, group="gender", group.equal = c("loadings", "regressions"))
+summary(lv.mg.fit2, fit.measures = T, standardized = T)
+lv.mg.s.mod <- modindices(lv.mg.fit2, sort = T)
+lv.mg.s.mod[lv.mg.s.mod$mi >= 3.841, ]
+
+```
+
+
+The final model:
+
+```{r, out.width='80%'}
+semPaths(lv.mg.fit2, title = T, curvePivot = TRUE, intercepts = F, ask = FALSE, edge.label.cex = 1, sizeMan = 5, title.cex = 2, sizeLat = 11, whatLabels = "omit")
+```
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Ordered Categorical Data</title>
+
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-sm-12 col-md-4 col-lg-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">HOME</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    In-class Examples
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mlr-example.html">MLR Path Analysis</a>
+    </li>
+    <li>
+      <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
+    </li>
+    <li>
+      <a href="mtmm-example.html">Multitrait-Multimethod Analysis</a>
+    </li>
+    <li>
+      <a href="reliability.html">Scale Reliability</a>
+    </li>
+    <li>
+      <a href="latent-pa-example.html">Latent Path Analysis</a>
+    </li>
+    <li>
+      <a href="mg-example.html">Multi-group Analysis</a>
+    </li>
+    <li>
+      <a href="missing-data-example.html">Missing Data</a>
+    </li>
+    <li>
+      <a href="nonnormal-data-example.html">Nonnormal Continuous Data</a>
+    </li>
+    <li>
+      <a href="ordered-categorical-data-example.html">Ordered Categorical Data</a>
+    </li>
+    <li>
+      <a href="complex-multilevel-example.html">Complex Sampling</a>
+    </li>
+    <li>
+      <a href="mimic-example.html">Group Code Analysis</a>
+    </li>
+    <li>
+      <a href="mean-structure-example.html">Mean Structure Modeling</a>
+    </li>
+    <li>
+      <a href="repeated-means-example.html">Repeated Measure Means Models</a>
+    </li>
+    <li>
+      <a href="interaction-example.html">Latent Variable Moderation</a>
+    </li>
+    <li>
+      <a href="lgm-example.html">Latent Growth Models</a>
+    </li>
+    <li>
+      <a href="lgm-extension-example.html">Latent Growth Models Extensions</a>
+    </li>
+    <li>
+      <a href="power-example.html">Monte Carlo Power Methods</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mvpa-exercise.html">Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="mediation-exercise.html">Mediation Exercise</a>
+    </li>
+    <li>
+      <a href="APIM-exercise.html">APIM Exercise</a>
+    </li>
+    <li>
+      <a href="cfa-exercise-v2.html">CFA Exercise</a>
+    </li>
+    <li>
+      <a href="residualized-cfa-exercise.html">Residualized CFA Exercise</a>
+    </li>
+    <li>
+      <a href="reliability_exercise.html">Scale Reliability Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise.html">Latent Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-2step-exercise.html">Two-step SEM Exercise</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-2.html">Multi-group CFA Exercise</a>
+    </li>
+    <li>
+      <a href="mean-structure-exercise.html">Structured Means Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise.html">Repeated Measure Means Exercise</a>
+    </li>
+    <li>
+      <a href="interaction-exercise.html">Latent Interaction Exercise</a>
+    </li>
+    <li>
+      <a href="lgm-exercise.html">Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="conditional-lgm-exercise.html">Conditional Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="power-exercise.html">Power Analysis</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions-DEMO
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="cfa-exercise-DEMO.html">CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise-DEMO.html">Latent Path Analysis Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-DEMO.html">Multi-group CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise-DEMO.html">Repeated Measure Means Exercise-DEMO</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Videos.html">Tutorial Videos</a>
+</li>
+<li>
+  <a href="resources.html">Resources</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Ordered Categorical Data</h1>
+
+</div>
+
+
+<p>In this tutorial, we are going to use <code>lavaan</code> to deal with ordered categorical data. The example corresponds to the <em>Achievement Goal Questionnaire</em> example in your course slides.</p>
+<div id="load-the-pacakges" class="section level2">
+<h2>Load the pacakges</h2>
+<pre class="r"><code>library(lavaan)
+library(semPlot)</code></pre>
+<p><br></p>
+</div>
+<div id="read-the-data" class="section level2">
+<h2>Read the data</h2>
+<p>The data for this example is saved in a txt file named “categorical_data.txt”, which is provided as part of the course materials. You can use the <code>read.delim()</code> function to read in a txt file.</p>
+<p>In order for <code>lavaan</code> to properly deal with categorical data, you should either make sure the categorical variables are declared as “ordered” in your data frame, or the variables are specified as “ordered” when you call up the fitting function.</p>
+<pre class="r"><code>setwd(mypath)  # change it to the path of your own data folder
+categorical &lt;- read.delim(&quot;categorical_data.txt&quot;, sep=&quot;\t&quot;, header = T)
+
+colnames(categorical) &lt;- c(&#39;pap1&#39;, &#39;pap2&#39;, &#39;pap3&#39;, &#39;pav1&#39;, &#39;pav2&#39;, &#39;pav3&#39;,
+                           &#39;mav1&#39;, &#39;mav2&#39;, &#39;mav3&#39;, &#39;map1&#39;, &#39;map2&#39;, &#39;map3&#39;)
+
+categorical &lt;- apply(categorical, 2, ordered)</code></pre>
+<p>You can take a look at the data and get the sample statistics.</p>
+<pre class="r"><code># descriptive statistics
+
+str(categorical)</code></pre>
+<pre><code>##  chr [1:299, 1:12] &quot;3&quot; &quot;2&quot; &quot;1&quot; &quot;3&quot; &quot;3&quot; &quot;3&quot; &quot;3&quot; &quot;2&quot; &quot;1&quot; &quot;3&quot; &quot;2&quot; &quot;2&quot; &quot;3&quot; &quot;2&quot; &quot;1&quot; &quot;2&quot; &quot;1&quot; ...
+##  - attr(*, &quot;dimnames&quot;)=List of 2
+##   ..$ : NULL
+##   ..$ : chr [1:12] &quot;pap1&quot; &quot;pap2&quot; &quot;pap3&quot; &quot;pav1&quot; ...</code></pre>
+<pre class="r"><code>summary(categorical)</code></pre>
+<pre><code>##      pap1               pap2               pap3               pav1          
+##  Length:299         Length:299         Length:299         Length:299        
+##  Class :character   Class :character   Class :character   Class :character  
+##  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+##      pav2               pav3               mav1               mav2          
+##  Length:299         Length:299         Length:299         Length:299        
+##  Class :character   Class :character   Class :character   Class :character  
+##  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+##      mav3               map1               map2               map3          
+##  Length:299         Length:299         Length:299         Length:299        
+##  Class :character   Class :character   Class :character   Class :character  
+##  Mode  :character   Mode  :character   Mode  :character   Mode  :character</code></pre>
+<p><br></p>
+</div>
+<div id="fit-a-cfa-model-using-wls-estimation" class="section level2">
+<h2>Fit a CFA model using WLS estimation</h2>
+<p><img src="ordered-categorical-data-example_files/figure-html/unnamed-chunk-5-1.png" width="80%" /></p>
+<p>If you have not declared the variables as “ordered” in your data frame, when you call up the fitting function, you must add the <code>ordered =</code> argument to tell <code>lavaan</code> which of the variables should be treated as categorical data.</p>
+<p>Whend dealing with categorical data, the current version of <code>lavaan</code> only supports WLS estimators and its ‘robust’ variants. By default, <code>lavaan</code> will use the WLSMV estimator for categorical data. You can switch to other estimators using the <code>estimator =</code> argument. For example, I requested to use the WLSM estimator, which is a robust variant of DWLS. It only uses the diagonal of the weight matrix for estimation; but the the standard errors and test statistics are computed based on the full weight matrix.</p>
+<pre class="r"><code>categorical.model &lt;- &#39;
+
+pap =~  NA*pap1 + pap2 + pap3
+pav =~  NA*pav1 + pav2 + pav3
+mav =~  NA*mav1 + mav2 + mav3
+map =~  NA*map1 + map2 + map3
+pap ~~  1*pap
+pav ~~  1*pav 
+mav ~~  1*mav 
+map ~~  1*map
+
+&#39;
+
+cat.fit &lt;- sem(categorical.model,
+               data = categorical,
+               estimator = &quot;WLSM&quot;,
+               ordered = c(&#39;pap1&#39;,&#39;pap2&#39;,&#39;pap3&#39;,
+                           &#39;pav1&#39;,&#39;pav2&#39;,&#39;pav3&#39;,
+                           &#39;mav1&#39;,&#39;mav2&#39;,&#39;mav3&#39;,
+                           &#39;map1&#39;,&#39;map2&#39;,&#39;map3&#39;))
+
+summary(cat.fit, fit.measures = T, standardized = T)</code></pre>
+<pre><code>## lavaan 0.6-8 ended normally after 19 iterations
+## 
+##   Estimator                                       DWLS
+##   Optimization method                           NLMINB
+##   Number of model parameters                        42
+##                                                       
+##   Number of observations                           299
+##                                                       
+## Model Test User Model:
+##                                               Standard      Robust
+##   Test Statistic                                68.539     102.371
+##   Degrees of freedom                                48          48
+##   P-value (Chi-square)                           0.027       0.000
+##   Scaling correction factor                                  0.670
+##        Satorra-Bentler correction                                 
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                              2437.898    2437.898
+##   Degrees of freedom                                66          66
+##   P-value                                        0.000       0.000
+##   Scaling correction factor                                  1.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    0.991       0.977
+##   Tucker-Lewis Index (TLI)                       0.988       0.968
+##                                                                   
+##   Robust Comparative Fit Index (CFI)                         0.985
+##   Robust Tucker-Lewis Index (TLI)                            0.979
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.038       0.062
+##   90 Percent confidence interval - lower         0.013       0.041
+##   90 Percent confidence interval - upper         0.057       0.082
+##   P-value RMSEA &lt;= 0.05                          0.838       0.161
+##                                                                   
+##   Robust RMSEA                                               0.050
+##   90 Percent confidence interval - lower                     0.037
+##   90 Percent confidence interval - upper                     0.064
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.067       0.067
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                           Robust.sem
+##   Information                                 Expected
+##   Information saturated (h1) model        Unstructured
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   pap =~                                                                
+##     pap1              0.754    0.042   17.987    0.000    0.754    0.754
+##     pap2              0.851    0.032   26.348    0.000    0.851    0.851
+##     pap3              0.855    0.039   21.745    0.000    0.855    0.855
+##   pav =~                                                                
+##     pav1              0.628    0.050   12.560    0.000    0.628    0.628
+##     pav2              0.644    0.050   12.767    0.000    0.644    0.644
+##     pav3              0.911    0.041   22.446    0.000    0.911    0.911
+##   mav =~                                                                
+##     mav1              0.539    0.064    8.458    0.000    0.539    0.539
+##     mav2              0.842    0.050   16.813    0.000    0.842    0.842
+##     mav3              0.867    0.043   19.948    0.000    0.867    0.867
+##   map =~                                                                
+##     map1              0.787    0.087    9.018    0.000    0.787    0.787
+##     map2              0.718    0.075    9.579    0.000    0.718    0.718
+##     map3              0.628    0.075    8.318    0.000    0.628    0.628
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   pap ~~                                                                
+##     pav               0.526    0.056    9.473    0.000    0.526    0.526
+##     mav               0.135    0.071    1.895    0.058    0.135    0.135
+##     map               0.259    0.081    3.216    0.001    0.259    0.259
+##   pav ~~                                                                
+##     mav               0.489    0.057    8.519    0.000    0.489    0.489
+##     map               0.166    0.091    1.821    0.069    0.166    0.166
+##   mav ~~                                                                
+##     map               0.156    0.085    1.835    0.066    0.156    0.156
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .pap1              0.000                               0.000    0.000
+##    .pap2              0.000                               0.000    0.000
+##    .pap3              0.000                               0.000    0.000
+##    .pav1              0.000                               0.000    0.000
+##    .pav2              0.000                               0.000    0.000
+##    .pav3              0.000                               0.000    0.000
+##    .mav1              0.000                               0.000    0.000
+##    .mav2              0.000                               0.000    0.000
+##    .mav3              0.000                               0.000    0.000
+##    .map1              0.000                               0.000    0.000
+##    .map2              0.000                               0.000    0.000
+##    .map3              0.000                               0.000    0.000
+##     pap               0.000                               0.000    0.000
+##     pav               0.000                               0.000    0.000
+##     mav               0.000                               0.000    0.000
+##     map               0.000                               0.000    0.000
+## 
+## Thresholds:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##     pap1|t1          -1.553    0.115  -13.462    0.000   -1.553   -1.553
+##     pap1|t2           0.198    0.073    2.712    0.007    0.198    0.198
+##     pap2|t1          -1.712    0.128  -13.358    0.000   -1.712   -1.712
+##     pap2|t2           0.046    0.073    0.635    0.525    0.046    0.046
+##     pap3|t1          -1.381    0.104  -13.239    0.000   -1.381   -1.381
+##     pap3|t2           0.355    0.074    4.782    0.000    0.355    0.355
+##     pav1|t1          -0.979    0.087  -11.279    0.000   -0.979   -0.979
+##     pav1|t2           0.088    0.073    1.212    0.225    0.088    0.088
+##     pav2|t1          -1.049    0.089  -11.763    0.000   -1.049   -1.049
+##     pav2|t2           0.346    0.074    4.667    0.000    0.346    0.346
+##     pav3|t1          -0.725    0.080   -9.068    0.000   -0.725   -0.725
+##     pav3|t2           0.672    0.079    8.517    0.000    0.672    0.672
+##     mav1|t1          -1.499    0.112  -13.431    0.000   -1.499   -1.499
+##     mav1|t2           0.181    0.073    2.481    0.013    0.181    0.181
+##     mav2|t1          -0.888    0.084  -10.567    0.000   -0.888   -0.888
+##     mav2|t2           0.926    0.085   10.876    0.000    0.926    0.926
+##     mav3|t1          -0.630    0.078   -8.072    0.000   -0.630   -0.630
+##     mav3|t2           0.926    0.085   10.876    0.000    0.926    0.926
+##     map1|t1          -2.474    0.252   -9.807    0.000   -2.474   -2.474
+##     map1|t2          -0.233    0.073   -3.173    0.002   -0.233   -0.233
+##     map2|t1          -2.712    0.331   -8.181    0.000   -2.712   -2.712
+##     map2|t2          -0.816    0.082   -9.935    0.000   -0.816   -0.816
+##     map3|t1          -2.127    0.179  -11.902    0.000   -2.127   -2.127
+##     map3|t2          -0.493    0.076   -6.494    0.000   -0.493   -0.493
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##     pap               1.000                               1.000    1.000
+##     pav               1.000                               1.000    1.000
+##     mav               1.000                               1.000    1.000
+##     map               1.000                               1.000    1.000
+##    .pap1              0.432                               0.432    0.432
+##    .pap2              0.276                               0.276    0.276
+##    .pap3              0.268                               0.268    0.268
+##    .pav1              0.606                               0.606    0.606
+##    .pav2              0.585                               0.585    0.585
+##    .pav3              0.169                               0.169    0.169
+##    .mav1              0.710                               0.710    0.710
+##    .mav2              0.291                               0.291    0.291
+##    .mav3              0.248                               0.248    0.248
+##    .map1              0.381                               0.381    0.381
+##    .map2              0.485                               0.485    0.485
+##    .map3              0.606                               0.606    0.606
+## 
+## Scales y*:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##     pap1              1.000                               1.000    1.000
+##     pap2              1.000                               1.000    1.000
+##     pap3              1.000                               1.000    1.000
+##     pav1              1.000                               1.000    1.000
+##     pav2              1.000                               1.000    1.000
+##     pav3              1.000                               1.000    1.000
+##     mav1              1.000                               1.000    1.000
+##     mav2              1.000                               1.000    1.000
+##     mav3              1.000                               1.000    1.000
+##     map1              1.000                               1.000    1.000
+##     map2              1.000                               1.000    1.000
+##     map3              1.000                               1.000    1.000</code></pre>
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+
+</div>
+</div>
+
+<hr>
+© Copyright 2021 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+---
+title: "Multitrait-Multimethod Analysis"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 2
+---
+
+In this tutorial, we are going to use `lavaan` for multitrait-multimethod analysis.
+
+---
+
+## Load the pacakges
+
+```{r, message=FALSE,warning=FALSE}
+library(lavaan)
+library(semPlot)
+```
+<br>
+
+## Import the data
+
+For this example, our data is a correlation matrix for 12 observed variables. For more information about the data, please refer back to the course slides. As we have done in the previous examples, we need to convert the correlation matrix to a variance-covariance matrix.
+
+
+```{r}
+
+# lower half of the correlation matrix
+cormat <- '
+1.00               
+.09 1.00              
+.26 .29 1.00             
+-.03 .54 .01 1.00            
+.12 .12 .12 .01 1.00           
+.00 .43 .07 .43 .26 1.00          
+.03 .35 .07 .28 .41 .51 1.00         
+-.09 .42 .03 .48 .15 .72 .42 1.00        
+.35 .08 .12 -.02 .14 .08 .04 -.02 1.00       
+.12 .43 .24 .30 .18 .34 .31 .46 .18 1.00      
+.13 .26 .43 -.01 .07 .15 .17 .20 .29 .47 1.00     
+.05 .43 .05 .57 .13 .46 .37 .64 .07 .52 .20 1.00    
+.28 .19 .01 .14 .09 .06 -.03 .11 .18 .12 .02 .13 1.00   
+.11 .35 .07 .33 .13 .30 .17 .40 .13 .37 .28 .32 .62 1.00  
+.29 .17 .09 .09 .21 .05 .03 .09 .20 .15 .14 .10 .73 .64 1.00 
+.07 .40 .32 .32 .07 .32 .17 .41 .03 .28 .13 .35 .46 .66 .47 1.00 
+'
+
+# standard deviations
+sdev <- c(2.46, 1.76, 2.74, 2.04, 2.13, 4.30, 1.90, 1.90, 2.63, 1.89, 2.84, 2.34, 2.27, 4.86, 2.66, 1.94)
+
+Cmat <- getCov(cormat)
+Dmat <- diag(sdev)
+covmat <- Dmat %*% Cmat %*% Dmat
+
+# assign row and column names to the covariance matrix
+colnames(covmat) <- rownames(covmat) <- c("SCself", "ACself", "ECself", "MCself", 
+                     "SCteach", "ACteach", "ECteach", "MCteach", 
+                     "SCpar", "ACpar", "ECpar", "MCpar", 
+                     "SCpeer", "ACpeer", "ECpeer", "MCpeer")
+
+```
+
+<br>
+
+
+## Write the model syntax
+
+We use the following model syntax to specify the MTMM model. For all the trait latent factors and the methods latent factors, we free the first factor loadings. Instead, we fix their variances to be 1. We also constrain the covariances between the trait factors and methods factors to be 0.
+
+
+```{r}
+mtmm.model <- '
+
+# Trait factors
+
+SC =~ NA*SCself + SCteach + SCpar + SCpeer
+AC =~ NA*ACself + ACteach + ACpar + ACpeer
+EC =~ NA*ECself + ECteach + ECpar + ECpeer
+MC =~ NA*MCself + MCteach + MCpar + MCpeer
+
+# Methods factors
+
+self =~ NA*SCself + ACself + ECself + MCself
+teach =~ NA*SCteach + ACteach + ECteach + MCteach
+par =~ NA*SCpar + ACpar + ECpar + MCpar
+peer =~ NA*SCpeer + ACpeer + ECpeer + MCpeer
+
+# Variances of the latent factors
+
+SC~~1*SC
+AC~~1*AC
+EC~~1*EC
+MC~~1*MC
+
+self~~1*self
+teach~~1*teach
+par~~1*par
+peer~~1*peer
+
+# Covariances among the latent factors
+
+SC ~~ 0*self + 0*teach + 0*par + 0*peer
+AC ~~ 0*self + 0*teach + 0*par + 0*peer
+EC ~~ 0*self + 0*teach + 0*par + 0*peer
+MC ~~ 0*self + 0*teach + 0*par + 0*peer
+
+'
+
+```
+
+<br>
+
+## Fit the model to the data
+
+
+```{r}
+mtmm.fit <- sem(mtmm.model, sample.cov = covmat, sample.nobs = 158)
+```
+
+<br>
+
+## Summarize the results
+
+```{r}
+summary(mtmm.fit, fit.measures = T, standardized = T)
+```
+
+<br>
+
+## Draw the diagram
+
+You can use the `semPlot` package to draw the diagram for the model you fitted. You can experiment with the arguments to get a better layout of the plot. Some examples are available at the developer's website: http://sachaepskamp.com/semPlot. 
+
+
+```{r}
+semPaths(mtmm.fit, title = FALSE, curvePivot = TRUE, optimizeLatRes = T, style = "lisrel")
+
+```
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
+

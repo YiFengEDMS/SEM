@@ -1,0 +1,78 @@
+---
+title: "Multi-group CFA exercise-DEMO"
+output:
+  html_document:
+    toc: true
+    toc_float: false
+    toc_depth: 4
+---
+
+```{r, message=FALSE, warning=FALSE}
+library(lavaan)
+```
+
+```{r,echo=F}
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/SEM2019/SEM First Course Mplus 2019/Mplus Solutions"
+```
+
+```{r, message = F, warning = F}
+setwd(mypath)  # set working directory to where the data file is stored
+
+data1 <- read.table("causacian.csv", sep=",", header = F)
+data2 <- read.table("african-american.csv", sep = ",", header = F)
+
+data1$race <- 1
+data2$race <- 2
+data <- rbind(data1, data2)
+
+colnames(data) <- c('hand', 'number', 'word',
+                    'gestalt', 'triangle', 'matrix', 'spatial', 'photo','race')
+
+cfa.constrained <- '
+
+SEQUENT =~ hand + number + word
+SIMULTAN =~ triangle + matrix + spatial
+
+hand ~ 1
+number ~ 1
+word ~ 1
+triangle ~ 1
+matrix ~ 1
+spatial ~ 1
+
+
+'
+
+fit.constrained <- sem(cfa.constrained, data, group = "race", group.equal = c("loadings"))
+summary(fit.constrained, fit.measures = T, standardized = T)
+
+mod.constrained <- modindices(fit.constrained, sort = T)
+mod.constrained[mod.constrained$mi >= 3.841, ]   
+### different from the Mplus output
+
+
+### Release the constraints
+## free the loading based on the modification indices obtained in Mplus (to be consistent with your practice in class)
+
+cfa.unconstrained <- '
+
+SEQUENT =~ hand + number + word
+SIMULTAN =~ triangle + matrix + c(a,b)*spatial
+
+hand~1
+number~1
+word~1
+
+triangle~1
+matrix ~ 1
+spatial~1
+
+'
+
+fit.unconstrained <- sem(cfa.unconstrained, data, group="race", group.equal=c("loadings"))
+summary(fit.unconstrained, fit.measures = T, standardized = T)
+mod.constrained <- modindices(fit.constrained, sort = T)
+mod.constrained[mod.constrained$mi >= 3.841, ]
+
+```
+

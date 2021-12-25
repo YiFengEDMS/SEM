@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Measured Variable Path Analysis</title>
+
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<script src="site_libs/viz-1.8.2/viz.js"></script>
+<link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="site_libs/grViz-binding-1.0.6.1/grViz.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-sm-12 col-md-4 col-lg-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">HOME</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    In-class Examples
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mlr-example.html">MLR Path Analysis</a>
+    </li>
+    <li>
+      <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
+    </li>
+    <li>
+      <a href="mtmm-example.html">Multitrait-Multimethod Analysis</a>
+    </li>
+    <li>
+      <a href="reliability.html">Scale Reliability</a>
+    </li>
+    <li>
+      <a href="latent-pa-example.html">Latent Path Analysis</a>
+    </li>
+    <li>
+      <a href="mg-example.html">Multi-group Analysis</a>
+    </li>
+    <li>
+      <a href="missing-data-example.html">Missing Data</a>
+    </li>
+    <li>
+      <a href="nonnormal-data-example.html">Nonnormal Continuous Data</a>
+    </li>
+    <li>
+      <a href="ordered-categorical-data-example.html">Ordered Categorical Data</a>
+    </li>
+    <li>
+      <a href="complex-multilevel-example.html">Complex Sampling</a>
+    </li>
+    <li>
+      <a href="mimic-example.html">Group Code Analysis</a>
+    </li>
+    <li>
+      <a href="mean-structure-example.html">Mean Structure Modeling</a>
+    </li>
+    <li>
+      <a href="repeated-means-example.html">Repeated Measure Means Models</a>
+    </li>
+    <li>
+      <a href="interaction-example.html">Latent Variable Moderation</a>
+    </li>
+    <li>
+      <a href="lgm-example.html">Latent Growth Models</a>
+    </li>
+    <li>
+      <a href="lgm-extension-example.html">Latent Growth Models Extensions</a>
+    </li>
+    <li>
+      <a href="power-example.html">Monte Carlo Power Methods</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mvpa-exercise.html">Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="mediation-exercise.html">Mediation Exercise</a>
+    </li>
+    <li>
+      <a href="APIM-exercise.html">APIM Exercise</a>
+    </li>
+    <li>
+      <a href="cfa-exercise-v2.html">CFA Exercise</a>
+    </li>
+    <li>
+      <a href="residualized-cfa-exercise.html">Residualized CFA Exercise</a>
+    </li>
+    <li>
+      <a href="reliability_exercise.html">Scale Reliability Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise.html">Latent Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-2step-exercise.html">Two-step SEM Exercise</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-2.html">Multi-group CFA Exercise</a>
+    </li>
+    <li>
+      <a href="mean-structure-exercise.html">Structured Means Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise.html">Repeated Measure Means Exercise</a>
+    </li>
+    <li>
+      <a href="interaction-exercise.html">Latent Interaction Exercise</a>
+    </li>
+    <li>
+      <a href="lgm-exercise.html">Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="conditional-lgm-exercise.html">Conditional Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="power-exercise.html">Power Analysis</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions-DEMO
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="cfa-exercise-DEMO.html">CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise-DEMO.html">Latent Path Analysis Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-DEMO.html">Multi-group CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise-DEMO.html">Repeated Measure Means Exercise-DEMO</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Videos.html">Tutorial Videos</a>
+</li>
+<li>
+  <a href="resources.html">Resources</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Measured Variable Path Analysis</h1>
+
+</div>
+
+
+<p>In this tutorial, we are going to use <code>lavaan</code> for measured variable path analysis.</p>
+<hr />
+<div id="load-the-pacakges" class="section level2">
+<h2>Load the pacakges</h2>
+<pre class="r"><code>library(lavaan)
+library(lavaanPlot)</code></pre>
+<p><br></p>
+</div>
+<div id="example-1" class="section level2">
+<h2>Example 1</h2>
+<p>In this example, there are 4 measured variables: ReadSC1, MathSC1, Goals2, and SATmath.</p>
+<div id="htmlwidget-6dc2076653eb0bdda392" style="width:40%;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-6dc2076653eb0bdda392">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n ReadSC1; MathSC1; Goals2; SATmath \n node [shape = oval] \n  \n \n edge [ color = grey ] \n ReadSC1->Goals2 MathSC1->Goals2 Goals2->SATmath ReadSC1->SATmath MathSC1->SATmath  \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="import-the-data" class="section level3">
+<h3>Import the data</h3>
+<p>In this example, our data is a correlation matrix. For more information about the data, please refer back to the course slides.</p>
+<p>We can read the lower half of the correlation matrix into R and make it symmetric using the <code>getCov()</code> function. But we need to further convert it to a variance-covariance matrix before <code>lavaan</code> can use it as the input data. With the correlation matrix and sample standard deviations, you can easily compute the variance-covariance matrix. We then assign variable names to the covariance matrix, which is required for <code>lavaan</code> to work properly.</p>
+<pre class="r"><code>cormat &lt;- &#39;
+1.000
+-.173 1.000
+.122 .163 1.000
+-.049 .556 .385 1.000&#39;
+
+# convert to a symmetric correaltion matrix
+Cmat &lt;- getCov(cormat)
+
+# sample standard deviations
+dat.sdev &lt;- c(1.274, 1.397, 1.276, 37.087)
+Dmat &lt;- diag(dat.sdev)
+covmat &lt;- Dmat %*% Cmat %*% Dmat      # compute the covariance matrix
+
+# assign row and column names to the covariance matrix
+rownames(covmat) &lt;- c(&quot;ReadSC1&quot;, &quot;MathSC1&quot;, &quot;Goals2&quot;, &quot;SATmath&quot;)
+colnames(covmat) &lt;- rownames(covmat)
+covmat</code></pre>
+<pre><code>##            ReadSC1    MathSC1     Goals2     SATmath
+## ReadSC1  1.6230760 -0.3079016  0.1983261   -2.315193
+## MathSC1 -0.3079016  1.9516090  0.2905592   28.806660
+## Goals2   0.1983261  0.2905592  1.6281760   18.219360
+## SATmath -2.3151931 28.8066597 18.2193596 1375.445569</code></pre>
+<p><br></p>
+</div>
+<div id="write-the-model-syntax" class="section level3">
+<h3>Write the model syntax</h3>
+<p>Now we tell <code>lavaan</code> what our model looks like. Like the MLR example, we use the tilde <code>~</code> operator to tell <code>lavaan</code> that we wish to regress Goals2 on ReadSC1 and MathSC1. We also want to regress SATmath on all the other three variables. We use the double tilde <code>~~</code> to tell <code>lavaan</code> that we wish to estimate the variances of the independent variables. We also allow the two exogenous variables to covary.</p>
+<pre class="r"><code>mvpa.model1 &lt;- &#39;
+
+# regressions
+Goals2 ~ ReadSC1 + MathSC1
+SATmath ~ Goals2 + ReadSC1 + MathSC1
+
+# variances and covariances
+ReadSC1 ~~ ReadSC1 + MathSC1
+MathSC1 ~~ MathSC1
+
+&#39;</code></pre>
+<p><br></p>
+</div>
+<div id="fit-the-model-to-the-data" class="section level3">
+<h3>Fit the model to the data</h3>
+<p>After you specify the model syntax, you can fit the model to the variance-covariance matrix using the <code>sem()</code> function. In this function, we first specify the model syntax. Then we tell <code>lavaan</code> that our data is a variance-covariance matrix using the <code>sample.cov =</code> argument. We also tell <code>lavaan</code> that our sample size is 1000.</p>
+<pre class="r"><code>mvpa.fit.1 &lt;- sem(mvpa.model1, sample.cov = covmat, sample.nobs = 1000)</code></pre>
+<p><br></p>
+</div>
+<div id="summarize-the-results" class="section level3">
+<h3>Summarize the results</h3>
+<p>Next you can summarize the results using the <code>summary()</code>function. To get more info on the model fit measures, you can use the optional argument <code>fit.measures = TRUE</code>. To take a look at the standardzied parameter estimates, you can use the optional argument <code>standardized = TRUE</code>. The standardized solutions are listed in the column labeled “Std.all”.</p>
+<pre class="r"><code>summary(mvpa.fit.1, fit.measures = T, standardized = T)</code></pre>
+<pre><code>## lavaan 0.6-8 ended normally after 51 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        10
+##                                                       
+##   Number of observations                          1000
+##                                                       
+## Model Test User Model:
+##                                                       
+##   Test statistic                                 0.000
+##   Degrees of freedom                                 0
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                               589.257
+##   Degrees of freedom                                 6
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    1.000
+##   Tucker-Lewis Index (TLI)                       1.000
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -9812.610
+##   Loglikelihood unrestricted model (H1)      -9812.610
+##                                                       
+##   Akaike (AIC)                               19645.219
+##   Bayesian (BIC)                             19694.297
+##   Sample-size adjusted Bayesian (BIC)        19662.536
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.000
+##   90 Percent confidence interval - lower         0.000
+##   90 Percent confidence interval - upper         0.000
+##   P-value RMSEA &lt;= 0.05                             NA
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.000
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   Goals2 ~                                                              
+##     ReadSC1           0.155    0.031    4.947    0.000    0.155    0.155
+##     MathSC1           0.173    0.029    6.064    0.000    0.173    0.190
+##   SATmath ~                                                             
+##     Goals2            8.781    0.731   12.004    0.000    8.781    0.302
+##     ReadSC1           0.054    0.734    0.074    0.941    0.054    0.002
+##     MathSC1          13.462    0.673   19.994    0.000   13.462    0.507
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   ReadSC1 ~~                                                            
+##     MathSC1          -0.308    0.057   -5.391    0.000   -0.308   -0.173
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##     ReadSC1           1.621    0.073   22.361    0.000    1.621    1.000
+##     MathSC1           1.950    0.087   22.361    0.000    1.950    1.000
+##    .Goals2            1.546    0.069   22.361    0.000    1.546    0.950
+##    .SATmath         826.971   36.983   22.361    0.000  826.971    0.602</code></pre>
+<hr />
+</div>
+</div>
+<div id="example-2" class="section level2">
+<h2>Example 2</h2>
+<p>In the second example, there are 3 measured variables of interest: ReadSC1, MathSC1, and SATmath.</p>
+<div id="htmlwidget-637ad9abd8f1b915a18e" style="width:30%;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-637ad9abd8f1b915a18e">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n ReadSC1; MathSC1; SATmath \n node [shape = oval] \n  \n \n edge [ color = grey ] \n ReadSC1->MathSC1 MathSC1->SATmath  \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="import-the-data-1" class="section level3">
+<h3>Import the data</h3>
+<p>In this example, our data is still a correlation matrix. Similarly, we first read in the lower half of the correlation matrix and convert it to a full symmetrix covariance matrix.</p>
+<pre class="r"><code># read in lower half of the correlation matrix
+cormat &lt;- &#39;
+1.000
+-.173 1.000
+-.049 .556 1.000&#39;
+
+Cmat &lt;- getCov(cormat)
+
+# convert it to variance-covariance matrix
+dat.sdev &lt;- c(1.274,1.397,37.087)
+Dmat &lt;- diag(dat.sdev)
+covmat &lt;- Dmat %*% Cmat %*% Dmat
+
+# assign row and column names to the covariance matrix
+rownames(covmat) &lt;- c(&quot;ReadSC1&quot;, &quot;MathSC1&quot;,&quot;SATmath&quot;)
+colnames(covmat) &lt;- rownames(covmat)
+covmat</code></pre>
+<pre><code>##            ReadSC1    MathSC1     SATmath
+## ReadSC1  1.6230760 -0.3079016   -2.315193
+## MathSC1 -0.3079016  1.9516090   28.806660
+## SATmath -2.3151931 28.8066597 1375.445569</code></pre>
+<p><br></p>
+</div>
+<div id="write-the-model-syntax-1" class="section level3">
+<h3>Write the model syntax</h3>
+<p>Now we tell <code>lavaan</code> what our model looks like using the model syntax.</p>
+<pre class="r"><code>mvpa.model2 &lt;- &#39;
+MathSC1 ~ ReadSC1
+SATmath ~ MathSC1
+&#39;</code></pre>
+<p><br></p>
+</div>
+<div id="fit-the-model-to-the-data-1" class="section level3">
+<h3>Fit the model to the data</h3>
+<p>After you specify the model syntax, you can fit the model to the variance-covariance matrix using the <code>sem()</code> function. In this function, we first specify the model syntax. Then we tell <code>lavaan</code> that our data is a variance-covariance matrix using the <code>sample.cov =</code> argument. We also tell <code>lavaan</code> that our sample size is 1000.</p>
+<pre class="r"><code>mvpa.fit.2 &lt;- sem(mvpa.model2, sample.cov=covmat, sample.nobs = 1000)</code></pre>
+<p><br></p>
+</div>
+<div id="summarize-the-results-1" class="section level3">
+<h3>Summarize the results</h3>
+<p>Next you can summarize the results using the <code>summary()</code>function. To get more info on the model fit measures, you can use the optional argument <code>fit.measures = TRUE</code>. To take a look at the standardzied parameter estimates, you can use the optional argument <code>standardized = TRUE</code>. The standardized solutions are listed in the column labeled “Std.all”.</p>
+<pre class="r"><code>summary(mvpa.fit.2, fit.measures = T, standardized = T)</code></pre>
+<pre><code>## lavaan 0.6-8 ended normally after 24 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                         4
+##                                                       
+##   Number of observations                          1000
+##                                                       
+## Model Test User Model:
+##                                                       
+##   Test statistic                                 3.328
+##   Degrees of freedom                                 1
+##   P-value (Chi-square)                           0.068
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                               403.526
+##   Degrees of freedom                                 3
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    0.994
+##   Tucker-Lewis Index (TLI)                       0.983
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -6584.371
+##   Loglikelihood unrestricted model (H1)      -6582.707
+##                                                       
+##   Akaike (AIC)                               13176.742
+##   Bayesian (BIC)                             13196.373
+##   Sample-size adjusted Bayesian (BIC)        13183.669
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.048
+##   90 Percent confidence interval - lower         0.000
+##   90 Percent confidence interval - upper         0.110
+##   P-value RMSEA &lt;= 0.05                          0.404
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.019
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   MathSC1 ~                                                             
+##     ReadSC1          -0.190    0.034   -5.554    0.000   -0.190   -0.173
+##   SATmath ~                                                             
+##     MathSC1          14.760    0.698   21.153    0.000   14.760    0.556
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .MathSC1           1.891    0.085   22.361    0.000    1.891    0.970
+##    .SATmath         949.296   42.454   22.361    0.000  949.296    0.691</code></pre>
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+
+</div>
+</div>
+</div>
+
+<hr>
+© Copyright 2021 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

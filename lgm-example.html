@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Latent Growth Models</title>
+
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-sm-12 col-md-4 col-lg-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">HOME</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    In-class Examples
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mlr-example.html">MLR Path Analysis</a>
+    </li>
+    <li>
+      <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
+    </li>
+    <li>
+      <a href="mtmm-example.html">Multitrait-Multimethod Analysis</a>
+    </li>
+    <li>
+      <a href="reliability.html">Scale Reliability</a>
+    </li>
+    <li>
+      <a href="latent-pa-example.html">Latent Path Analysis</a>
+    </li>
+    <li>
+      <a href="mg-example.html">Multi-group Analysis</a>
+    </li>
+    <li>
+      <a href="missing-data-example.html">Missing Data</a>
+    </li>
+    <li>
+      <a href="nonnormal-data-example.html">Nonnormal Continuous Data</a>
+    </li>
+    <li>
+      <a href="ordered-categorical-data-example.html">Ordered Categorical Data</a>
+    </li>
+    <li>
+      <a href="complex-multilevel-example.html">Complex Sampling</a>
+    </li>
+    <li>
+      <a href="mimic-example.html">Group Code Analysis</a>
+    </li>
+    <li>
+      <a href="mean-structure-example.html">Mean Structure Modeling</a>
+    </li>
+    <li>
+      <a href="repeated-means-example.html">Repeated Measure Means Models</a>
+    </li>
+    <li>
+      <a href="interaction-example.html">Latent Variable Moderation</a>
+    </li>
+    <li>
+      <a href="lgm-example.html">Latent Growth Models</a>
+    </li>
+    <li>
+      <a href="lgm-extension-example.html">Latent Growth Models Extensions</a>
+    </li>
+    <li>
+      <a href="power-example.html">Monte Carlo Power Methods</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mvpa-exercise.html">Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="mediation-exercise.html">Mediation Exercise</a>
+    </li>
+    <li>
+      <a href="APIM-exercise.html">APIM Exercise</a>
+    </li>
+    <li>
+      <a href="cfa-exercise-v2.html">CFA Exercise</a>
+    </li>
+    <li>
+      <a href="residualized-cfa-exercise.html">Residualized CFA Exercise</a>
+    </li>
+    <li>
+      <a href="reliability_exercise.html">Scale Reliability Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise.html">Latent Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-2step-exercise.html">Two-step SEM Exercise</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-2.html">Multi-group CFA Exercise</a>
+    </li>
+    <li>
+      <a href="mean-structure-exercise.html">Structured Means Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise.html">Repeated Measure Means Exercise</a>
+    </li>
+    <li>
+      <a href="interaction-exercise.html">Latent Interaction Exercise</a>
+    </li>
+    <li>
+      <a href="lgm-exercise.html">Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="conditional-lgm-exercise.html">Conditional Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="power-exercise.html">Power Analysis</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions-DEMO
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="cfa-exercise-DEMO.html">CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise-DEMO.html">Latent Path Analysis Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-DEMO.html">Multi-group CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise-DEMO.html">Repeated Measure Means Exercise-DEMO</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Videos.html">Tutorial Videos</a>
+</li>
+<li>
+  <a href="resources.html">Resources</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Latent Growth Models</h1>
+
+</div>
+
+
+<p>In this tutorial, we are going to use <code>lavaan</code> for latent growth models.</p>
+<div id="load-the-pacakges" class="section level2">
+<h2>Load the pacakges</h2>
+<pre class="r"><code>library(lavaan)
+library(semPlot)</code></pre>
+<p><br></p>
+</div>
+<div id="example-1-linear-lgm" class="section level2">
+<h2>Example 1: Linear LGM</h2>
+<p>The data for this example are from 1000 school girls, whose math self-concept has been measured repeatedly at 9th, 10th, 11th, and 12th grade.</p>
+<div id="read-the-data" class="section level3">
+<h3>Read the data</h3>
+<pre class="r"><code>lower &lt;- &#39;
+2.041
+1.392  1.901
+1.366  1.352  1.665
+1.249  1.303  1.348  1.599
+&#39;
+
+smeans &lt;- c(3.297, 3.614, 4.042, 4.375)
+covmat &lt;- getCov(lower)
+rownames(covmat) &lt;- colnames(covmat) &lt;- paste0(&#39;mathsc&#39;, 9:12)</code></pre>
+<p><br></p>
+</div>
+<div id="fit-the-model-to-the-data" class="section level3">
+<h3>Fit the model to the data</h3>
+<p><img src="lgm-example_files/figure-html/unnamed-chunk-3-1.png" width="80%" /></p>
+<p>To fit a linear latent growth model, we can use the special function <code>growth()</code> in <code>lavaan</code> package. When we write the model syntax, we only need to define the latent intercept and latent slope; the loadings have to be fixed manually based on your time scale.</p>
+<p>The <code>growth()</code> function is a special case of the <code>sem()</code> function that we have been using. But <code>growth()</code> makes things easier when you deal with a simple LGM. Using this function, you do not need to manually specify the mean structure as it is automatically assumed. You do not need to manually fix the observed intercepts to zero, which is taken care of by default. The means of the latent variables are freely estimated by default.</p>
+<pre class="r"><code>growth.model1 &lt;- &#39;
+interc =~ 1*mathsc9 + 1*mathsc10 + 1*mathsc11 + 1*mathsc12
+slope =~ 0*mathsc9 + 1*mathsc10 + 2*mathsc11 + 3*mathsc12
+&#39;
+
+growth.fit1 &lt;- growth(growth.model1, sample.cov = covmat, sample.mean = smeans, sample.nobs = 1000)
+summary(growth.fit1, fit.measures = T, standardized = T)</code></pre>
+<pre><code>## lavaan 0.6-8 ended normally after 31 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                         9
+##                                                       
+##   Number of observations                          1000
+##                                                       
+## Model Test User Model:
+##                                                       
+##   Test statistic                                 8.256
+##   Degrees of freedom                                 5
+##   P-value (Chi-square)                           0.143
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                              3045.699
+##   Degrees of freedom                                 6
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    0.999
+##   Tucker-Lewis Index (TLI)                       0.999
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -5322.543
+##   Loglikelihood unrestricted model (H1)      -5318.415
+##                                                       
+##   Akaike (AIC)                               10663.087
+##   Bayesian (BIC)                             10707.256
+##   Sample-size adjusted Bayesian (BIC)        10678.672
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.026
+##   90 Percent confidence interval - lower         0.000
+##   90 Percent confidence interval - upper         0.055
+##   P-value RMSEA &lt;= 0.05                          0.903
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.012
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   interc =~                                                             
+##     mathsc9           1.000                               1.219    0.851
+##     mathsc10          1.000                               1.219    0.881
+##     mathsc11          1.000                               1.219    0.953
+##     mathsc12          1.000                               1.219    0.960
+##   slope =~                                                              
+##     mathsc9           0.000                               0.000    0.000
+##     mathsc10          1.000                               0.190    0.137
+##     mathsc11          2.000                               0.380    0.297
+##     mathsc12          3.000                               0.569    0.449
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   interc ~~                                                             
+##     slope            -0.072    0.018   -3.944    0.000   -0.311   -0.311
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .mathsc9           0.000                               0.000    0.000
+##    .mathsc10          0.000                               0.000    0.000
+##    .mathsc11          0.000                               0.000    0.000
+##    .mathsc12          0.000                               0.000    0.000
+##     interc            3.286    0.043   76.434    0.000    2.697    2.697
+##     slope             0.365    0.011   34.516    0.000    1.926    1.926
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .mathsc9           0.565    0.044   12.776    0.000    0.565    0.275
+##    .mathsc10          0.535    0.030   17.891    0.000    0.535    0.280
+##    .mathsc11          0.294    0.020   14.766    0.000    0.294    0.180
+##    .mathsc12          0.233    0.027    8.523    0.000    0.233    0.144
+##     interc            1.485    0.085   17.488    0.000    1.000    1.000
+##     slope             0.036    0.007    4.963    0.000    1.000    1.000</code></pre>
+<hr />
+</div>
+</div>
+<div id="example-2-linear-lgm" class="section level2">
+<h2>Example 2: Linear LGM</h2>
+<p>The data for this example are from 324 non-native English speakers, whose reading ability has been measured at three equally spaced time points (1 month apart).</p>
+<div id="read-the-data-1" class="section level3">
+<h3>Read the data</h3>
+<pre class="r"><code>lower &lt;- &#39;
+42.92
+32.06 39.35
+29.67 28.80 37.43
+&#39;
+smeans &lt;- c(17.08, 18.40, 19.23)
+
+covmat &lt;- getCov(lower)
+colnames(covmat) &lt;- c(&quot;read1&quot;,&quot;read2&quot;,&quot;read3&quot;)
+rownames(covmat) &lt;- colnames(covmat)</code></pre>
+<p><br></p>
+</div>
+<div id="fit-the-model-to-the-data-1" class="section level3">
+<h3>Fit the model to the data</h3>
+<p><img src="lgm-example_files/figure-html/unnamed-chunk-6-1.png" width="80%" /></p>
+<p>Note that in this example we use the last measurement point as the reference point. Therefore, its loading on the latent slope is fixed to zero. The first measurement has a loading of -2 and the second measurement has a loading of -1. Accordingly, the interpretation of the “intercept” latent factor is no longer the level of reading ability at the initial measurement; instead, it reflects the level of reading ability at the last measurement.</p>
+<div id="heterogeneous-error-structure" class="section level4">
+<h4>Heterogeneous error structure</h4>
+<pre class="r"><code>growth.model2.he &lt;- &#39;
+final =~ 1*read1 + 1*read2 + 1*read3
+slope =~ (-2)*read1 + (-1)*read2 + 0*read3
+
+read1 ~~ read1
+read2 ~~ read2
+read3 ~~ read3
+&#39;
+
+growth.fit2.he &lt;- growth(growth.model2.he, sample.cov = covmat, sample.mean = smeans, sample.nobs = 324)
+summary(growth.fit2.he, fit.measures = T)</code></pre>
+<pre><code>## lavaan 0.6-8 ended normally after 71 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                         8
+##                                                       
+##   Number of observations                           324
+##                                                       
+## Model Test User Model:
+##                                                       
+##   Test statistic                                 1.451
+##   Degrees of freedom                                 1
+##   P-value (Chi-square)                           0.228
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                               621.168
+##   Degrees of freedom                                 3
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    0.999
+##   Tucker-Lewis Index (TLI)                       0.998
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -2858.645
+##   Loglikelihood unrestricted model (H1)      -2857.920
+##                                                       
+##   Akaike (AIC)                                5733.291
+##   Bayesian (BIC)                              5763.537
+##   Sample-size adjusted Bayesian (BIC)         5738.161
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.037
+##   90 Percent confidence interval - lower         0.000
+##   90 Percent confidence interval - upper         0.158
+##   P-value RMSEA &lt;= 0.05                          0.398
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.011
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   final =~                                            
+##     read1             1.000                           
+##     read2             1.000                           
+##     read3             1.000                           
+##   slope =~                                            
+##     read1            -2.000                           
+##     read2            -1.000                           
+##     read3             0.000                           
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   final ~~                                            
+##     slope            -0.888    1.447   -0.614    0.539
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .read1             0.000                           
+##    .read2             0.000                           
+##    .read3             0.000                           
+##     final            19.317    0.332   58.244    0.000
+##     slope             1.080    0.127    8.497    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .read1             8.482    2.705    3.135    0.002
+##    .read2             8.932    1.369    6.526    0.000
+##    .read3             9.513    2.543    3.741    0.000
+##     final            27.809    3.268    8.508    0.000
+##     slope             0.738    1.296    0.569    0.569</code></pre>
+</div>
+<div id="same-model-with-homogeneous-error-structure" class="section level4">
+<h4>Same model: With homogeneous error structure</h4>
+<pre class="r"><code>growth.model2 &lt;- &#39;
+
+final =~ 1*read1 + 1*read2 + 1*read3
+slope =~ (-2)*read1 + (-1)*read2 + 0*read3
+
+# fix the error variances
+read1 ~~ a*read1
+read2 ~~ a*read2
+read3 ~~ a*read3
+&#39;
+
+growth.fit2 &lt;- growth(growth.model2, sample.cov = covmat, sample.mean = smeans, sample.nobs = 324)
+summary(growth.fit2, fit.measures = T)</code></pre>
+<pre><code>## lavaan 0.6-8 ended normally after 60 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                         8
+##   Number of equality constraints                     2
+##                                                       
+##   Number of observations                           324
+##                                                       
+## Model Test User Model:
+##                                                       
+##   Test statistic                                 1.763
+##   Degrees of freedom                                 3
+##   P-value (Chi-square)                           0.623
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                               621.168
+##   Degrees of freedom                                 3
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    1.000
+##   Tucker-Lewis Index (TLI)                       1.002
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -2858.801
+##   Loglikelihood unrestricted model (H1)      -2857.920
+##                                                       
+##   Akaike (AIC)                                5729.602
+##   Bayesian (BIC)                              5752.287
+##   Sample-size adjusted Bayesian (BIC)         5733.255
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.000
+##   90 Percent confidence interval - lower         0.000
+##   90 Percent confidence interval - upper         0.076
+##   P-value RMSEA &lt;= 0.05                          0.839
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.011
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   final =~                                            
+##     read1             1.000                           
+##     read2             1.000                           
+##     read3             1.000                           
+##   slope =~                                            
+##     read1            -2.000                           
+##     read2            -1.000                           
+##     read3             0.000                           
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   final ~~                                            
+##     slope            -0.695    0.863   -0.805    0.421
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .read1             0.000                           
+##    .read2             0.000                           
+##    .read3             0.000                           
+##     final            19.312    0.332   58.224    0.000
+##     slope             1.075    0.127    8.456    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .read1      (a)    8.954    0.703   12.728    0.000
+##    .read2      (a)    8.954    0.703   12.728    0.000
+##    .read3      (a)    8.954    0.703   12.728    0.000
+##     final            28.182    2.861    9.850    0.000
+##     slope             0.759    0.541    1.403    0.161</code></pre>
+<hr />
+</div>
+</div>
+</div>
+<div id="example-3-conditional-lgm" class="section level2">
+<h2>Example 3: Conditional LGM</h2>
+<p>In this example we will fit a linear LGM with a predictor variable. You may have noticed that we do not have sample means in this example. It is fine because what is of focal interest here is the path coefficients from the predictor variable to the latent variables.</p>
+<div id="read-the-data-2" class="section level3">
+<h3>Read the data</h3>
+<pre class="r"><code>lower &lt;- &#39;
+2.041
+1.392  1.901
+1.366  1.352  1.665
+1.249  1.303  1.348  1.599
+1.212  1.923  2.233  2.943  7.290
+&#39;
+
+covmat &lt;- getCov(lower)
+colnames(covmat) &lt;- c(paste0(&#39;mathsc&#39;, 9:12), &quot;momed&quot;)
+rownames(covmat) &lt;- colnames(covmat)</code></pre>
+<p><br></p>
+</div>
+<div id="fit-the-model-to-the-data-2" class="section level3">
+<h3>Fit the model to the data</h3>
+<p><img src="lgm-example_files/figure-html/unnamed-chunk-10-1.png" width="80%" /></p>
+<p>We use the <code>sem()</code> function here because we do not have mean structure in this example. <code>sem()</code> function is thus more flexible than the special function <code>growth()</code>.</p>
+<pre class="r"><code>conditional.model &lt;- &#39;
+interc =~ 1*mathsc9 + 1*mathsc10 + 1*mathsc11 + 1*mathsc12
+slope =~ 0*mathsc9 + 1*mathsc10 + 2*mathsc11 + 3*mathsc12
+
+interc ~ momed
+slope ~ momed
+&#39;
+
+conditional.fit &lt;- sem(conditional.model, sample.cov = covmat, sample.nobs = 1000)
+summary(conditional.fit, fit.measures = T, standardized = T)</code></pre>
+<pre><code>## lavaan 0.6-8 ended normally after 58 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                         9
+##                                                       
+##   Number of observations                          1000
+##                                                       
+## Model Test User Model:
+##                                                       
+##   Test statistic                                31.482
+##   Degrees of freedom                                 5
+##   P-value (Chi-square)                           0.000
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                              5343.753
+##   Degrees of freedom                                10
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    0.995
+##   Tucker-Lewis Index (TLI)                       0.990
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -4185.129
+##   Loglikelihood unrestricted model (H1)      -4169.388
+##                                                       
+##   Akaike (AIC)                                8388.259
+##   Bayesian (BIC)                              8432.428
+##   Sample-size adjusted Bayesian (BIC)         8403.844
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.073
+##   90 Percent confidence interval - lower         0.050
+##   90 Percent confidence interval - upper         0.098
+##   P-value RMSEA &lt;= 0.05                          0.052
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.022
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   interc =~                                                             
+##     mathsc9           1.000                               1.245    0.884
+##     mathsc10          1.000                               1.245    0.884
+##     mathsc11          1.000                               1.245    0.955
+##     mathsc12          1.000                               1.245    0.990
+##   slope =~                                                              
+##     mathsc9           0.000                               0.000    0.000
+##     mathsc10          1.000                               0.240    0.170
+##     mathsc11          2.000                               0.480    0.368
+##     mathsc12          3.000                               0.720    0.573
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   interc ~                                                              
+##     momed             0.168    0.015   11.171    0.000    0.135    0.364
+##   slope ~                                                               
+##     momed             0.077    0.003   24.985    0.000    0.323    0.871
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##  .interc ~~                                                             
+##    .slope            -0.200    0.016  -12.412    0.000   -1.463   -1.463
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .mathsc9           0.433    0.031   13.863    0.000    0.433    0.219
+##    .mathsc10          0.586    0.030   19.537    0.000    0.586    0.296
+##    .mathsc11          0.338    0.018   18.503    0.000    0.338    0.199
+##    .mathsc12          0.144    0.012   12.423    0.000    0.144    0.091
+##    .interc            1.343    0.076   17.765    0.000    0.867    0.867
+##    .slope             0.014    0.005    3.009    0.003    0.242    0.242</code></pre>
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+
+</div>
+</div>
+</div>
+
+<hr>
+© Copyright 2021 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

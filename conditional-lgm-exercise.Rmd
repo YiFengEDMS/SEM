@@ -1,0 +1,42 @@
+---
+title: "Growth Models with Predictor Exercise"
+output:
+  html_document:
+    toc: true
+    toc_float: false
+    toc_depth: 4
+---
+
+```{r, message = F, warning = F}
+library(lavaan)
+
+lower <- '
+323.800
+272.989    291.549
+271.535    264.022    298.744
+0.005     -0.046      0.134      0.242
+'
+
+covmat <- getCov(lower)
+colnames(covmat) <- c('total1','total2','total3','gender')
+rownames(covmat) <- colnames(covmat)
+
+cond.model <- "
+
+final =~ 1*total1 + 1*total2 + 1*total3
+slope =~ (-2)*total1 + (-1)*total2 + 0*total3
+
+final ~ gender
+slope ~ gender
+
+total1 ~~ a*total1
+total2 ~~ a*total2
+total3 ~~ a*total3
+
+"
+
+cond.fit <- sem(cond.model, sample.cov = covmat, sample.nobs = 324)
+summary(cond.fit, fit.measures = T, standardized = T)
+
+```
+

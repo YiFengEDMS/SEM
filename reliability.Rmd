@@ -1,0 +1,189 @@
+---
+title: "Scale Reliability"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+---
+
+In this tutorial, we are going to use `lavaan` for scale reliability assessment. 
+
+```{r, include = F, message = F, echo = F}
+library(semPlot)
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/General/CILVR 2020-2021/Hancock-SEM/Code Files/Hancock_SEM1_Mplus_files/3b. Confirmatory Factor Analysis Extensions/3b.Examples"
+```
+
+### Read Data 
+
+```{r, message=FALSE, warning=FALSE}
+library(lavaan)
+setwd(mypath)
+
+dat <- read.table("Reliability_raw_data.csv", header = F, sep = ",")
+
+colnames(dat) <- paste0("X", 1:6)
+```
+
+
+```{r, echo = F, warnings = F, message = F, out.width='80%'}
+load("con_fit.rda")
+load("con_fit_H.rda")
+
+con.model <- '
+
+TGO =~ NA*X1 + L1*X1 + L2*X2 + L3*X3 + L4*X4 + L5*X5 + L6*X6
+
+TGO ~~ 1*TGO
+
+X1 ~~ TH1*X1
+X2 ~~ TH2*X2
+X3 ~~ TH3*X3
+X4 ~~ TH4*X4
+X5 ~~ TH5*X5
+X6 ~~ TH6*X6
+
+'
+
+con.fit2 <- sem(con.model, dat)
+semPaths(con.fit2, title = FALSE, curvePivot = TRUE, intercepts = F)
+# save(con.fit, file = "con_fit.rda")
+
+```
+
+---
+
+## Example 1: Omega Coefficient
+
+### Model Syntax
+
+Note that we need to label the parameters and define new model parameters to compute the Omega coefficient.
+
+$$\omega = \frac{(\sum_{i=1}^J\lambda_i)^2}{(\sum_{i=1}^J\lambda_i)^2 + \sum_{i=1}^J\theta_i}$$
+
+```{r}
+con.model <- '
+
+TGO =~ NA*X1 + L1*X1 + L2*X2 + L3*X3 + L4*X4 + L5*X5 + L6*X6
+
+TGO ~~ 1*TGO
+
+X1 ~~ TH1*X1
+X2 ~~ TH2*X2
+X3 ~~ TH3*X3
+X4 ~~ TH4*X4
+X5 ~~ TH5*X5
+X6 ~~ TH6*X6
+
+# model constraints
+
+L1 > 0
+L2 > 0
+L3 > 0
+L4 > 0
+L5 > 0
+L6 > 0
+
+sumL := L1 + L2 + L3 + L4 + L5 + L6
+sumTH := TH1 + TH2 + TH3 + TH4 + TH5 + TH6
+omega := (sumL^2)/(sumL^2 + sumTH)
+
+'
+```
+
+### Fit the Model
+
+You could request the bootstrapped standard errors and ask lavaan to output the bootstrapped confidence intervals.
+
+```r
+con.fit <- sem(con.model, dat, se = "bootstrap", bootstrap = 5000)
+```
+
+### Bootstrapped CI
+
+```{r}
+parameterEstimates(con.fit, ci = T)
+
+```
+
+### Alternative R Package
+
+An alternative way to get a point estimate for model-based Omega coefficient is to use the `psych` R pacakge:
+
+```{r, message = F, warning = F}
+library(psych)
+coef.omg <- psych::omega(dat, nfactors = 1, lavaan = T)
+coef.omg$omega.tot
+
+```
+
+---
+
+## Example 2: Coefficient H
+
+### Model Syntax
+
+In this example, we will define a new parameter according to the coefficient H formula:
+
+$$H = \frac{\sum_{i=1}^J\frac{\lambda_i^2}{\theta_i}}{1+\sum_{i=1}^J\frac{\lambda_i^2}{\theta_i}}$$
+
+
+```{r}
+con.model_H <- '
+
+TGO =~ NA*X1 + L1*X1 + L2*X2 + L3*X3 + L4*X4 + L5*X5 + L6*X6
+
+TGO ~~ 1*TGO
+
+X1 ~~ TH1*X1
+X2 ~~ TH2*X2
+X3 ~~ TH3*X3
+X4 ~~ TH4*X4
+X5 ~~ TH5*X5
+X6 ~~ TH6*X6
+
+# model constraints
+
+L1 > 0
+L2 > 0
+L3 > 0
+L4 > 0
+L5 > 0
+L6 > 0
+
+R1 := (L1^2)/TH1
+R2 := (L2^2)/TH2
+R3 := (L3^2)/TH3
+R4 := (L4^2)/TH4
+R5 := (L5^2)/TH5
+R6 := (L6^2)/TH6
+
+sumR := R1 + R2 + R3 + R4 + R5 + R6
+H := sumR / (1 + sumR)
+'
+```
+
+### Fit the Model
+
+```r
+con.fit_H <- sem(con.model_H, dat, se = "bootstrap", bootstrap = 5000)
+```
+
+### Bootstrapped CI
+
+```{r}
+parameterEstimates(con.fit_H, ci = T)
+
+```
+
+### Alternative R Package
+
+Alternatively, there are other available R packages that could compute the point estimate of coefficient H from `lavaan` object. For example:
+
+```{r, message = F, warning = F}
+library(reliable)
+coefficient_H(con.fit_H)
+```
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

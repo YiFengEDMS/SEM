@@ -1,0 +1,108 @@
+---
+title: "Nonnormal Continuous Data"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+---
+
+In this tutorial, we are going to use `lavaan` to deal with nonnormal data. The example corresponds to the *Achievement Goal Questionnaire* example in your course slides.
+
+
+## Load the pacakges
+
+```{r, message=FALSE, warning=FALSE}
+library(lavaan)
+library(semPlot)
+```
+
+<br>
+
+
+## Read the data
+
+The data for this example is saved in a txt file named "nonnormal_data.txt", which is provided as part of the course materials. You can use the `read.delim()` function to read in a txt file. There are many different ways for you to supply the file path in the `read.delim()` function call. Below I first set the working directory to the folder where my data is saved, and then I simply supply the name of the data file when calling the `read.delim()` function.
+
+
+```{r,echo=F}
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/SEM2019/SEM Second Course Mplus 2019/Advanced Examples/2. Real Data Examples"
+```
+
+```{r}
+setwd(mypath)  # change it to the path of your own data folder
+nonnormal <- read.delim("nonnormal_data.txt", sep = "\t", header = F)
+
+colnames(nonnormal) <- c('pap1','pap2','pap3','pav1','pav2','pav3',
+                         'mav1','mav2','mav3','map1','map2','map3')
+
+```
+
+You can take a look at the data and get the sample statistics.
+
+```{r}
+
+# descriptive statistics
+
+str(nonnormal)
+summary(nonnormal)
+# cor(nonnormal, use = "pairwise.complete.obs")
+
+```
+
+<br>
+
+
+## Fit a CFA model using MLM estimation
+
+
+```{r, echo = F, warnings = F, message = F, out.width='80%'}
+
+nonnormal.model <- '
+
+pap =~ NA*pap1 + pap2 + pap3
+pav =~  NA*pav1 + pav2 + pav3
+mav =~  NA*mav1 + mav2 + mav3
+map =~  NA*map1 + map2 + map3
+pap ~~  1*pap
+pav ~~  1*pav 
+mav ~~  1*mav 
+map ~~  1*map
+
+
+'
+
+# MLM: Satorra-Bentler scaled (mean adjusted) test statistic
+nonnormal.fit=sem(nonnormal.model,data=nonnormal,estimator="MLM",meanstructure=T)
+
+semPaths(nonnormal.fit, title = FALSE, curvePivot = TRUE, intercepts = F, optimizeLatRes = T, sizeLat = 10)
+
+```
+
+To request maximum likelihood estimation with robust standard errors and a Satorra-Bentler scaled test
+statistic, you need to specify `estimator = "MLM"` in the fitting function. 
+
+To make the model syntax more concise, I ommited the mean structure formulas in code. Instead, I added the `meanstructure = T` argument to tell `lavaan` to include the mean structure in model estimation.
+
+```{r}
+
+nonnormal.model <- '
+
+pap =~ NA*pap1 + pap2 + pap3
+pav =~  NA*pav1 + pav2 + pav3
+mav =~  NA*mav1 + mav2 + mav3
+map =~  NA*map1 + map2 + map3
+pap ~~  1*pap
+pav ~~  1*pav 
+mav ~~  1*mav 
+map ~~  1*map
+
+'
+
+nonnormal.fit <- sem(nonnormal.model, data = nonnormal, estimator = "MLM", meanstructure = T)
+summary(nonnormal.fit, fit.measures = T, standardized = T)
+
+```
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

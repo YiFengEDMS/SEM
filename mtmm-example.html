@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Multitrait-Multimethod Analysis</title>
+
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-sm-12 col-md-4 col-lg-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">HOME</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    In-class Examples
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mlr-example.html">MLR Path Analysis</a>
+    </li>
+    <li>
+      <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
+    </li>
+    <li>
+      <a href="mtmm-example.html">Multitrait-Multimethod Analysis</a>
+    </li>
+    <li>
+      <a href="reliability.html">Scale Reliability</a>
+    </li>
+    <li>
+      <a href="latent-pa-example.html">Latent Path Analysis</a>
+    </li>
+    <li>
+      <a href="mg-example.html">Multi-group Analysis</a>
+    </li>
+    <li>
+      <a href="missing-data-example.html">Missing Data</a>
+    </li>
+    <li>
+      <a href="nonnormal-data-example.html">Nonnormal Continuous Data</a>
+    </li>
+    <li>
+      <a href="ordered-categorical-data-example.html">Ordered Categorical Data</a>
+    </li>
+    <li>
+      <a href="complex-multilevel-example.html">Complex Sampling</a>
+    </li>
+    <li>
+      <a href="mimic-example.html">Group Code Analysis</a>
+    </li>
+    <li>
+      <a href="mean-structure-example.html">Mean Structure Modeling</a>
+    </li>
+    <li>
+      <a href="repeated-means-example.html">Repeated Measure Means Models</a>
+    </li>
+    <li>
+      <a href="interaction-example.html">Latent Variable Moderation</a>
+    </li>
+    <li>
+      <a href="lgm-example.html">Latent Growth Models</a>
+    </li>
+    <li>
+      <a href="lgm-extension-example.html">Latent Growth Models Extensions</a>
+    </li>
+    <li>
+      <a href="power-example.html">Monte Carlo Power Methods</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mvpa-exercise.html">Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="mediation-exercise.html">Mediation Exercise</a>
+    </li>
+    <li>
+      <a href="APIM-exercise.html">APIM Exercise</a>
+    </li>
+    <li>
+      <a href="cfa-exercise-v2.html">CFA Exercise</a>
+    </li>
+    <li>
+      <a href="residualized-cfa-exercise.html">Residualized CFA Exercise</a>
+    </li>
+    <li>
+      <a href="reliability_exercise.html">Scale Reliability Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise.html">Latent Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-2step-exercise.html">Two-step SEM Exercise</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-2.html">Multi-group CFA Exercise</a>
+    </li>
+    <li>
+      <a href="mean-structure-exercise.html">Structured Means Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise.html">Repeated Measure Means Exercise</a>
+    </li>
+    <li>
+      <a href="interaction-exercise.html">Latent Interaction Exercise</a>
+    </li>
+    <li>
+      <a href="lgm-exercise.html">Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="conditional-lgm-exercise.html">Conditional Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="power-exercise.html">Power Analysis</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions-DEMO
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="cfa-exercise-DEMO.html">CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise-DEMO.html">Latent Path Analysis Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-DEMO.html">Multi-group CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise-DEMO.html">Repeated Measure Means Exercise-DEMO</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Videos.html">Tutorial Videos</a>
+</li>
+<li>
+  <a href="resources.html">Resources</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Multitrait-Multimethod Analysis</h1>
+
+</div>
+
+
+<p>In this tutorial, we are going to use <code>lavaan</code> for multitrait-multimethod analysis.</p>
+<hr />
+<div id="load-the-pacakges" class="section level2">
+<h2>Load the pacakges</h2>
+<pre class="r"><code>library(lavaan)
+library(semPlot)</code></pre>
+<p><br></p>
+</div>
+<div id="import-the-data" class="section level2">
+<h2>Import the data</h2>
+<p>For this example, our data is a correlation matrix for 12 observed variables. For more information about the data, please refer back to the course slides. As we have done in the previous examples, we need to convert the correlation matrix to a variance-covariance matrix.</p>
+<pre class="r"><code># lower half of the correlation matrix
+cormat &lt;- &#39;
+1.00               
+.09 1.00              
+.26 .29 1.00             
+-.03 .54 .01 1.00            
+.12 .12 .12 .01 1.00           
+.00 .43 .07 .43 .26 1.00          
+.03 .35 .07 .28 .41 .51 1.00         
+-.09 .42 .03 .48 .15 .72 .42 1.00        
+.35 .08 .12 -.02 .14 .08 .04 -.02 1.00       
+.12 .43 .24 .30 .18 .34 .31 .46 .18 1.00      
+.13 .26 .43 -.01 .07 .15 .17 .20 .29 .47 1.00     
+.05 .43 .05 .57 .13 .46 .37 .64 .07 .52 .20 1.00    
+.28 .19 .01 .14 .09 .06 -.03 .11 .18 .12 .02 .13 1.00   
+.11 .35 .07 .33 .13 .30 .17 .40 .13 .37 .28 .32 .62 1.00  
+.29 .17 .09 .09 .21 .05 .03 .09 .20 .15 .14 .10 .73 .64 1.00 
+.07 .40 .32 .32 .07 .32 .17 .41 .03 .28 .13 .35 .46 .66 .47 1.00 
+&#39;
+
+# standard deviations
+sdev &lt;- c(2.46, 1.76, 2.74, 2.04, 2.13, 4.30, 1.90, 1.90, 2.63, 1.89, 2.84, 2.34, 2.27, 4.86, 2.66, 1.94)
+
+Cmat &lt;- getCov(cormat)
+Dmat &lt;- diag(sdev)
+covmat &lt;- Dmat %*% Cmat %*% Dmat
+
+# assign row and column names to the covariance matrix
+colnames(covmat) &lt;- rownames(covmat) &lt;- c(&quot;SCself&quot;, &quot;ACself&quot;, &quot;ECself&quot;, &quot;MCself&quot;, 
+                     &quot;SCteach&quot;, &quot;ACteach&quot;, &quot;ECteach&quot;, &quot;MCteach&quot;, 
+                     &quot;SCpar&quot;, &quot;ACpar&quot;, &quot;ECpar&quot;, &quot;MCpar&quot;, 
+                     &quot;SCpeer&quot;, &quot;ACpeer&quot;, &quot;ECpeer&quot;, &quot;MCpeer&quot;)</code></pre>
+<p><br></p>
+</div>
+<div id="write-the-model-syntax" class="section level2">
+<h2>Write the model syntax</h2>
+<p>We use the following model syntax to specify the MTMM model. For all the trait latent factors and the methods latent factors, we free the first factor loadings. Instead, we fix their variances to be 1. We also constrain the covariances between the trait factors and methods factors to be 0.</p>
+<pre class="r"><code>mtmm.model &lt;- &#39;
+
+# Trait factors
+
+SC =~ NA*SCself + SCteach + SCpar + SCpeer
+AC =~ NA*ACself + ACteach + ACpar + ACpeer
+EC =~ NA*ECself + ECteach + ECpar + ECpeer
+MC =~ NA*MCself + MCteach + MCpar + MCpeer
+
+# Methods factors
+
+self =~ NA*SCself + ACself + ECself + MCself
+teach =~ NA*SCteach + ACteach + ECteach + MCteach
+par =~ NA*SCpar + ACpar + ECpar + MCpar
+peer =~ NA*SCpeer + ACpeer + ECpeer + MCpeer
+
+# Variances of the latent factors
+
+SC~~1*SC
+AC~~1*AC
+EC~~1*EC
+MC~~1*MC
+
+self~~1*self
+teach~~1*teach
+par~~1*par
+peer~~1*peer
+
+# Covariances among the latent factors
+
+SC ~~ 0*self + 0*teach + 0*par + 0*peer
+AC ~~ 0*self + 0*teach + 0*par + 0*peer
+EC ~~ 0*self + 0*teach + 0*par + 0*peer
+MC ~~ 0*self + 0*teach + 0*par + 0*peer
+
+&#39;</code></pre>
+<p><br></p>
+</div>
+<div id="fit-the-model-to-the-data" class="section level2">
+<h2>Fit the model to the data</h2>
+<pre class="r"><code>mtmm.fit &lt;- sem(mtmm.model, sample.cov = covmat, sample.nobs = 158)</code></pre>
+<p><br></p>
+</div>
+<div id="summarize-the-results" class="section level2">
+<h2>Summarize the results</h2>
+<pre class="r"><code>summary(mtmm.fit, fit.measures = T, standardized = T)</code></pre>
+<pre><code>## lavaan 0.6-8 ended normally after 80 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        60
+##                                                       
+##   Number of observations                           158
+##                                                       
+## Model Test User Model:
+##                                                       
+##   Test statistic                               168.057
+##   Degrees of freedom                                76
+##   P-value (Chi-square)                           0.000
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                              1121.639
+##   Degrees of freedom                               120
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    0.908
+##   Tucker-Lewis Index (TLI)                       0.855
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -5349.680
+##   Loglikelihood unrestricted model (H1)      -5265.651
+##                                                       
+##   Akaike (AIC)                               10819.360
+##   Bayesian (BIC)                             11003.116
+##   Sample-size adjusted Bayesian (BIC)        10813.187
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.088
+##   90 Percent confidence interval - lower         0.070
+##   90 Percent confidence interval - upper         0.105
+##   P-value RMSEA &lt;= 0.05                          0.001
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.066
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   SC =~                                                                 
+##     SCself            1.320    0.251    5.252    0.000    1.320    0.534
+##     SCteach           0.572    0.208    2.749    0.006    0.572    0.267
+##     SCpar             1.570    0.277    5.658    0.000    1.570    0.598
+##     SCpeer            0.283    0.168    1.687    0.092    0.283    0.126
+##   AC =~                                                                 
+##     ACself            0.877    0.156    5.621    0.000    0.877    0.492
+##     ACteach           1.707    0.382    4.470    0.000    1.707    0.398
+##     ACpar             1.215    0.162    7.505    0.000    1.215    0.642
+##     ACpeer            2.395    0.320    7.490    0.000    2.395    0.493
+##   EC =~                                                                 
+##     ECself            1.412    0.242    5.843    0.000    1.412    0.515
+##     ECteach           0.513    0.170    3.025    0.002    0.513    0.267
+##     ECpar             2.364    0.271    8.733    0.000    2.364    0.834
+##     ECpeer            0.558    0.185    3.022    0.003    0.558    0.209
+##   MC =~                                                                 
+##     MCself            0.853    0.183    4.655    0.000    0.853    0.419
+##     MCteach           1.253    0.148    8.478    0.000    1.253    0.677
+##     MCpar             1.282    0.209    6.128    0.000    1.282    0.551
+##     MCpeer            0.947    0.146    6.498    0.000    0.947    0.489
+##   self =~                                                               
+##     SCself            0.441    0.240    1.837    0.066    0.441    0.178
+##     ACself            0.986    0.166    5.942    0.000    0.986    0.554
+##     ECself            0.143    0.266    0.535    0.593    0.143    0.052
+##     MCself            1.441    0.192    7.489    0.000    1.441    0.708
+##   teach =~                                                              
+##     SCteach           0.843    0.190    4.430    0.000    0.843    0.393
+##     ACteach           3.215    0.344    9.350    0.000    3.215    0.750
+##     ECteach           1.128    0.163    6.923    0.000    1.128    0.588
+##     MCteach           1.096    0.141    7.773    0.000    1.096    0.592
+##   par =~                                                                
+##     SCpar             0.414    0.258    1.609    0.108    0.414    0.158
+##     ACpar             0.622    0.194    3.203    0.001    0.622    0.329
+##     ECpar             0.118    0.273    0.433    0.665    0.118    0.042
+##     MCpar             1.758    0.294    5.987    0.000    1.758    0.756
+##   peer =~                                                               
+##     SCpeer            1.886    0.155   12.164    0.000    1.886    0.839
+##     ACpeer            3.511    0.319   11.011    0.000    3.511    0.723
+##     ECpeer            2.190    0.182   12.055    0.000    2.190    0.823
+##     MCpeer            1.085    0.139    7.795    0.000    1.085    0.560
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   SC ~~                                                                 
+##     self              0.000                               0.000    0.000
+##     teach             0.000                               0.000    0.000
+##     par               0.000                               0.000    0.000
+##     peer              0.000                               0.000    0.000
+##   AC ~~                                                                 
+##     self              0.000                               0.000    0.000
+##     teach             0.000                               0.000    0.000
+##     par               0.000                               0.000    0.000
+##     peer              0.000                               0.000    0.000
+##   EC ~~                                                                 
+##     self              0.000                               0.000    0.000
+##     teach             0.000                               0.000    0.000
+##     par               0.000                               0.000    0.000
+##     peer              0.000                               0.000    0.000
+##   MC ~~                                                                 
+##     self              0.000                               0.000    0.000
+##     teach             0.000                               0.000    0.000
+##     par               0.000                               0.000    0.000
+##     peer              0.000                               0.000    0.000
+##   SC ~~                                                                 
+##     AC                0.164    0.149    1.102    0.270    0.164    0.164
+##     EC                0.525    0.118    4.463    0.000    0.525    0.525
+##     MC               -0.193    0.156   -1.239    0.216   -0.193   -0.193
+##   AC ~~                                                                 
+##     EC                0.756    0.084    9.050    0.000    0.756    0.756
+##     MC                0.858    0.056   15.259    0.000    0.858    0.858
+##   EC ~~                                                                 
+##     MC                0.391    0.115    3.414    0.001    0.391    0.391
+##   self ~~                                                               
+##     teach             0.506    0.101    5.008    0.000    0.506    0.506
+##     par               0.600    0.125    4.815    0.000    0.600    0.600
+##     peer              0.302    0.103    2.926    0.003    0.302    0.302
+##   teach ~~                                                              
+##     par               0.520    0.117    4.446    0.000    0.520    0.520
+##     peer              0.156    0.102    1.538    0.124    0.156    0.156
+##   par ~~                                                                
+##     peer              0.178    0.107    1.662    0.097    0.178    0.178
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##     SC                1.000                               1.000    1.000
+##     AC                1.000                               1.000    1.000
+##     EC                1.000                               1.000    1.000
+##     MC                1.000                               1.000    1.000
+##     self              1.000                               1.000    1.000
+##     teach             1.000                               1.000    1.000
+##     par               1.000                               1.000    1.000
+##     peer              1.000                               1.000    1.000
+##    .SCself            4.168    0.665    6.267    0.000    4.168    0.683
+##    .SCteach           3.560    0.459    7.757    0.000    3.560    0.774
+##    .SCpar             4.253    0.806    5.277    0.000    4.253    0.617
+##    .SCpeer            1.410    0.281    5.022    0.000    1.410    0.279
+##    .ACself            1.432    0.234    6.119    0.000    1.432    0.451
+##    .ACteach           5.111    1.207    4.236    0.000    5.111    0.278
+##    .ACpar             1.720    0.247    6.970    0.000    1.720    0.480
+##    .ACpeer            5.547    1.059    5.239    0.000    5.547    0.235
+##    .ECself            5.490    0.713    7.705    0.000    5.490    0.732
+##    .ECteach           2.150    0.311    6.910    0.000    2.150    0.583
+##    .ECpar             2.439    0.981    2.487    0.013    2.439    0.303
+##    .ECpeer            1.977    0.360    5.490    0.000    1.977    0.279
+##    .MCself            1.342    0.394    3.405    0.001    1.342    0.324
+##    .MCteach           0.652    0.185    3.516    0.000    0.652    0.190
+##    .MCpar             0.679    0.876    0.774    0.439    0.679    0.125
+##    .MCpeer            1.674    0.240    6.985    0.000    1.674    0.447</code></pre>
+<p><br></p>
+</div>
+<div id="draw-the-diagram" class="section level2">
+<h2>Draw the diagram</h2>
+<p>You can use the <code>semPlot</code> package to draw the diagram for the model you fitted. You can experiment with the arguments to get a better layout of the plot. Some examples are available at the developer’s website: <a href="http://sachaepskamp.com/semPlot" class="uri">http://sachaepskamp.com/semPlot</a>.</p>
+<pre class="r"><code>semPaths(mtmm.fit, title = FALSE, curvePivot = TRUE, optimizeLatRes = T, style = &quot;lisrel&quot;)</code></pre>
+<p><img src="mtmm-example_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+
+</div>
+</div>
+
+<hr>
+© Copyright 2021 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

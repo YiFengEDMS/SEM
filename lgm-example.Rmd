@@ -1,0 +1,231 @@
+---
+title: "Latent Growth Models"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+---
+
+In this tutorial, we are going to use `lavaan` for latent growth models. 
+
+## Load the pacakges
+
+```{r, message=FALSE, warning=FALSE}
+library(lavaan)
+library(semPlot)
+```
+
+<br>
+
+## Example 1: Linear LGM
+
+The data for this example are from 1000 school girls, whose math self-concept has been measured repeatedly at 9th, 10th, 11th, and 12th grade.
+
+### Read the data
+
+```{r}
+lower <- '
+2.041
+1.392  1.901
+1.366  1.352  1.665
+1.249  1.303  1.348  1.599
+'
+
+smeans <- c(3.297, 3.614, 4.042, 4.375)
+covmat <- getCov(lower)
+rownames(covmat) <- colnames(covmat) <- paste0('mathsc', 9:12)
+```
+
+<br>
+
+
+### Fit the model to the data
+
+```{r, echo = F, warning = F, message = F, out.width='80%'}
+
+growth.model1='
+interc=~1*mathsc9+1*mathsc10+1*mathsc11+1*mathsc12
+slope=~0*mathsc9+1*mathsc10+2*mathsc11+3*mathsc12
+'
+
+# the growth() function is almost identical to the sem() function. But a mean structure is automatically assumed, and the observed intercepts are fixed to zero by default, while the latent variable intercepts/means are freely estimated.
+growth.fit1=growth(growth.model1,sample.cov=covmat,sample.mean=smeans,sample.nobs=1000)
+#summary(growth.fit1,fit.measures=T,standardized=T)
+
+
+semPaths(growth.fit1, title = T, curvePivot = TRUE, intercepts = T, ask = FALSE, edge.label.cex = 1, sizeMan = 8, title.cex = 2, sizeLat = 10, sizeInt = 6, sizeInt2 = 6, whatLabels = "omit")
+
+```
+
+
+To fit a linear latent growth model, we can use the special function `growth()` in `lavaan` package. When we write the model syntax, we only need to define the latent intercept and latent slope; the loadings have to be fixed manually based on your time scale. 
+
+The `growth()` function is a special case of the `sem()` function that we have been using. But `growth()` makes things easier when you deal with a simple LGM. Using this function, you do not need to manually specify the mean structure as it is automatically assumed. You do not need to manually fix the observed intercepts to zero, which is taken care of by default. The means of the latent variables are freely estimated by default.
+
+```{r, warning = F}
+
+growth.model1 <- '
+interc =~ 1*mathsc9 + 1*mathsc10 + 1*mathsc11 + 1*mathsc12
+slope =~ 0*mathsc9 + 1*mathsc10 + 2*mathsc11 + 3*mathsc12
+'
+
+growth.fit1 <- growth(growth.model1, sample.cov = covmat, sample.mean = smeans, sample.nobs = 1000)
+summary(growth.fit1, fit.measures = T, standardized = T)
+
+
+```
+
+---
+
+## Example 2: Linear LGM
+
+The data for this example are from 324 non-native English speakers, whose reading ability has been measured at three equally spaced time points (1 month apart).
+
+### Read the data
+
+```{r}
+lower <- '
+42.92
+32.06 39.35
+29.67 28.80 37.43
+'
+smeans <- c(17.08, 18.40, 19.23)
+
+covmat <- getCov(lower)
+colnames(covmat) <- c("read1","read2","read3")
+rownames(covmat) <- colnames(covmat)
+```
+
+<br>
+
+
+### Fit the model to the data
+
+```{r, echo = F, warning = F, message = F, out.width='80%'}
+
+growth.model2 <- '
+final=~1*read1+1*read2+1*read3
+slope=~(-2)*read1+(-1)*read2+0*read3
+read1~~a*read1
+read2~~a*read2
+read3~~a*read3
+'
+
+growth.fit2=growth(growth.model2,sample.cov=covmat,sample.mean=smeans,sample.nobs = 324)
+#summary(growth.fit2)
+
+semPaths(growth.fit2, title = T, curvePivot = TRUE, intercepts = T, ask = FALSE, edge.label.cex = 1, sizeMan = 8, title.cex = 2, sizeLat = 10, sizeInt = 6, sizeInt2 = 6, whatLabels = "omit")
+
+```
+
+
+Note that in this example we use the last measurement point as the reference point. Therefore, its loading on the latent slope is fixed to zero. The first measurement has a loading of -2 and the second measurement has a loading of -1. Accordingly, the interpretation of the "intercept" latent factor is no longer the level of reading ability at the initial measurement; instead, it reflects the level of reading ability at the last measurement. 
+
+
+#### Heterogeneous error structure
+
+```{r, warning = F}
+
+growth.model2.he <- '
+final =~ 1*read1 + 1*read2 + 1*read3
+slope =~ (-2)*read1 + (-1)*read2 + 0*read3
+
+read1 ~~ read1
+read2 ~~ read2
+read3 ~~ read3
+'
+
+growth.fit2.he <- growth(growth.model2.he, sample.cov = covmat, sample.mean = smeans, sample.nobs = 324)
+summary(growth.fit2.he, fit.measures = T)
+
+```
+
+
+#### Same model: With homogeneous error structure
+
+```{r, warning = F}
+
+growth.model2 <- '
+
+final =~ 1*read1 + 1*read2 + 1*read3
+slope =~ (-2)*read1 + (-1)*read2 + 0*read3
+
+# fix the error variances
+read1 ~~ a*read1
+read2 ~~ a*read2
+read3 ~~ a*read3
+'
+
+growth.fit2 <- growth(growth.model2, sample.cov = covmat, sample.mean = smeans, sample.nobs = 324)
+summary(growth.fit2, fit.measures = T)
+
+```
+
+---
+
+## Example 3: Conditional LGM 
+
+In this example we will fit a linear LGM with a predictor variable. You may have noticed that we do not have sample means in this example. It is fine because what is of focal interest here is the path coefficients from the predictor variable to the latent variables. 
+
+### Read the data
+
+```{r}
+
+lower <- '
+2.041
+1.392  1.901
+1.366  1.352  1.665
+1.249  1.303  1.348  1.599
+1.212  1.923  2.233  2.943  7.290
+'
+
+covmat <- getCov(lower)
+colnames(covmat) <- c(paste0('mathsc', 9:12), "momed")
+rownames(covmat) <- colnames(covmat)
+
+```
+
+<br>
+
+
+### Fit the model to the data
+
+```{r, echo = F, warning = F, message = F, out.width='80%'}
+
+conditional.model='
+interc=~1*mathsc9+1*mathsc10+1*mathsc11+1*mathsc12
+slope=~0*mathsc9+1*mathsc10+2*mathsc11+3*mathsc12
+
+interc~momed
+slope~momed
+'
+
+conditional.fit=sem(conditional.model,sample.cov=covmat,sample.nobs=1000)
+#summary(conditional.fit,fit.measures=T,standardized=T)
+
+semPaths(conditional.fit, title = T, curvePivot = TRUE, intercepts = T, ask = FALSE, edge.label.cex = 1, sizeMan = 8, title.cex = 2, sizeLat = 10, sizeInt = 6, sizeInt2 = 6, whatLabels = "omit")
+
+```
+
+We use the `sem()` function here because we do not have mean structure in this example. `sem()` function is thus more flexible than the special function `growth()`. 
+
+```{r, warning = F}
+
+conditional.model <- '
+interc =~ 1*mathsc9 + 1*mathsc10 + 1*mathsc11 + 1*mathsc12
+slope =~ 0*mathsc9 + 1*mathsc10 + 2*mathsc11 + 3*mathsc12
+
+interc ~ momed
+slope ~ momed
+'
+
+conditional.fit <- sem(conditional.model, sample.cov = covmat, sample.nobs = 1000)
+summary(conditional.fit, fit.measures = T, standardized = T)
+
+
+```
+
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

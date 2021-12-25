@@ -1,0 +1,84 @@
+---
+title: "Latent Path Analysis Exercise: Two step SEM"
+output:
+  html_document:
+    toc: true
+    toc_float: false
+    toc_depth: 4
+---
+
+```{r, message = F, warning = F}
+library(lavaan)
+
+### ---------------------- two step exercise ---------------------- ###
+
+lower <- '
+11.834
+6.947      9.364
+6.819      5.091     12.532
+4.783      5.028      7.495      9.986
+-3.839     -3.889     -3.841     -3.625      9.610
+-2.190     -1.883     -2.175     -1.878      3.552    4.503
+'
+
+covmat <- getCov(lower)
+colnames(covmat) <- c('anomia67', 'powles67', 'anomia71', 'powles71', 'educ', 'sei')
+rownames(covmat) <- colnames(covmat)
+
+
+# step 1: initial measurement model
+
+step1.model <- 
+'
+Alien67 =~ anomia67 + a*powles67
+Alien71 =~ anomia71 + a*powles71
+SES =~ educ + sei
+'
+
+step1.fit <- sem(step1.model, sample.cov = covmat, sample.nobs = 932)
+summary(step1.fit, fit.measures = T, standardized = T)
+step1.mod <- modindices(step1.fit)
+step1.mod[step1.mod$mi >= 3.841, ]
+
+
+#  modified measurement model
+
+step1.model2 <-'
+Alien67 =~ anomia67 + a*powles67
+Alien71 =~ anomia71+a*powles71
+SES =~ educ+sei
+
+anomia67~~anomia71
+powles67~~powles71
+'
+
+step1.fit2 <- sem(step1.model2, sample.cov = covmat, sample.nobs = 932)
+summary(step1.fit2, fit.measures = T, standardized = T)
+step1.mod2 <- modindices(step1.fit2)
+step1.mod2[step1.mod2$mi >= 3.841, ]
+
+# step 2: structural phase
+
+step2.model <-
+'
+Alien67 =~ anomia67 + a*powles67
+Alien71 =~ anomia71 + a*powles71
+SES =~ educ+sei
+
+Alien71 ~ SES + Alien67
+Alien67 ~ SES
+
+anomia67 ~~ anomia71
+powles67 ~~ powles71
+'
+
+step2.fit <- sem(step2.model, sample.cov = covmat, sample.nobs = 932)
+summary(step2.fit, fit.measures = T, standardized = T)
+step2.mod <- modindices(step2.fit)
+step2.mod[step2.mod$mi >= 3.841, ]
+
+
+
+
+```
+

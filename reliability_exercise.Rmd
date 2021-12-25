@@ -1,0 +1,61 @@
+---
+title: "Scale Reliability Exercise"
+output:
+  html_document:
+    toc: true
+    toc_float: false
+    toc_depth: 4
+---
+
+```{r, include = F, message = F, echo = F}
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/General/CILVR 2020-2021/Hancock-SEM/Code Files/Hancock_SEM1_Mplus_files/3b. Confirmatory Factor Analysis Extensions/3b.Solutions"
+
+load("omega.rda")
+```
+
+
+```{r, message = F, warning = F}
+library(lavaan)
+
+setwd(mypath)
+dat <- read.table("MPLUS_reliability_exercise_data.csv", sep = ",", header = F)
+  
+model <- '
+
+TGO =~ NA*V1 + L1*V1 + L2*V2 + L3*V3 + L4*V4 + L5*V5
+
+TGO ~~ 1*TGO
+
+V1 ~~ TH1*V1
+V2 ~~ TH2*V2
+V3 ~~ TH3*V3
+V4 ~~ TH4*V4
+V5 ~~ TH5*V5
+
+# model constraints
+
+L1 > 0
+L2 > 0
+L3 > 0
+L4 > 0
+L5 > 0
+
+
+sumL := L1 + L2 + L3 + L4 + L5 
+sumTH := TH1 + TH2 + TH3 + TH4 + TH5
+omega := (sumL^2)/(sumL^2 + sumTH)
+
+'
+```
+
+
+```r
+mod.fit <- sem(model, dat, se = "bootstrap", bootstrap = 5000)
+```
+
+```{r}
+parameterEstimates(mod.fit, ci = T)
+```
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

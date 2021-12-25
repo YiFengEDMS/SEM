@@ -1,0 +1,69 @@
+---
+title: "Multi-group CFA exercise"
+output:
+  html_document:
+    toc: true
+    toc_float: false
+    toc_depth: 4
+---
+
+```{r, message=FALSE, warning=FALSE}
+library(lavaan)
+```
+
+```{r,echo=F}
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/General/CILVR 2020-2021/Hancock-SEM/Code Files/Hancock_SEM1_Mplus_files/5. Multigroup Analysis/5.Solutions"
+```
+
+```{r, message = F, warning = F}
+setwd(mypath)  # set working directory to where the data file is stored
+
+data1 <- read.table("alphabetic.csv", sep=",", header = F)
+data2 <- read.table("non-alphabetic.csv", sep = ",", header = F)
+
+data1$group <- 1
+data2$group <- 2
+data <- rbind(data1, data2)
+
+colnames(data) <- c('hand', 'number', 'word',
+                    'triangle', 'matrix', 'spatial', 'group')
+
+cfa.constrained <- '
+
+SEQUENT =~ hand + number + word
+SIMULTAN =~ triangle + matrix + spatial 
+
+hand ~ 1
+number ~ 1
+word ~ 1
+
+triangle ~ 1
+matrix ~ 1
+spatial ~ 1
+
+'
+
+fit.constrained <- sem(cfa.constrained, data, group = "group", group.equal = c("loadings"), meanstructure = F)
+summary(fit.constrained, fit.measures = T, standardized = T)
+
+mod.constrained <- modindices(fit.constrained, sort = T)
+mod.constrained[mod.constrained$mi >= 3.841, ]  # different from the Mplus output
+
+
+### Release the constraints
+## free the loading based on the modification indices obtained in Mplus (to be consistent with your practice in class)
+
+cfa.unconstrained <- '
+
+SEQUENT =~ hand + number + word
+SIMULTAN =~ triangle + matrix + c(a,b)*spatial
+
+'
+
+fit.unconstrained <- sem(cfa.unconstrained, data, group = "group", group.equal = c("loadings"), meanstructure = F)
+summary(fit.unconstrained, fit.measures = T, standardized = T)
+mod.constrained <- modindices(fit.constrained, sort = T)
+mod.constrained[mod.constrained$mi >= 3.841, ]
+
+```
+

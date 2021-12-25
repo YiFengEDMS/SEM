@@ -1,0 +1,62 @@
+---
+title: "Mediation Exercise"
+output:
+  html_document:
+    toc: true
+    toc_float: false
+    toc_depth: 4
+---
+
+```{r,echo=F}
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/General/2019-2020/SEM/Course materials/Hancock_SEM_First_Course_2020_Mplus/2b. Path Analysis Extensions/2b.Exercises"
+```
+
+```{r, warning=FALSE, message = F}
+library(lavaan)
+setwd(mypath)  # change it to the path of your own data folder
+
+mediation.data <- read.table("Mediation_Exercise_data.csv", sep = ",", header = F)
+
+colnames(mediation.data) <- c("climate",
+                           "control",
+                           "burnout",
+                           "attitude",
+                           "educout",
+                           "psychout")
+
+mediation.model <- '
+
+ burnout ~ a*climate + b*control
+ attitude ~ c*burnout + d*climate + e*control
+ educout ~ f*attitude
+ psychout ~ g*attitude
+ 
+ educout ~~ psychout
+ 
+ ac := a*c
+ bc := b*c
+ fd := f*d
+ fe := f*e
+ fc := f*c
+ gd := g*d
+ ge := g*e
+ gc := g*c
+
+'
+
+mediation.fit <- sem(mediation.model, data = mediation.data, se = "bootstrap")
+
+```
+
+
+```{r, echo = F}
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/General/2019-2020/SEM/Course materials/Hancock_SEM_First_Course_2020_Mplus/2b. Path Analysis Extensions/2b.Exercises"
+setwd(mypath)  # change it to the path of your own data folder
+
+load("mediationFit.rda")
+
+```
+
+```{r}
+summary(mediation.fit, fit.measures = T, standardized = T)
+```

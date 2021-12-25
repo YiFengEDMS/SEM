@@ -1,0 +1,11 @@
+---
+title: "Tutorial Videos"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+**Coming soon...:)**
+
+![](https://media.giphy.com/media/fZDXPWad3Rhx0H0gDp/giphy.gif)

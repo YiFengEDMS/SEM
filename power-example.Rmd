@@ -1,0 +1,178 @@
+---
+title: "Monte Carlo Power Methods"
+output:
+  html_document:
+    toc: true
+    toc_float: false
+    toc_depth: 3
+---
+
+In this tutorial, we are going to use `lavaan` and `simsem` for SEM power analysis based on Monte Carlo methods. 
+
+## Load the pacakges
+
+```{r, message=FALSE, warning=FALSE}
+library(lavaan)
+library(simsem)
+library(semPlot)
+```
+
+<br>
+
+In this example, we would like to conduct power analysis for a latent variable path analysis model. The parameters of focal interest are the path coefficients and the covariance between the two exogenous latent variables. 
+
+```{r, echo = F, warning = F, message = F, out.width='80%'}
+
+popmodel='
+f1=~0.5*v1+(-0.7)*v2+0.6*v3
+f2=~0.8*v4+0.9*v5+(-0.6)*v6
+f3=~0.938*v7+0.964*v8
+v1~~.75*v1
+v2~~.51*v2 
+v3~~.64*v3 
+v4~~.36*v4
+v5~~.19*v5 
+v6~~.64*v6 
+v7~~.12*v7 
+v8~~.07*v8
+
+f1~~1*f1
+f2~~1*f2
+f3~~0.77*f3
+
+f3~0.2*f1+0.5*f2
+
+f1~~(-0.3)*f2
+
+'
+
+myData <- simulateData(popmodel, sample.nobs=303)
+
+Analyze.model='
+f1=~NA*v1+v2+v3
+f2=~NA*v4+v5+v6
+f3=~0.938*v7+v8
+v1~~v1
+v2~~v2 
+v3~~v3 
+v4~~v4
+v5~~v5 
+v6~~v6 
+v7~~v7 
+v8~~v8
+
+f1~~1*f1
+f2~~1*f2
+f3~~f3
+
+f3~f1+f2
+
+f1~~f2
+
+'
+
+fit <- sem(Analyze.model, data=myData)
+
+semPaths(fit, title = T, curvePivot = TRUE, intercepts = F, ask = FALSE, edge.label.cex = 1, sizeMan = 5, title.cex = 2, sizeLat = 10, whatLabels = "omit")
+
+
+```
+
+
+## Define the population model
+
+We first use the `lavaan` model syntax to define our population model and supply all the parameter values. To supply the population value of a parameter, we just need to multiply the parameter with the numeric value. 
+
+```{r, warning = F, message = F}
+
+popmodel <- '
+
+# measurement model 
+
+f1 =~ 0.5*v1 + (-0.7)*v2 + 0.6*v3
+f2 =~ 0.8*v4 + 0.9*v5 + (-0.6)*v6
+f3 =~ 0.938*v7 + 0.964*v8
+
+# error variances 
+
+v1 ~~ .75*v1
+v2 ~~ .51*v2 
+v3 ~~ .64*v3 
+v4 ~~ .36*v4
+v5 ~~ .19*v5 
+v6 ~~ .64*v6 
+v7 ~~ .12*v7 
+v8 ~~ .07*v8
+
+# factor (error) variances
+
+f1 ~~ 1*f1
+f2 ~~ 1*f2
+f3 ~~ 0.77*f3
+
+# structural path coefficients
+
+f3 ~ 0.2*f1 + 0.5*f2
+
+# covariance
+
+f1 ~~ (-0.3)*f2
+
+'
+```
+
+
+## Define the analysis model
+
+Next we use the `lavaan` model syntax to define the analysis model. This is the model syntax you would write as if you have a data set at hand (we are very familiar with it already). The analysis model does not necessarily have to be the same as the population model.
+
+```{r, warning = F, message = F}
+
+Analyze.model <- '
+
+f1 =~ NA*v1 + v2 + v3
+f2 =~ NA*v4 + v5 + v6
+f3 =~ 0.938*v7 + v8
+
+v1 ~~ v1
+v2 ~~ v2 
+v3 ~~ v3 
+v4 ~~ v4
+v5 ~~ v5 
+v6 ~~ v6 
+v7 ~~ v7 
+v8 ~~ v8
+
+f1 ~~ 1*f1
+f2 ~~ 1*f2
+f3 ~~ f3
+
+f3 ~ f1 + f2
+ 
+f1 ~~ f2
+
+'
+
+```
+
+## Conduct power analysis 
+
+Last, we call up the `sim()` function available in the `simsem` R package. This function will automatically generate multiple copies of data based on the population model and fit the analysis model to the simulated data. It will output the results summarized over replications.
+
+For this example, we request `sim()` to generate 1000 copies of data, each has a sample size of 303. We also request `sim()` to use `lavaan`'s `sem()` function when fitting the analysis model to the simulated data. For more detailed information about the `simsem` package, please refer to its [webpage](https://simsem.org/).
+
+
+```r
+Output <- sim(1000, Analyze.model, n = 303, generate = popmodel, lavaanfun = "sem")
+```
+
+```{r, echo = F, warning = F, message = F}
+load("output.rda")
+```
+
+```{r}
+summary(Output)
+```
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

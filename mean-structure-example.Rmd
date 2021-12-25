@@ -1,0 +1,318 @@
+---
+title: "Mean Structure Modeling"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+---
+
+In this tutorial, we are going to use `lavaan` for structured means analysis. 
+
+## Load the pacakges
+
+```{r, message=FALSE, warning=FALSE}
+library(lavaan)
+library(semPlot)
+```
+
+<br>
+
+## Example 1: Single latent factor
+
+### Read the data
+
+The data for this example is saved in two txt files named "means_data_girls.txt" and "means_data_boys.txt", respectively. We need to combine them into a single data set and create a grouping variable "gender".
+
+
+```{r,echo=F}
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/SEM2019/SEM Second Course Mplus 2019/Advanced Examples/3. Means Examples"
+```
+
+```{r}
+setwd(mypath)  # change it to the path of your own data folder
+
+girl <- read.delim("means_data_girls.txt", sep = "\t", header = T)
+boy <- read.delim("means_data_boys.txt", sep = "\t", header = T)
+colnames(girl) <- c('satvoc', 'satcomp', 'satlang')
+colnames(boy) <- colnames(girl)
+
+girl$gender <- 1
+boy$gender <- 2
+
+both <- rbind(girl,boy)
+both$gender <- ordered(both$gender)
+
+# check the data
+str(both)
+summary(both)
+
+```
+
+<br>
+
+
+### Fit the model to the data
+
+Next, we fit a multi-group CFA model to the data. 
+
+```{r, echo = F, warnings = F, message = F, out.width='80%'}
+
+mean.model='
+rprof=~1*satlang+c(a,a)*satvoc+c(b,b)*satcomp
+
+# mean structure
+
+rprof~c(0,NA)*1
+satlang~c(c,c)*1
+satvoc~c(d,d)*1
+satcomp~c(e,e)*1
+
+rprof~~rprof
+satlang~~satlang
+satvoc~~satvoc
+satcomp~~satcomp
+
+'
+
+mean.fit=lavaan(mean.model,both,group="gender")
+
+semPaths(mean.fit, title = T, curvePivot = TRUE, intercepts = T, ask = FALSE, edge.label.cex = 1, sizeMan = 10, title.cex = 2, sizeLat = 10, sizeInt2 = 8, sizeInt = 8, whatLabels = "omit")
+
+```
+
+
+We use the following model syntax to specify our model. In order to force the latent variable to have a mean of zero in girls group (gender = 1) and a freely estimated mean in boys group (gender = 2), we multiply the intercept by a vector `c(0,NA)`. We also use the pre-multiplication method to constrain the factor loadings and indicator intercepts to be equal across groups.
+
+
+```{r}
+
+mean.model <- '
+
+rprof =~ 1*satlang + c(a,a)*satvoc + c(b,b)*satcomp
+
+# mean structure 
+
+rprof ~ c(0,NA)*1
+satlang ~ c(c,c)*1
+satvoc ~ c(d,d)*1
+satcomp ~ c(e,e)*1
+
+# variances
+
+rprof ~~ rprof
+satlang ~~ satlang
+satvoc ~~ satvoc
+satcomp ~~ satcomp
+
+'
+
+mean.fit <- lavaan(mean.model, both, group = "gender")
+summary(mean.fit, fit.measures = T, standardized = T)
+
+```
+
+---
+
+## Example 2: Multiple latent factors
+
+### Read the data
+
+The data for this example is saved in two txt files named "chinese_means.txt" and "korean_means.txt", respectively. We need to combine them into a single data set and create a grouping variable "country".
+
+
+```{r,echo=F}
+
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/SEM2019/SEM Second Course Mplus 2019/Advanced Examples/3. Means Examples"
+
+```
+
+```{r}
+setwd(mypath)  # change it to the path of your own data folder
+
+chinese <- read.delim("chinese_means.txt", sep = "\t", header = F)
+korean <- read.delim("korean_means.txt", sep = "\t", header = F)
+
+chinese$country <- 1
+korean$country <- 2
+
+both.data <- rbind(chinese, korean)
+both.data$country <- ordered(both.data$country)
+
+colnames(both.data) <- c('read1', 'read2', 'read3','list1','list2','list3',
+                         'speak1','speak2','speak3', 'write1','write2','write3','country')
+
+# check the data
+str(both.data)
+summary(both.data)
+
+```
+
+<br>
+
+
+### Fit the model to the data
+
+
+```{r, echo = F, warnings = F, message = F, out.width='80%'}
+
+multiple.model <- '
+
+# define latent variables
+
+read =~ 1*read1 + read2 + read3
+list =~ 1*list1 + list2 + list3
+speak =~ 1*speak1 + speak2 + speak3 
+write =~ 1*write1 + write2 + write3
+
+# variances 
+
+read ~~ read
+list ~~ list
+speak ~~ speak
+write ~~ write
+
+read1 ~~ read1
+read2 ~~ read2
+read3 ~~ read3
+list1 ~~ list1
+list2 ~~ list2
+list3 ~~ list3
+speak1 ~~ speak1
+speak2 ~~ speak2
+speak3 ~~ speak3
+write1 ~~ write1
+write2 ~~ write2
+write3 ~~ write3
+
+# covariances
+
+read ~~ list + speak + write
+list ~~ speak + write
+speak ~~ write
+
+read1 ~~ list1 + speak1 + write1
+read2 ~~ list2 + speak2 + write2
+read3 ~~ list3 + speak3 + write3
+list1 ~~ speak1 + write1
+list2 ~~ speak2 + write2
+list3 ~~ speak3 + write3
+speak1 ~~ write1
+speak2 ~~ write2
+speak3 ~~ write3
+
+# means
+
+read~c(0,NA)*1
+list~c(0,NA)*1
+speak~c(0,NA)*1
+write~c(0,NA)*1
+
+# intercepts
+
+read1~1
+read2~1
+read3~1
+list1~1
+list2~1
+list3~1
+speak1~1
+speak2~1
+speak3~1
+write1~1
+write2~1
+write3~1
+
+'
+
+multiple.fit=lavaan(multiple.model,both.data,group="country", group.equal = c("loadings","intercepts"))
+
+semPaths(multiple.fit, title = T, curvePivot = TRUE, intercepts = T, ask = FALSE, edge.label.cex = 1, sizeMan = 5, title.cex = 2, sizeLat = 10, sizeInt2 = 5, sizeInt = 5, whatLabels = "omit")
+
+```
+
+
+Next, we fit a multi-group CFA model to the data. We constrain the loadings and intercepts to be equal across groups using the `group.equal = c("loadings","intercepts")` argument in the fitting function. Again, we use the pre-multiplication method to tell `lavaan` that we want to fix the means of the latent variables in group 1 to be zero, and that we want the means in group 2 to be freely estimated. 
+
+
+```{r}
+
+multiple.model <- '
+
+# define latent variables
+
+read =~ 1*read1 + read2 + read3
+list =~ 1*list1 + list2 + list3
+speak =~ 1*speak1 + speak2 + speak3 
+write =~ 1*write1 + write2 + write3
+
+# variances 
+
+read ~~ read
+list ~~ list
+speak ~~ speak
+write ~~ write
+
+read1 ~~ read1
+read2 ~~ read2
+read3 ~~ read3
+list1 ~~ list1
+list2 ~~ list2
+list3 ~~ list3
+speak1 ~~ speak1
+speak2 ~~ speak2
+speak3 ~~ speak3
+write1 ~~ write1
+write2 ~~ write2
+write3 ~~ write3
+
+# covariances
+
+read ~~ list + speak + write
+list ~~ speak + write
+speak ~~ write
+
+read1 ~~ list1 + speak1 + write1
+read2 ~~ list2 + speak2 + write2
+read3 ~~ list3 + speak3 + write3
+list1 ~~ speak1 + write1
+list2 ~~ speak2 + write2
+list3 ~~ speak3 + write3
+speak1 ~~ write1
+speak2 ~~ write2
+speak3 ~~ write3
+
+# means
+
+read~c(0,NA)*1
+list~c(0,NA)*1
+speak~c(0,NA)*1
+write~c(0,NA)*1
+
+# intercepts
+
+read1~1
+read2~1
+read3~1
+list1~1
+list2~1
+list3~1
+speak1~1
+speak2~1
+speak3~1
+write1~1
+write2~1
+write3~1
+
+'
+
+multiple.fit=lavaan(multiple.model,both.data,group="country", group.equal = c("loadings","intercepts"))
+
+summary(multiple.fit, fit.measures = T, standardized = T)
+
+```
+
+
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

@@ -1,0 +1,50 @@
+---
+title: "Helpful Resources"
+output:
+  html_document:
+    toc: false
+    toc_float: true
+---
+
+### Getting started with R
+
+* https://learningstatisticswithr.com/book/introR.html
+* https://swirlstats.com/students.html
+* https://www.statmethods.net/r-tutorial/index.html 
+
+
+### lavaan
+
+* Webpage: http://lavaan.ugent.be/ 
+* Tutorial: http://lavaan.ugent.be/tutorial/tutorial.pdf
+* Manual: https://cran.r-project.org/web/packages/lavaan/lavaan.pdf
+
+
+### lavaan.survey
+
+* Webpage: https://cran.r-project.org/web/packages/lavaan.survey/index.html
+* Manual: https://cran.r-project.org/web/packages/lavaan.survey/lavaan.survey.pdf
+
+
+### simsem
+
+* Webpage: https://simsem.org/
+* Tutorial: https://github.com/simsem/simsem/wiki/Vignette
+* Manual: https://cran.r-project.org/web/packages/simsem/simsem.pdf
+
+
+### semPlot
+
+* Webpage: https://cran.r-project.org/web/packages/semPlot/index.html
+* Tutorial: http://sachaepskamp.com/semPlot/examples
+* Manual: https://cran.r-project.org/web/packages/semPlot/semPlot.pdf
+
+
+### lavaanPlot
+
+* Webpage: https://cran.r-project.org/web/packages/lavaanPlot/index.html
+* Tutorial: https://cran.r-project.org/web/packages/lavaanPlot/vignettes/Intro_to_lavaanPlot.html
+* Manual: https://cran.r-project.org/web/packages/lavaanPlot/lavaanPlot.pdf
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

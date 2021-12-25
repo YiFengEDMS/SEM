@@ -1,0 +1,160 @@
+---
+title: "Latent Variable Moderation"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+---
+
+In this tutorial, we are going to use `lavaan` for latent variable moderation. 
+
+
+## Load the pacakges
+
+```{r, message=FALSE, warning=FALSE}
+library(lavaan)
+library(semPlot)
+library(interactions)
+library(semTools)
+```
+
+<br>
+
+
+## Read the data
+
+The data for this example is saved in a txt file named "interact1.txt". This data set contains variables that have been centered properly. 
+
+```{r, echo=F}
+
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/SEM2019/SEM Second Course Mplus 2019/Advanced Examples/4. Nonlinear Examples"
+
+```
+
+```{r}
+setwd(mypath)  # change it to the path of your own data folder
+
+int.data <- read.delim("interact1.txt", sep = "\t", header = F)
+colnames(int.data) <- c('ach1c', 'ach2c', 'ach3c', 'com1c', 'com2c', 'com3c', 
+                     'sup1c', 'sup2c', 'sup3c', 'cs1c', 'cs2c', 'cs3c')
+
+
+# check the data, all centered
+str(int.data)
+summary(int.data)
+
+```
+
+
+If you have raw data, you can easily follow the rules discussed in class to create the centered variables in R. Or you could make use of the `indProd` function within the `semTools` package to conveniently create the product terms. The code below will generate the paired product terms between the measured indicators for parental support and academic commitment and do double mean centering. 
+
+```{r}
+
+int.data2 <- int.data[, 1:9]
+int.data2 <- indProd(int.data2, 4:6, 7:9, match = T, meanC = T, doubleMC = T)
+
+summary(int.data2)
+
+```
+
+
+
+
+<br>
+
+
+## Fit the model to the data
+
+```{r, echo = F, warning = F, message = F, out.width='80%'}
+int.model <- '
+commit=~com1c+com2c+com3c
+support=~sup1c+sup2c+sup3c
+comsup=~cs1c+cs2c+cs3c
+achieve=~ach1c+ach2c+ach3c
+cs1c~~com1c+sup1c 
+cs2c~~com2c+sup2c
+cs3c~~com3c+sup3c
+achieve~commit+support+comsup
+'
+
+int.fit=sem(int.model,int.data,estimator="MLM") 
+
+semPaths(int.fit, title = T, curvePivot = TRUE, intercepts = F, ask = FALSE, edge.label.cex = 1, sizeMan = 5, title.cex = 2, sizeLat = 10, whatLabels = "omit")
+
+```
+
+Suppose we are using the data with the properly centered indicators and paired product terms. 
+
+```{r, warning = F}
+
+int.model <- '
+
+commit =~ com1c + com2c + com3c
+support =~ sup1c + sup2c + sup3c
+comsup =~ cs1c + cs2c + cs3c
+achieve =~ ach1c + ach2c + ach3c
+
+cs1c ~~ com1c + sup1c 
+cs2c ~~ com2c + sup2c
+cs3c ~~ com3c + sup3c
+
+commit ~~ commit
+support ~~ support
+comsup ~~ comsup
+
+achieve ~ commit + support + comsup
+'
+
+int.fit <- sem(int.model, int.data, estimator = "MLM")  # request robust standard errors
+summary(int.fit, fit.measures = T, standardized = F)
+
+
+```
+
+```{r, echo = F, include=FALSE, eval = FALSE}
+int.model2 <- '
+commit =~ com1c + com2c + com3c
+support =~ sup1c + sup2c + sup3c
+comsup =~ com1c.sup1c + com2c.sup2c + com3c.sup3c
+
+achieve =~ ach1c + ach2c + ach3c
+com1c.sup1c ~~ com1c + sup1c 
+com2c.sup2c ~~ com2c + sup2c
+com3c.sup3c ~~ com3c + sup3c
+
+achieve ~ commit + support + comsup
+'
+
+int.fit2 <- sem(int.model2, int.data2, estimator = "MLM") 
+summary(int.fit2, fit.measures=T, standardized=T)
+
+```
+
+<br>
+
+## Examine and interpret the interaction
+
+
+The interaction term is not statistically significant in this example. But for illustration purpose, let's try an interaction plot which shows the simple slopes. The interaction plot can be useful to visualize your results if a significant interaction has been detected. 
+
+
+You can make use of the `probe2WayMC` and `plotProbe` function available within the `semTools` package to visualize the simple slopes.
+
+```{r}
+
+(prob1 <- probe2WayMC(int.fit, nameX = c("commit", "support", "comsup"), nameY = "achieve",
+            modVar = "support",  valProbe = c(-1*sqrt(4.550), 0, 1*sqrt(4.550))))
+
+(prob2 <- probe2WayMC(int.fit, nameX = c("commit", "support", "comsup"), nameY = "achieve",
+            modVar = "support",  valProbe = c(-1, 0, 1)))
+
+```
+
+```{r}
+plotProbe(prob1, xlim = c(-2, 2), xlab = "Commit", ylab = "Achieve", legendArgs = list(legend = c("-1 SD", "Mean", "+1 SD")))
+
+```
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

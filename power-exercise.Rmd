@@ -1,0 +1,85 @@
+---
+title: "Power Analysis Exercise"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+---
+
+
+```{r, message=FALSE, warning=FALSE}
+library(lavaan)
+library(simsem)
+```
+
+
+```{r, warning = F, message = F}
+
+popmodel <- '
+
+INTERC =~ 1*V1 + 1*V2 + 1*V3 + 1*V4
+SLOPE =~ 0*V1 + 1*V2 + 2*V3 + 3*V4
+
+INTERC ~~ 1*INTERC
+SLOPE ~~ .04*SLOPE
+INTERC ~~ -.10*SLOPE
+
+INTERC ~ 5*1
+SLOPE ~ .5*1
+
+V1 ~~ .25*V1
+V2 ~~ .25*V2
+V3 ~~ .25*V3
+V4 ~~ .25*V4
+
+V1 ~ 0*1
+V2 ~ 0*1
+V3 ~ 0*1
+V4 ~ 0*1
+
+'
+```
+
+
+```{r, warning = F, message = F}
+
+Analyze.model <- '
+
+INTERC =~ 1*V1 + 1*V2 + 1*V3 + 1*V4
+SLOPE =~ 0*V1 + 1*V2 + 2*V3 + 3*V4
+
+INTERC ~~ INTERC
+SLOPE ~~ SLOPE
+INTERC ~~ SLOPE
+
+INTERC ~ 1
+SLOPE ~ 1
+
+V1 ~~ V1
+V2 ~~ V2
+V3 ~~ V3
+V4 ~~ V4
+
+V1 ~ 0*1
+V2 ~ 0*1
+V3 ~ 0*1
+V4 ~ 0*1
+'
+
+```
+
+```r
+Output <- sim(1000, Analyze.model, n = 130, generate = popmodel, lavaanfun = "sem")
+```
+
+```{r, echo = F, warning = F, message = F}
+load("output-exercise.rda")
+```
+
+```{r}
+summary(Output)
+```
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

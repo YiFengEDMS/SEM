@@ -1,0 +1,435 @@
+---
+title: "Latent path analysis"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 4
+---
+
+In this tutorial, we are going to use `lavaan` for latent variable path analysis. 
+
+
+## Example 1: A Latent Math Proficiency Model
+
+```{r, include = F, message = F, echo = F}
+library(semPlot)
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/General/CILVR 2020-2021/Hancock-SEM/Code Files/Hancock_SEM1_Mplus_files/4a. Latent Variable Path Analysis Foundations/4a.Examples"
+```
+
+```{r, echo = F, warnings = F, message = F, out.width='80%'}
+setwd(mypath)
+
+dat <- read.table("proficiencyraw-female.csv", header = F, sep = ",")
+
+colnames(dat) <- c(paste0("goals",1:6), 
+                    paste0("rsc",1:5), 
+                    paste0("hsc",1:5), 
+                    paste0("msc",1:5), 
+                    paste0("ssc",1:5), 
+                    "SATvoc", 
+                    "SATcomp", 
+                    "SATlang", 
+                    "SATmath", 
+                    "SATprob", 
+                    "SATproc")
+
+lvpa.Model <- '
+
+# measurement model
+
+RSC =~ rsc1 + rsc2 + rsc3 + rsc4 + rsc5
+HSC =~ hsc1 + hsc2 + hsc3 + hsc4 + hsc5
+MSC =~ msc1 + msc2 + msc3 + msc4 + msc5
+SSC =~ ssc1 + ssc2 + ssc3 + ssc4 + ssc5
+TASKGOAL =~ goals1 + goals2 + goals3 + goals4 + goals5 + goals6
+MATHPROF =~ SATmath + SATprob + SATproc
+
+HSC ~~ 0*MSC
+HSC ~~ 0*SSC
+
+# residual covariances
+
+rsc1~~hsc1+msc1+ssc1
+rsc2~~hsc2+msc2+ssc2
+rsc3~~hsc3+msc3+ssc3
+rsc4~~hsc4+msc4+ssc4
+rsc5~~hsc5+msc5+ssc5
+hsc1~~msc1+ssc1
+hsc2~~msc2+ssc2
+hsc3~~msc3+ssc3
+hsc4~~msc4+ssc4
+hsc5~~msc5+ssc5
+msc1~~ssc1
+msc2~~ssc2
+msc3~~ssc3
+msc4~~ssc4  
+msc5~~ssc5
+
+# structural model for the latent variables
+
+TASKGOAL ~ a*RSC + b*HSC + c*MSC + d*SSC
+MATHPROF ~ e*TASKGOAL + f*RSC + g*MSC + h*SSC
+
+
+# indirect effects
+
+MTHindRSC := e*a
+MTHindHSC := e*b
+MTHindMSC := e*c
+MTHindSSC := e*d
+
+'
+
+
+lvpa.Fit <- sem(lvpa.Model, data = dat)
+
+semPaths(lvpa.Fit, title = FALSE, curvePivot = TRUE, intercepts = F)
+
+```
+
+### Load Data 
+
+```{r, message=FALSE, warning=FALSE}
+library(lavaan)
+setwd(mypath)
+
+dat <- read.table("proficiencyraw-female.csv", header = F, sep = ",")
+
+colnames(dat) <- c(paste0("goals",1:6), 
+                    paste0("rsc",1:5), 
+                    paste0("hsc",1:5), 
+                    paste0("msc",1:5), 
+                    paste0("ssc",1:5), 
+                    "SATvoc", 
+                    "SATcomp", 
+                    "SATlang", 
+                    "SATmath", 
+                    "SATprob", 
+                    "SATproc")
+
+```
+
+### Model Syntax
+
+Here we need to label the path coefficients and define the indirect effects using those labels. 
+
+```{r}
+lvpa.Model <- '
+
+# measurement model
+
+RSC =~ rsc1 + rsc2 + rsc3 + rsc4 + rsc5
+HSC =~ hsc1 + hsc2 + hsc3 + hsc4 + hsc5
+MSC =~ msc1 + msc2 + msc3 + msc4 + msc5
+SSC =~ ssc1 + ssc2 + ssc3 + ssc4 + ssc5
+TASKGOAL =~ goals1 + goals2 + goals3 + goals4 + goals5 + goals6
+MATHPROF =~ SATmath + SATprob + SATproc
+
+HSC ~~ 0*MSC
+HSC ~~ 0*SSC
+
+# residual covariances
+
+rsc1~~hsc1+msc1+ssc1
+rsc2~~hsc2+msc2+ssc2
+rsc3~~hsc3+msc3+ssc3
+rsc4~~hsc4+msc4+ssc4
+rsc5~~hsc5+msc5+ssc5
+hsc1~~msc1+ssc1
+hsc2~~msc2+ssc2
+hsc3~~msc3+ssc3
+hsc4~~msc4+ssc4
+hsc5~~msc5+ssc5
+msc1~~ssc1
+msc2~~ssc2
+msc3~~ssc3
+msc4~~ssc4  
+msc5~~ssc5
+
+# structural model for the latent variables
+
+TASKGOAL ~ a*RSC + b*HSC + c*MSC + d*SSC
+MATHPROF ~ e*TASKGOAL + f*RSC + g*MSC + h*SSC
+
+
+# indirect effects
+
+MTHindRSC := e*a
+MTHindHSC := e*b
+MTHindMSC := e*c
+MTHindSSC := e*d
+
+'
+```
+
+### Fit the model
+
+Fit the model to the data with bootstrapped indirect effects.
+
+```r
+lvpa.Fit <- sem(lvpa.Model, data = dat, se = "bootstrap", bootstrap = 5000)
+```
+
+### Examine the results
+
+You could print out the bootstrapped parameter estimates and confidence intervals using the `parameterEstimates` function. To print out the standardized solutions, you could use the `standardizedSolution` function. 
+
+```{r}
+summary(lvpa.Fit, fit.measures = T, standardized = T)
+
+# parameterEstimates(lvpa.Fit, ci = T, standardized = T)
+standardizedSolution(lvpa.Fit)
+```
+
+
+## Example 2: Two-step LVPA
+
+The example corresponds to the "exercise behavior example" in your course slides. Please refer to the slides for more information about the data.
+
+
+### Read in the data
+
+```{r, message=FALSE, warning=FALSE}
+# lower half of the correlation matrix
+
+cormat <- '
+
+1.000 
+.812  1.000 
+.819   .752  1.000 
+.334   .344   .228  1.000 
+.177   .094   .141   .363  1.000 
+.363   .383   .387   .241   .273  1.000 
+.239   .258   .275   .286   .389   .445  1.000 
+.243   .293   .234   .116   .096   .222   .344  1.000 
+.672   .616   .621   .277   .137   .458   .315   .246  1.000 
+.464   .620   .514   .213   .173   .430   .387   .132   .680  1.000 
+.612   .640   .719   .192   .090   .509   .336   .230   .819   .676  1.000 
+.331   .391   .310   .435   .263   .409   .298   .256   .446   .395   .411  1.000 
+.209   .214   .286   .319   .671   .423   .334   .246   .308   .268   .280   .573   1.000 
+.298   .358   .361   .171   .232   .791   .286   .057   .433   .387   .477   .389    .445  1.000
+.309   .303   .381   .132   .307   .637   .459   .267   .468   .406   .458   .554    .514   .551  1.000
+.056   .086   .092   .090   .201   .123   .247   .403   .176   .076   .131   .318    .213   .056   .342   1.000
+
+'
+
+# standard deviations
+sdev <- c(2.46, 1.76, 2.74, 2.04, 2.13, 4.30, 1.90, 1.90, 2.63, 1.89, 2.84, 2.34, 2.27, 4.86, 2.66, 1.94)
+
+# compute the variance-covariance matrix
+
+Cmat <- getCov(cormat)
+Dmat <- diag(sdev)
+covmat <- Dmat %*% Cmat %*% Dmat
+
+# assign variable names
+rownames(covmat) <- colnames(covmat) <- c('ss1t1', 'ss2t1', 'ss3t1', 'se1t1', 'se2t1', 'eb1t1', 'eb2t1',
+                                          'eb3t1','ss1t2', 'ss2t2', 'ss3t2', 'se1t2', 'se2t2', 'eb1t2',
+                                          'eb2t2', 'eb3t2')
+
+```
+
+<br>
+
+
+### Step 1: Measurement phase
+
+
+#### Fit the initial measurement model
+
+We first fit a model where all latent factors are allowed to covary. In the following model syntax: 
+
+1. We only specified six formulas, each defining a latent factor. By default, all exogenous latent variables are correlated. We thus do not need to manually covary them (but it does no harm if you wish to be more explicit about the model you fit by writing down all the formulas).
+
+1. We had constrained measurement invariance across time points by imposing equality constraints on the factor loadings. To constrain model parameters to be equal, we need to use the same label for the corresponding parameters. To label a parameter, we just multiply it with a character string (e.g., a, b, c...). 
+
+
+```{r, warning = F}
+
+DD.model <- '
+
+SOCSUP1 =~ ss1t1 + a*ss2t1 + b*ss3t1
+SELFEFF1 =~ se1t1 + c*se2t1
+EXBEH1 =~ eb1t1 + d*eb2t1 + e*eb3t1
+SOCSUP2 =~ ss1t2 + a*ss2t2 + b*ss3t2
+SELFEFF2 =~ se1t2 + c*se2t2
+EXBEH2 =~ eb1t2 + d*eb2t2 + e*eb3t2
+
+'
+
+DD.fit <- sem(DD.model, sample.cov = covmat, sample.nobs = 84)
+summary(DD.fit, fit.measures = T, standardized = T)
+
+```
+
+<br>
+
+
+#### Examine model fit and modification indicies 
+
+The initial measurement model fit poorly with the data.
+
+Modification indices can be obtained by calling the function `modindices()`. You can ask R to only print out the modification indices that are only greater than 3.841 (the critical value of $\chi^2$ statistic with $df=1$ and $p=0.05$.)
+
+```{r,eval = F}
+DD.mod <- modindices(DD.fit)
+with(DD.mod, subset(DD.mod[order(mi, decreasing = T), ], subset = mi >= 3.84))
+```
+
+```{r, echo = FALSE, warning = F}
+DD.mod <- modindices(DD.fit)
+knitr::kable(with(DD.mod, subset(DD.mod[order(mi, decreasing = T), ], subset = mi >= 3.84)))
+```
+
+
+#### Fit a modified measurement model
+
+With the modification indices and **the substantive theory**, we modified the initial measurement model and fitted it to the data. In the following model syntax, we allowed the residuals to covary between the same item at different time points. We then check the model fit and modification indicies for this modified model.
+
+
+```{r, warning = F}
+
+DD.model2 <- '
+
+SOCSUP1 =~ ss1t1 + a*ss2t1 + b*ss3t1
+SELFEFF1 =~ se1t1 + c*se2t1
+EXBEH1 =~ eb1t1 + d*eb2t1 + e*eb3t1
+SOCSUP2 =~ ss1t2 + a*ss2t2 + b*ss3t2
+SELFEFF2 =~ se1t2 + c*se2t2
+EXBEH2 =~ eb1t2 + d*eb2t2 + e*eb3t2
+
+ss1t1~~ss1t2
+ss2t1~~ss2t2
+ss3t1~~ss3t2
+se1t1~~se1t2
+se2t1~~se2t2
+eb1t1~~eb1t2
+eb2t1~~eb2t2
+eb3t1~~eb3t2
+
+'
+
+DD.fit2 <- sem(DD.model2, sample.cov = covmat, sample.nobs = 84)
+summary(DD.fit2, fit.measures = T, standardized = T, modindices = T)
+
+DD.mod2 <- modindices(DD.fit2)
+```
+
+```{r, eval = F}
+with(DD.mod2, subset(DD.mod2[order(mi, decreasing = T), ], subset = mi >= 3.84))
+```
+
+```{r, echo=F}
+knitr::kable(with(DD.mod2, subset(DD.mod2[order(mi, decreasing = T), ], subset = mi >= 3.84)))
+```
+
+
+#### Fit a further modified measurement model
+
+With the following the model syntax, we release the equality constraints imposed on the factor loading of item "eb2t1" and item "eb2t2". To release the equality constraints, we simply remove the parameter labels. 
+
+```{r}
+
+DD.model3 <- '
+
+SOCSUP1 =~ ss1t1 + a*ss2t1 + b*ss3t1
+SELFEFF1 =~ se1t1 + c*se2t1
+EXBEH1 =~ eb1t1 + eb2t1 + e*eb3t1
+SOCSUP2 =~ ss1t2 + a*ss2t2 + b*ss3t2
+SELFEFF2 =~ se1t2 + c*se2t2
+EXBEH2 =~ eb1t2 + eb2t2 + e*eb3t2
+
+ss1t1~~ss1t2
+ss2t1~~ss2t2
+ss3t1~~ss3t2
+se1t1~~se1t2
+se2t1~~se2t2
+eb1t1~~eb1t2
+eb2t1~~eb2t2
+eb3t1~~eb3t2
+
+
+'
+
+DD.fit3 <- sem(DD.model3, sample.cov = covmat, sample.nobs = 84)
+summary(DD.fit3, fit.measures = T, standardized = T)
+DD.mod3 <- modindices(DD.fit3)
+with(DD.mod3, subset(DD.mod3[order(mi, decreasing = T), ], subset = mi >= 3.84))
+```
+
+#### The final measurement model
+
+```{r, out.width='80%'}
+
+semPaths(DD.fit3, title = FALSE, curvePivot = TRUE, intercepts = F, optimizeLatRes = T)
+
+```
+
+
+---
+
+### Step 2: Structural phase
+
+#### Fit the initial structural model
+
+```{r, warning=F}
+
+DD.model4 <- '
+
+# measurement model
+
+SOCSUP1 =~ ss1t1 + a*ss2t1 + b*ss3t1
+SELFEFF1 =~ se1t1 + c*se2t1
+EXBEH1 =~ eb1t1 + eb2t1 + e*eb3t1
+SOCSUP2 =~ ss1t2 + a*ss2t2 + b*ss3t2
+SELFEFF2 =~ se1t2 + c*se2t2
+EXBEH2 =~ eb1t2 + eb2t2 + e*eb3t2
+
+ss1t1~~ss1t2
+ss2t1~~ss2t2
+ss3t1~~ss3t2
+se1t1~~se1t2
+se2t1~~se2t2
+eb1t1~~eb1t2
+eb2t1~~eb2t2
+eb3t1~~eb3t2
+
+
+# structural model
+
+EXBEH2 ~ EXBEH1 + SELFEFF1 + SELFEFF2
+SELFEFF2 ~ SELFEFF1 + SOCSUP1 + SOCSUP2
+SOCSUP2 ~ SOCSUP1
+
+'
+
+DD.fit4 <- sem(DD.model4, sample.cov = covmat, sample.nobs = 84)
+summary(DD.fit4, fit.measures = T, standardized = T)
+
+
+```
+
+
+#### Examine momdel fit and modification indicies
+
+The model fit looks acceptable. We do not have enough evidence to reject the model.
+
+```{r}
+DD.mod4 <- modindices(DD.fit4)
+with(DD.mod4, subset(DD.mod4[order(mi, decreasing = T), ], subset = mi >= 3.84))
+```
+
+
+#### Final structural model
+
+
+```{r, out.width='80%'}
+
+semPaths(DD.fit4, title = FALSE, curvePivot = TRUE, intercepts = F, optimizeLatRes = T)
+
+```
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
+
+

@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Multi-group CFA exercise</title>
+
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">HOME</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    In-class Examples
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mlr-example.html">MLR Path Analysis</a>
+    </li>
+    <li>
+      <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
+    </li>
+    <li>
+      <a href="mtmm-example.html">Multitrait-Multimethod Analysis</a>
+    </li>
+    <li>
+      <a href="reliability.html">Scale Reliability</a>
+    </li>
+    <li>
+      <a href="latent-pa-example.html">Latent Path Analysis</a>
+    </li>
+    <li>
+      <a href="mg-example.html">Multi-group Analysis</a>
+    </li>
+    <li>
+      <a href="missing-data-example.html">Missing Data</a>
+    </li>
+    <li>
+      <a href="nonnormal-data-example.html">Nonnormal Continuous Data</a>
+    </li>
+    <li>
+      <a href="ordered-categorical-data-example.html">Ordered Categorical Data</a>
+    </li>
+    <li>
+      <a href="complex-multilevel-example.html">Complex Sampling</a>
+    </li>
+    <li>
+      <a href="mimic-example.html">Group Code Analysis</a>
+    </li>
+    <li>
+      <a href="mean-structure-example.html">Mean Structure Modeling</a>
+    </li>
+    <li>
+      <a href="repeated-means-example.html">Repeated Measure Means Models</a>
+    </li>
+    <li>
+      <a href="interaction-example.html">Latent Variable Moderation</a>
+    </li>
+    <li>
+      <a href="lgm-example.html">Latent Growth Models</a>
+    </li>
+    <li>
+      <a href="lgm-extension-example.html">Latent Growth Models Extensions</a>
+    </li>
+    <li>
+      <a href="power-example.html">Monte Carlo Power Methods</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mvpa-exercise.html">Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="mediation-exercise.html">Mediation Exercise</a>
+    </li>
+    <li>
+      <a href="APIM-exercise.html">APIM Exercise</a>
+    </li>
+    <li>
+      <a href="cfa-exercise-v2.html">CFA Exercise</a>
+    </li>
+    <li>
+      <a href="residualized-cfa-exercise.html">Residualized CFA Exercise</a>
+    </li>
+    <li>
+      <a href="reliability_exercise.html">Scale Reliability Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise.html">Latent Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-2step-exercise.html">Two-step SEM Exercise</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-2.html">Multi-group CFA Exercise</a>
+    </li>
+    <li>
+      <a href="mean-structure-exercise.html">Structured Means Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise.html">Repeated Measure Means Exercise</a>
+    </li>
+    <li>
+      <a href="interaction-exercise.html">Latent Interaction Exercise</a>
+    </li>
+    <li>
+      <a href="lgm-exercise.html">Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="conditional-lgm-exercise.html">Conditional Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="power-exercise.html">Power Analysis</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions-DEMO
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="cfa-exercise-DEMO.html">CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise-DEMO.html">Latent Path Analysis Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-DEMO.html">Multi-group CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise-DEMO.html">Repeated Measure Means Exercise-DEMO</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Videos.html">Tutorial Videos</a>
+</li>
+<li>
+  <a href="resources.html">Resources</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Multi-group CFA exercise</h1>
+
+</div>
+
+
+<pre class="r"><code>library(lavaan)</code></pre>
+<pre class="r"><code>setwd(mypath)  # set working directory to where the data file is stored
+
+data1 &lt;- read.table(&quot;causacian.csv&quot;, sep=&quot;,&quot;, header = F)
+data2 &lt;- read.table(&quot;african-american.csv&quot;, sep = &quot;,&quot;, header = F)
+
+data1$race &lt;- 1
+data2$race &lt;- 2
+data &lt;- rbind(data1, data2)
+
+colnames(data) &lt;- c(&#39;hand&#39;, &#39;number&#39;, &#39;word&#39;,
+                    &#39;gestalt&#39;, &#39;triangle&#39;, &#39;matrix&#39;, &#39;spatial&#39;, &#39;photo&#39;,&#39;race&#39;)
+
+cfa.constrained &lt;- &#39;
+
+SEQUENT =~ hand + number + word
+SIMULTAN =~ gestalt + triangle + matrix + spatial + photo
+
+hand ~ 1
+number ~ 1
+word ~ 1
+gestalt ~ 1
+triangle ~ 1
+matrix ~ 1
+spatial ~ 1
+photo ~ 1
+
+&#39;
+
+fit.constrained &lt;- sem(cfa.constrained, data, group = &quot;race&quot;, group.equal = c(&quot;loadings&quot;))
+summary(fit.constrained, fit.measures = T, standardized = T)</code></pre>
+<pre><code>## lavaan 0.6-8 ended normally after 73 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        50
+##   Number of equality constraints                     6
+##                                                       
+##   Number of observations per group:                   
+##     1                                               86
+##     2                                               86
+##                                                       
+## Model Test User Model:
+##                                                       
+##   Test statistic                                80.301
+##   Degrees of freedom                                44
+##   P-value (Chi-square)                           0.001
+##   Test statistic for each group:
+##     1                                           53.217
+##     2                                           27.083
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                               287.180
+##   Degrees of freedom                                56
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    0.843
+##   Tucker-Lewis Index (TLI)                       0.800
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -3208.885
+##   Loglikelihood unrestricted model (H1)      -3168.735
+##                                                       
+##   Akaike (AIC)                                6505.770
+##   Bayesian (BIC)                              6644.260
+##   Sample-size adjusted Bayesian (BIC)         6504.934
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.098
+##   90 Percent confidence interval - lower         0.063
+##   90 Percent confidence interval - upper         0.131
+##   P-value RMSEA &lt;= 0.05                          0.016
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.102
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## 
+## Group 1 [1]:
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   SEQUENT =~                                                            
+##     hand              1.000                               1.540    0.557
+##     number  (.p2.)    0.952    0.211    4.510    0.000    1.466    0.717
+##     word    (.p3.)    0.989    0.221    4.468    0.000    1.523    0.759
+##   SIMULTAN =~                                                           
+##     gestalt           1.000                               0.988    0.386
+##     triangl (.p5.)    1.432    0.356    4.019    0.000    1.414    0.641
+##     matrix  (.p6.)    2.112    0.537    3.933    0.000    2.086    0.621
+##     spatial (.p7.)    1.627    0.437    3.721    0.000    1.607    0.131
+##     photo   (.p8.)    1.004    0.289    3.471    0.001    0.992    0.462
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   SEQUENT ~~                                                            
+##     SIMULTAN          0.785    0.330    2.380    0.017    0.516    0.516
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .hand             -0.001    0.298   -0.003    0.998   -0.001   -0.000
+##    .number           -0.001    0.220   -0.003    0.998   -0.001   -0.000
+##    .word              0.001    0.216    0.004    0.997    0.001    0.000
+##    .gestalt          -0.001    0.276   -0.003    0.998   -0.001   -0.000
+##    .triangle         -0.000    0.238   -0.000    1.000   -0.000   -0.000
+##    .matrix            0.001    0.362    0.004    0.997    0.001    0.000
+##    .spatial          -0.003    1.322   -0.002    0.998   -0.003   -0.000
+##    .photo             0.000    0.231    0.001    0.999    0.000    0.000
+##     SEQUENT           0.000                               0.000    0.000
+##     SIMULTAN          0.000                               0.000    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .hand              5.277    0.946    5.580    0.000    5.277    0.690
+##    .number            2.033    0.499    4.073    0.000    2.033    0.486
+##    .word              1.711    0.493    3.470    0.001    1.711    0.424
+##    .gestalt           5.559    0.914    6.084    0.000    5.559    0.851
+##    .triangle          2.875    0.622    4.622    0.000    2.875    0.590
+##    .matrix            6.931    1.443    4.801    0.000    6.931    0.614
+##    .spatial         147.687   22.655    6.519    0.000  147.687    0.983
+##    .photo             3.622    0.623    5.810    0.000    3.622    0.786
+##     SEQUENT           2.371    0.929    2.552    0.011    1.000    1.000
+##     SIMULTAN          0.976    0.470    2.076    0.038    1.000    1.000
+## 
+## 
+## Group 2 [2]:
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   SEQUENT =~                                                            
+##     hand              1.000                               1.129    0.265
+##     number  (.p2.)    0.952    0.211    4.510    0.000    1.074    0.567
+##     word    (.p3.)    0.989    0.221    4.468    0.000    1.116    0.721
+##   SIMULTAN =~                                                           
+##     gestalt           1.000                               1.021    0.385
+##     triangl (.p5.)    1.432    0.356    4.019    0.000    1.462    0.712
+##     matrix  (.p6.)    2.112    0.537    3.933    0.000    2.156    0.628
+##     spatial (.p7.)    1.627    0.437    3.721    0.000    1.661    0.712
+##     photo   (.p8.)    1.004    0.289    3.471    0.001    1.025    0.437
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   SEQUENT ~~                                                            
+##     SIMULTAN          0.575    0.255    2.249    0.024    0.499    0.499
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .hand             -0.002    0.459   -0.004    0.997   -0.002   -0.000
+##    .number           -0.001    0.204   -0.005    0.996   -0.001   -0.001
+##    .word              0.000    0.167    0.001    0.999    0.000    0.000
+##    .gestalt           0.000    0.286    0.001    0.999    0.000    0.000
+##    .triangle         -0.000    0.221   -0.002    0.998   -0.000   -0.000
+##    .matrix            0.000    0.370    0.001    0.999    0.000    0.000
+##    .spatial          -0.001    0.252   -0.003    0.998   -0.001   -0.000
+##    .photo             0.001    0.253    0.006    0.996    0.001    0.001
+##     SEQUENT           0.000                               0.000    0.000
+##     SIMULTAN          0.000                               0.000    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .hand             16.813    2.641    6.366    0.000   16.813    0.930
+##    .number            2.431    0.482    5.047    0.000    2.431    0.678
+##    .word              1.152    0.366    3.147    0.002    1.152    0.480
+##    .gestalt           6.005    0.962    6.244    0.000    6.005    0.852
+##    .triangle          2.079    0.460    4.523    0.000    2.079    0.493
+##    .matrix            7.125    1.343    5.306    0.000    7.125    0.605
+##    .spatial           2.683    0.608    4.412    0.000    2.683    0.493
+##    .photo             4.450    0.726    6.130    0.000    4.450    0.809
+##     SEQUENT           1.274    0.589    2.162    0.031    1.000    1.000
+##     SIMULTAN          1.042    0.503    2.074    0.038    1.000    1.000</code></pre>
+<pre class="r"><code>mod.constrained &lt;- modindices(fit.constrained, sort = T)
+mod.constrained[mod.constrained$mi &gt;= 3.841, ]  # different from the Mplus output</code></pre>
+<pre><code>##          lhs op      rhs block group level     mi    epc sepc.lv sepc.all sepc.nox
+## 80    number ~~     word     1     1     1 10.647  2.506   2.506    1.344    1.344
+## 127  gestalt ~~ triangle     2     2     1  8.794  1.432   1.432    0.405    0.405
+## 65   SEQUENT =~  gestalt     1     1     1  7.908 -0.630  -0.970   -0.380   -0.380
+## 70  SIMULTAN =~     hand     1     1     1  6.220  1.059   1.047    0.378    0.378
+## 94   gestalt ~~    photo     1     1     1  5.864  1.315   1.315    0.293    0.293
+## 123     word ~~ triangle     2     2     1  5.788 -0.616  -0.616   -0.398   -0.398
+## 79      hand ~~    photo     1     1     1  5.372  1.221   1.221    0.279    0.279
+## 68   SEQUENT =~  spatial     1     1     1  4.998  2.215   3.411    0.278    0.278
+## 99    matrix ~~    photo     1     1     1  4.900 -1.613  -1.613   -0.322   -0.322
+## 33  SIMULTAN =~  gestalt     2     2     1  4.714  1.017   1.038    0.391    0.391
+## 4   SIMULTAN =~  gestalt     1     1     1  4.714 -1.017  -1.005   -0.393   -0.393
+## 91   gestalt ~~ triangle     1     1     1  4.127 -1.144  -1.144   -0.286   -0.286
+## 85    number ~~    photo     1     1     1  4.120 -0.735  -0.735   -0.271   -0.271</code></pre>
+<pre class="r"><code>### Release the constraints
+## free the loading based on the modification indices obtained in Mplus (to be consistent with your practice in class)
+
+cfa.unconstrained &lt;- &#39;
+
+SEQUENT =~ hand + number + word
+SIMULTAN =~ gestalt + triangle + matrix + c(a,b)*spatial + photo
+
+hand~1
+number~1
+word~1
+gestalt~1
+triangle~1
+matrix ~ 1
+spatial~1
+photo~1
+&#39;
+
+fit.unconstrained &lt;- sem(cfa.unconstrained, data, group=&quot;race&quot;, group.equal=c(&quot;loadings&quot;))
+summary(fit.unconstrained, fit.measures = T, standardized = T)</code></pre>
+<pre><code>## lavaan 0.6-8 ended normally after 82 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        50
+##   Number of equality constraints                     5
+##                                                       
+##   Number of observations per group:                   
+##     1                                               86
+##     2                                               86
+##                                                       
+## Model Test User Model:
+##                                                       
+##   Test statistic                                66.935
+##   Degrees of freedom                                43
+##   P-value (Chi-square)                           0.011
+##   Test statistic for each group:
+##     1                                           40.757
+##     2                                           26.178
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                               287.180
+##   Degrees of freedom                                56
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    0.896
+##   Tucker-Lewis Index (TLI)                       0.865
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -3202.202
+##   Loglikelihood unrestricted model (H1)      -3168.735
+##                                                       
+##   Akaike (AIC)                                6494.405
+##   Bayesian (BIC)                              6636.042
+##   Sample-size adjusted Bayesian (BIC)         6493.550
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.080
+##   90 Percent confidence interval - lower         0.039
+##   90 Percent confidence interval - upper         0.116
+##   P-value RMSEA &lt;= 0.05                          0.099
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.087
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## 
+## Group 1 [1]:
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   SEQUENT =~                                                            
+##     hand              1.000                               1.542    0.558
+##     number  (.p2.)    0.942    0.209    4.515    0.000    1.453    0.710
+##     word    (.p3.)    0.995    0.223    4.468    0.000    1.534    0.765
+##   SIMULTAN =~                                                           
+##     gestalt           1.000                               0.989    0.388
+##     triangl (.p5.)    1.353    0.318    4.260    0.000    1.338    0.613
+##     matrix  (.p6.)    1.969    0.476    4.141    0.000    1.947    0.581
+##     spatial    (a)    7.374    2.230    3.307    0.001    7.292    0.573
+##     photo   (.p8.)    0.988    0.268    3.679    0.000    0.977    0.460
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   SEQUENT ~~                                                            
+##     SIMULTAN          0.778    0.322    2.420    0.015    0.510    0.510
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .hand             -0.001    0.298   -0.003    0.998   -0.001   -0.000
+##    .number           -0.001    0.221   -0.003    0.998   -0.001   -0.000
+##    .word              0.001    0.216    0.004    0.997    0.001    0.000
+##    .gestalt          -0.001    0.275   -0.003    0.998   -0.001   -0.000
+##    .triangle         -0.000    0.235   -0.000    1.000   -0.000   -0.000
+##    .matrix            0.001    0.361    0.004    0.997    0.001    0.000
+##    .spatial          -0.003    1.372   -0.002    0.998   -0.003   -0.000
+##    .photo             0.000    0.229    0.001    0.999    0.000    0.000
+##     SEQUENT           0.000                               0.000    0.000
+##     SIMULTAN          0.000                               0.000    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .hand              5.269    0.945    5.578    0.000    5.269    0.689
+##    .number            2.080    0.499    4.170    0.000    2.080    0.496
+##    .word              1.670    0.494    3.381    0.001    1.670    0.415
+##    .gestalt           5.521    0.901    6.130    0.000    5.521    0.850
+##    .triangle          2.973    0.589    5.046    0.000    2.973    0.624
+##    .matrix            7.422    1.405    5.283    0.000    7.422    0.662
+##    .spatial         108.691   21.252    5.114    0.000  108.691    0.672
+##    .photo             3.553    0.603    5.896    0.000    3.553    0.788
+##     SEQUENT           2.378    0.930    2.556    0.011    1.000    1.000
+##     SIMULTAN          0.978    0.452    2.162    0.031    1.000    1.000
+## 
+## 
+## Group 2 [2]:
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   SEQUENT =~                                                            
+##     hand              1.000                               1.129    0.265
+##     number  (.p2.)    0.942    0.209    4.515    0.000    1.064    0.563
+##     word    (.p3.)    0.995    0.223    4.468    0.000    1.123    0.724
+##   SIMULTAN =~                                                           
+##     gestalt           1.000                               1.112    0.417
+##     triangl (.p5.)    1.353    0.318    4.260    0.000    1.504    0.727
+##     matrix  (.p6.)    1.969    0.476    4.141    0.000    2.189    0.636
+##     spatial    (b)    1.395    0.365    3.820    0.000    1.551    0.678
+##     photo   (.p8.)    0.988    0.268    3.679    0.000    1.098    0.463
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   SEQUENT ~~                                                            
+##     SIMULTAN          0.614    0.271    2.267    0.023    0.489    0.489
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .hand             -0.002    0.459   -0.004    0.997   -0.002   -0.000
+##    .number           -0.001    0.204   -0.005    0.996   -0.001   -0.001
+##    .word              0.000    0.167    0.001    0.999    0.000    0.000
+##    .gestalt           0.000    0.287    0.001    0.999    0.000    0.000
+##    .triangle         -0.000    0.223   -0.002    0.998   -0.000   -0.000
+##    .matrix            0.000    0.371    0.001    0.999    0.000    0.000
+##    .spatial          -0.001    0.247   -0.003    0.998   -0.001   -0.000
+##    .photo             0.001    0.256    0.005    0.996    0.001    0.001
+##     SEQUENT           0.000                               0.000    0.000
+##     SIMULTAN          0.000                               0.000    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .hand             16.817    2.641    6.366    0.000   16.817    0.930
+##    .number            2.441    0.481    5.079    0.000    2.441    0.683
+##    .word              1.142    0.370    3.082    0.002    1.142    0.475
+##    .gestalt           5.862    0.949    6.174    0.000    5.862    0.826
+##    .triangle          2.017    0.461    4.372    0.000    2.017    0.471
+##    .matrix            7.059    1.341    5.264    0.000    7.059    0.596
+##    .spatial           2.826    0.591    4.783    0.000    2.826    0.540
+##    .photo             4.416    0.728    6.062    0.000    4.416    0.786
+##     SEQUENT           1.274    0.589    2.164    0.030    1.000    1.000
+##     SIMULTAN          1.236    0.561    2.204    0.028    1.000    1.000</code></pre>
+<pre class="r"><code>mod.constrained &lt;- modindices(fit.constrained, sort = T)
+mod.constrained[mod.constrained$mi &gt;= 3.841, ]</code></pre>
+<pre><code>##          lhs op      rhs block group level     mi    epc sepc.lv sepc.all sepc.nox
+## 80    number ~~     word     1     1     1 10.647  2.506   2.506    1.344    1.344
+## 127  gestalt ~~ triangle     2     2     1  8.794  1.432   1.432    0.405    0.405
+## 65   SEQUENT =~  gestalt     1     1     1  7.908 -0.630  -0.970   -0.380   -0.380
+## 70  SIMULTAN =~     hand     1     1     1  6.220  1.059   1.047    0.378    0.378
+## 94   gestalt ~~    photo     1     1     1  5.864  1.315   1.315    0.293    0.293
+## 123     word ~~ triangle     2     2     1  5.788 -0.616  -0.616   -0.398   -0.398
+## 79      hand ~~    photo     1     1     1  5.372  1.221   1.221    0.279    0.279
+## 68   SEQUENT =~  spatial     1     1     1  4.998  2.215   3.411    0.278    0.278
+## 99    matrix ~~    photo     1     1     1  4.900 -1.613  -1.613   -0.322   -0.322
+## 33  SIMULTAN =~  gestalt     2     2     1  4.714  1.017   1.038    0.391    0.391
+## 4   SIMULTAN =~  gestalt     1     1     1  4.714 -1.017  -1.005   -0.393   -0.393
+## 91   gestalt ~~ triangle     1     1     1  4.127 -1.144  -1.144   -0.286   -0.286
+## 85    number ~~    photo     1     1     1  4.120 -0.735  -0.735   -0.271   -0.271</code></pre>
+
+<hr>
+© Copyright 2021 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

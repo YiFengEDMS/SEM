@@ -1,0 +1,67 @@
+---
+title: "CFA Exercise-DEMO"
+output:
+  html_document:
+    toc: true
+    toc_float: false
+    toc_depth: 4
+---
+
+```{r, message=FALSE, warning=FALSE}
+library(lavaan)
+```
+
+```{r,echo=F}
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/SEM2019/SEM First Course Mplus 2019/Mplus Examples"
+```
+
+```{r}
+setwd(mypath)  # change it to the path of your own data folder
+dat <- read.table("proficiencyraw-female.csv", sep=",", header=F)
+
+# give variable names
+colnames(dat) <- c(paste0("goals",1:6), 
+                    paste0("rsc",1:5), 
+                    paste0("hsc",1:5), 
+                    paste0("msc",1:5), 
+                    paste0("ssc",1:5), 
+                    "SATvoc", 
+                    "SATcomp", 
+                    "SATlang", 
+                    "SATmath", 
+                    "SATprob", 
+                    "SATproc")
+
+# model syntax
+cfa.Model <- '
+
+# measurement model
+
+RSC =~ rsc1 + rsc2 + rsc3
+MSC =~ msc1 + msc2 + msc3
+
+# mean structure
+rsc1~1
+rsc2~1
+rsc3~1
+msc1~1
+msc2~1
+msc3~1
+
+# residual covariances
+
+rsc1~~msc1
+rsc2~~msc2
+rsc3~~msc3
+
+
+# covariances between the latent variables
+RSC ~~ MSC 
+
+'
+
+# Fit the model
+cfa.Fit <- sem(cfa.Model, data = dat)
+summary(cfa.Fit)
+
+```

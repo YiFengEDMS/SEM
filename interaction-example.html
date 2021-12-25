@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Latent Variable Moderation</title>
+
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-sm-12 col-md-4 col-lg-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">HOME</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    In-class Examples
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mlr-example.html">MLR Path Analysis</a>
+    </li>
+    <li>
+      <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
+    </li>
+    <li>
+      <a href="mtmm-example.html">Multitrait-Multimethod Analysis</a>
+    </li>
+    <li>
+      <a href="reliability.html">Scale Reliability</a>
+    </li>
+    <li>
+      <a href="latent-pa-example.html">Latent Path Analysis</a>
+    </li>
+    <li>
+      <a href="mg-example.html">Multi-group Analysis</a>
+    </li>
+    <li>
+      <a href="missing-data-example.html">Missing Data</a>
+    </li>
+    <li>
+      <a href="nonnormal-data-example.html">Nonnormal Continuous Data</a>
+    </li>
+    <li>
+      <a href="ordered-categorical-data-example.html">Ordered Categorical Data</a>
+    </li>
+    <li>
+      <a href="complex-multilevel-example.html">Complex Sampling</a>
+    </li>
+    <li>
+      <a href="mimic-example.html">Group Code Analysis</a>
+    </li>
+    <li>
+      <a href="mean-structure-example.html">Mean Structure Modeling</a>
+    </li>
+    <li>
+      <a href="repeated-means-example.html">Repeated Measure Means Models</a>
+    </li>
+    <li>
+      <a href="interaction-example.html">Latent Variable Moderation</a>
+    </li>
+    <li>
+      <a href="lgm-example.html">Latent Growth Models</a>
+    </li>
+    <li>
+      <a href="lgm-extension-example.html">Latent Growth Models Extensions</a>
+    </li>
+    <li>
+      <a href="power-example.html">Monte Carlo Power Methods</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mvpa-exercise.html">Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="mediation-exercise.html">Mediation Exercise</a>
+    </li>
+    <li>
+      <a href="APIM-exercise.html">APIM Exercise</a>
+    </li>
+    <li>
+      <a href="cfa-exercise-v2.html">CFA Exercise</a>
+    </li>
+    <li>
+      <a href="residualized-cfa-exercise.html">Residualized CFA Exercise</a>
+    </li>
+    <li>
+      <a href="reliability_exercise.html">Scale Reliability Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise.html">Latent Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-2step-exercise.html">Two-step SEM Exercise</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-2.html">Multi-group CFA Exercise</a>
+    </li>
+    <li>
+      <a href="mean-structure-exercise.html">Structured Means Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise.html">Repeated Measure Means Exercise</a>
+    </li>
+    <li>
+      <a href="interaction-exercise.html">Latent Interaction Exercise</a>
+    </li>
+    <li>
+      <a href="lgm-exercise.html">Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="conditional-lgm-exercise.html">Conditional Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="power-exercise.html">Power Analysis</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions-DEMO
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="cfa-exercise-DEMO.html">CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise-DEMO.html">Latent Path Analysis Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-DEMO.html">Multi-group CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise-DEMO.html">Repeated Measure Means Exercise-DEMO</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Videos.html">Tutorial Videos</a>
+</li>
+<li>
+  <a href="resources.html">Resources</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Latent Variable Moderation</h1>
+
+</div>
+
+
+<p>In this tutorial, we are going to use <code>lavaan</code> for latent variable moderation.</p>
+<div id="load-the-pacakges" class="section level2">
+<h2>Load the pacakges</h2>
+<pre class="r"><code>library(lavaan)
+library(semPlot)
+library(interactions)
+library(semTools)</code></pre>
+<p><br></p>
+</div>
+<div id="read-the-data" class="section level2">
+<h2>Read the data</h2>
+<p>The data for this example is saved in a txt file named “interact1.txt”. This data set contains variables that have been centered properly.</p>
+<pre class="r"><code>setwd(mypath)  # change it to the path of your own data folder
+
+int.data &lt;- read.delim(&quot;interact1.txt&quot;, sep = &quot;\t&quot;, header = F)
+colnames(int.data) &lt;- c(&#39;ach1c&#39;, &#39;ach2c&#39;, &#39;ach3c&#39;, &#39;com1c&#39;, &#39;com2c&#39;, &#39;com3c&#39;, 
+                     &#39;sup1c&#39;, &#39;sup2c&#39;, &#39;sup3c&#39;, &#39;cs1c&#39;, &#39;cs2c&#39;, &#39;cs3c&#39;)
+
+
+# check the data, all centered
+str(int.data)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    350 obs. of  12 variables:
+##  $ ach1c: num  207.8 -50.2 -77.2 76.8 -118.2 ...
+##  $ ach2c: num  32.11 -120.89 -108.89 111.11 7.11 ...
+##  $ ach3c: num  140.1 -38.9 -175.9 98.1 -47.9 ...
+##  $ com1c: num  0.929 -0.071 -3.071 0.929 -1.071 ...
+##  $ com2c: num  3.017 0.017 -0.983 0.017 0.017 ...
+##  $ com3c: num  1.877 -0.123 -0.123 0.877 -0.123 ...
+##  $ sup1c: num  -6.209 -4.209 0.791 8.791 -0.209 ...
+##  $ sup2c: num  7.734 -4.266 -1.266 5.734 -0.266 ...
+##  $ sup3c: num  6.963 -7.037 -1.037 -3.037 -0.037 ...
+##  $ cs1c : num  -7.6 -1.54 -4.27 6.32 -1.62 ...
+##  $ cs2c : num  21.985 -1.423 -0.106 -1.252 -1.355 ...
+##  $ cs3c : num  11.543 -0.662 -1.399 -4.191 -1.522 ...</code></pre>
+<pre class="r"><code>summary(int.data)</code></pre>
+<pre><code>##      ach1c             ach2c               ach3c               com1c          
+##  Min.   :-325.20   Min.   :-399.8910   Min.   :-328.9490   Min.   :-7.071000  
+##  1st Qu.: -76.20   1st Qu.: -83.8910   1st Qu.: -82.4490   1st Qu.:-1.071000  
+##  Median :  -2.70   Median :   0.6090   Median :  -6.4490   Median :-0.071000  
+##  Mean   :   0.00   Mean   :   0.0004   Mean   :  -0.0004   Mean   : 0.000429  
+##  3rd Qu.:  82.55   3rd Qu.:  83.8590   3rd Qu.:  81.0510   3rd Qu.: 0.929000  
+##  Max.   : 334.80   Max.   : 321.1090   Max.   : 364.0510   Max.   : 5.929000  
+##      com2c               com3c               sup1c           
+##  Min.   :-4.983000   Min.   :-6.123000   Min.   :-10.209000  
+##  1st Qu.:-0.983000   1st Qu.:-1.123000   1st Qu.: -2.209000  
+##  Median : 0.017000   Median :-0.123000   Median : -0.209000  
+##  Mean   :-0.000143   Mean   :-0.000143   Mean   : -0.000429  
+##  3rd Qu.: 1.017000   3rd Qu.: 1.627000   3rd Qu.:  2.791000  
+##  Max.   : 6.017000   Max.   : 4.877000   Max.   :  9.791000  
+##      sup2c                sup3c                 cs1c          
+##  Min.   :-12.266000   Min.   :-10.037000   Min.   :-26.23000  
+##  1st Qu.: -2.266000   1st Qu.: -3.037000   1st Qu.: -3.04750  
+##  Median : -0.266000   Median : -0.037000   Median : -1.61600  
+##  Mean   : -0.000286   Mean   :  0.000143   Mean   :  0.00006  
+##  3rd Qu.:  2.734000   3rd Qu.:  2.963000   3rd Qu.:  3.42375  
+##  Max.   :  9.734000   Max.   : 10.963000   Max.   : 36.56100  
+##       cs2c                cs3c          
+##  Min.   :-32.32300   Min.   :-26.11100  
+##  1st Qu.: -3.05500   1st Qu.: -3.57100  
+##  Median : -1.33800   Median : -1.38650  
+##  Mean   : -0.00003   Mean   :  0.00004  
+##  3rd Qu.:  2.44800   3rd Qu.:  2.82600  
+##  Max.   : 59.76800   Max.   : 39.85500</code></pre>
+<p>If you have raw data, you can easily follow the rules discussed in class to create the centered variables in R. Or you could make use of the <code>indProd</code> function within the <code>semTools</code> package to conveniently create the product terms. The code below will generate the paired product terms between the measured indicators for parental support and academic commitment and do double mean centering.</p>
+<pre class="r"><code>int.data2 &lt;- int.data[, 1:9]
+int.data2 &lt;- indProd(int.data2, 4:6, 7:9, match = T, meanC = T, doubleMC = T)
+
+summary(int.data2)</code></pre>
+<pre><code>##      ach1c             ach2c               ach3c               com1c          
+##  Min.   :-325.20   Min.   :-399.8910   Min.   :-328.9490   Min.   :-7.071000  
+##  1st Qu.: -76.20   1st Qu.: -83.8910   1st Qu.: -82.4490   1st Qu.:-1.071000  
+##  Median :  -2.70   Median :   0.6090   Median :  -6.4490   Median :-0.071000  
+##  Mean   :   0.00   Mean   :   0.0004   Mean   :  -0.0004   Mean   : 0.000429  
+##  3rd Qu.:  82.55   3rd Qu.:  83.8590   3rd Qu.:  81.0510   3rd Qu.: 0.929000  
+##  Max.   : 334.80   Max.   : 321.1090   Max.   : 364.0510   Max.   : 5.929000  
+##      com2c               com3c               sup1c           
+##  Min.   :-4.983000   Min.   :-6.123000   Min.   :-10.209000  
+##  1st Qu.:-0.983000   1st Qu.:-1.123000   1st Qu.: -2.209000  
+##  Median : 0.017000   Median :-0.123000   Median : -0.209000  
+##  Mean   :-0.000143   Mean   :-0.000143   Mean   : -0.000429  
+##  3rd Qu.: 1.017000   3rd Qu.: 1.627000   3rd Qu.:  2.791000  
+##  Max.   : 6.017000   Max.   : 4.877000   Max.   :  9.791000  
+##      sup2c                sup3c             com1c.sup1c       com2c.sup2c     
+##  Min.   :-12.266000   Min.   :-10.037000   Min.   :-26.230   Min.   :-32.323  
+##  1st Qu.: -2.266000   1st Qu.: -3.037000   1st Qu.: -3.047   1st Qu.: -3.055  
+##  Median : -0.266000   Median : -0.037000   Median : -1.616   Median : -1.338  
+##  Mean   : -0.000286   Mean   :  0.000143   Mean   :  0.000   Mean   :  0.000  
+##  3rd Qu.:  2.734000   3rd Qu.:  2.963000   3rd Qu.:  3.424   3rd Qu.:  2.448  
+##  Max.   :  9.734000   Max.   : 10.963000   Max.   : 36.561   Max.   : 59.768  
+##   com3c.sup3c     
+##  Min.   :-26.111  
+##  1st Qu.: -3.571  
+##  Median : -1.387  
+##  Mean   :  0.000  
+##  3rd Qu.:  2.826  
+##  Max.   : 39.855</code></pre>
+<p><br></p>
+</div>
+<div id="fit-the-model-to-the-data" class="section level2">
+<h2>Fit the model to the data</h2>
+<p><img src="interaction-example_files/figure-html/unnamed-chunk-5-1.png" width="80%" /></p>
+<p>Suppose we are using the data with the properly centered indicators and paired product terms.</p>
+<pre class="r"><code>int.model &lt;- &#39;
+
+commit =~ com1c + com2c + com3c
+support =~ sup1c + sup2c + sup3c
+comsup =~ cs1c + cs2c + cs3c
+achieve =~ ach1c + ach2c + ach3c
+
+cs1c ~~ com1c + sup1c 
+cs2c ~~ com2c + sup2c
+cs3c ~~ com3c + sup3c
+
+commit ~~ commit
+support ~~ support
+comsup ~~ comsup
+
+achieve ~ commit + support + comsup
+&#39;
+
+int.fit &lt;- sem(int.model, int.data, estimator = &quot;MLM&quot;)  # request robust standard errors
+summary(int.fit, fit.measures = T, standardized = F)</code></pre>
+<pre><code>## lavaan 0.6-8 ended normally after 262 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        36
+##                                                       
+##   Number of observations                           350
+##                                                       
+## Model Test User Model:
+##                                               Standard      Robust
+##   Test Statistic                                33.048      32.650
+##   Degrees of freedom                                42          42
+##   P-value (Chi-square)                           0.837       0.849
+##   Scaling correction factor                                  1.012
+##        Satorra-Bentler correction                                 
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                              1192.947     786.464
+##   Degrees of freedom                                66          66
+##   P-value                                        0.000       0.000
+##   Scaling correction factor                                  1.517
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    1.000       1.000
+##   Tucker-Lewis Index (TLI)                       1.012       1.020
+##                                                                   
+##   Robust Comparative Fit Index (CFI)                         1.000
+##   Robust Tucker-Lewis Index (TLI)                            1.014
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)             -14828.416  -14828.416
+##   Loglikelihood unrestricted model (H1)     -14811.892  -14811.892
+##                                                                   
+##   Akaike (AIC)                               29728.831   29728.831
+##   Bayesian (BIC)                             29867.717   29867.717
+##   Sample-size adjusted Bayesian (BIC)        29753.512   29753.512
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.000       0.000
+##   90 Percent confidence interval - lower         0.000       0.000
+##   90 Percent confidence interval - upper         0.022       0.021
+##   P-value RMSEA &lt;= 0.05                          1.000       1.000
+##                                                                   
+##   Robust RMSEA                                               0.000
+##   90 Percent confidence interval - lower                     0.000
+##   90 Percent confidence interval - upper                     0.021
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.026       0.026
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                           Robust.sem
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   commit =~                                           
+##     com1c             1.000                           
+##     com2c             0.898    0.057   15.735    0.000
+##     com3c             0.950    0.058   16.366    0.000
+##   support =~                                          
+##     sup1c             1.000                           
+##     sup2c             0.991    0.163    6.089    0.000
+##     sup3c             1.088    0.189    5.743    0.000
+##   comsup =~                                           
+##     cs1c              1.000                           
+##     cs2c              1.347    0.399    3.375    0.001
+##     cs3c              1.414    0.465    3.041    0.002
+##   achieve =~                                          
+##     ach1c             1.000                           
+##     ach2c             0.964    0.068   14.242    0.000
+##     ach3c             1.108    0.071   15.578    0.000
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   achieve ~                                           
+##     commit           12.176    3.698    3.293    0.001
+##     support          19.670    4.350    4.521    0.000
+##     comsup            3.049    2.062    1.479    0.139
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##  .com1c ~~                                            
+##    .cs1c              0.354    0.830    0.427    0.670
+##  .sup1c ~~                                            
+##    .cs1c             -0.028    2.208   -0.013    0.990
+##  .com2c ~~                                            
+##    .cs2c             -0.433    0.833   -0.520    0.603
+##  .sup2c ~~                                            
+##    .cs2c             -1.730    2.351   -0.736    0.462
+##  .com3c ~~                                            
+##    .cs3c             -0.985    0.756   -1.303    0.193
+##  .sup3c ~~                                            
+##    .cs3c              1.022    2.057    0.497    0.619
+##   commit ~~                                           
+##     support           1.643    0.354    4.637    0.000
+##     comsup           -0.323    0.816   -0.396    0.692
+##   support ~~                                          
+##     comsup           -0.281    1.380   -0.204    0.839
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     commit            3.327    0.366    9.082    0.000
+##     support           4.550    1.109    4.104    0.000
+##     comsup           12.613    6.006    2.100    0.036
+##    .com1c             1.513    0.185    8.196    0.000
+##    .com2c             1.685    0.171    9.842    0.000
+##    .com3c             1.462    0.175    8.358    0.000
+##    .sup1c            11.353    1.110   10.232    0.000
+##    .sup2c            10.654    0.984   10.832    0.000
+##    .sup3c             9.790    1.138    8.601    0.000
+##    .cs1c             56.231    6.714    8.375    0.000
+##    .cs2c             55.060   10.096    5.454    0.000
+##    .cs3c             42.765    9.324    4.586    0.000
+##    .ach1c          5803.839  543.788   10.673    0.000
+##    .ach2c          5585.438  595.701    9.376    0.000
+##    .ach3c          3479.527  505.482    6.884    0.000
+##    .achieve        4620.687  684.439    6.751    0.000</code></pre>
+<p><br></p>
+</div>
+<div id="examine-and-interpret-the-interaction" class="section level2">
+<h2>Examine and interpret the interaction</h2>
+<p>The interaction term is not statistically significant in this example. But for illustration purpose, let’s try an interaction plot which shows the simple slopes. The interaction plot can be useful to visualize your results if a significant interaction has been detected.</p>
+<p>You can make use of the <code>probe2WayMC</code> and <code>plotProbe</code> function available within the <code>semTools</code> package to visualize the simple slopes.</p>
+<pre class="r"><code>(prob1 &lt;- probe2WayMC(int.fit, nameX = c(&quot;commit&quot;, &quot;support&quot;, &quot;comsup&quot;), nameY = &quot;achieve&quot;,
+            modVar = &quot;support&quot;,  valProbe = c(-1*sqrt(4.550), 0, 1*sqrt(4.550))))</code></pre>
+<pre><code>## $SimpleIntcept
+## NULL
+## 
+## $SimpleSlope
+##        support     Slope       SE     Wald        p
+## [1,] -2.133073  5.672678 6.161541 0.920659 0.357228
+## [2,]  0.000000 12.176431 3.698109 3.292610 0.000993
+## [3,]  2.133073 18.680183 5.299243 3.525067 0.000423</code></pre>
+<pre class="r"><code>(prob2 &lt;- probe2WayMC(int.fit, nameX = c(&quot;commit&quot;, &quot;support&quot;, &quot;comsup&quot;), nameY = &quot;achieve&quot;,
+            modVar = &quot;support&quot;,  valProbe = c(-1, 0, 1)))</code></pre>
+<pre><code>## $SimpleIntcept
+## NULL
+## 
+## $SimpleSlope
+##      support     Slope       SE     Wald        p
+## [1,]      -1  9.127424 4.499408 2.028583 0.042501
+## [2,]       0 12.176431 3.698109 3.292610 0.000993
+## [3,]       1 15.225437 3.951156 3.853413 0.000116</code></pre>
+<pre class="r"><code>plotProbe(prob1, xlim = c(-2, 2), xlab = &quot;Commit&quot;, ylab = &quot;Achieve&quot;, legendArgs = list(legend = c(&quot;-1 SD&quot;, &quot;Mean&quot;, &quot;+1 SD&quot;)))</code></pre>
+<p><img src="interaction-example_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+
+</div>
+</div>
+
+<hr>
+© Copyright 2021 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

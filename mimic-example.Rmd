@@ -1,0 +1,42 @@
+---
+title: "Group Code Analysis"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+---
+
+Below is an example of group code analysis with `lavaan`, which is a just special case of the latent variable path analysis we have learned before.  
+
+
+```{r, message=FALSE, warning=FALSE}
+library(lavaan)
+```
+
+<br>
+
+```{r}
+lower <- '
+1386.818
+1028.442 1366.781
+1261.620 1133.352 2118.761
+1.713 1.479 1.818 0.250
+'
+
+covmat <- getCov(lower)
+colnames(covmat) <- c('satmath', 'satprob', 'satproc', 'dummy')
+rownames(covmat) <- colnames(covmat)
+
+mimic.model <- '
+mathprof =~ NA*satmath + 1*satprob + satproc
+mathprof ~ dummy
+'
+
+mimic.fit <- sem(mimic.model, sample.cov = covmat, sample.nobs = 2000)
+summary(mimic.fit)
+
+```
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

@@ -1,0 +1,55 @@
+---
+title: "Repeated Measure Means Exercise"
+output:
+  html_document:
+    toc: true
+    toc_float: false
+    toc_depth: 4
+---
+
+```{r,echo=F}
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/SEM2019/SEM Second Course Mplus 2019/Advanced Exercises/3. Means Exercises"
+```
+
+```{r, warning = F, message = F}
+library(lavaan)
+setwd(mypath)  # change it to the path of your own data folder
+
+repeat.data <- read.delim("ENGLISHchinese2.txt", sep = "\t", header = F)
+
+colnames(repeat.data) <- c('read1', 'read3', 'list1', 'list3',
+                           'speak1', 'speak3', 'write1', 'write3')
+
+repeat.model <- '
+
+# define the latent variables
+
+english1 =~ 1*read1 + b*speak1 + c*write1
+english3 =~ 1*read3 + b*speak3 + c*write3
+
+# residual covariances
+
+read1 ~~ read3
+speak1 ~~ speak3
+write1 ~~ write3
+
+# intercepts
+
+read1 ~ d*1
+read3 ~ d*1
+speak1 ~ f*1
+speak3 ~ f*1
+write1 ~ g*1
+write3 ~ g*1
+
+english1 ~ 0*1
+english3 ~ NA*1
+
+
+'
+
+repeat.fit <- sem(repeat.model, data = repeat.data)
+summary(repeat.fit, fit.measures = T, standardized = T)
+
+```
+

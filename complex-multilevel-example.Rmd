@@ -1,0 +1,86 @@
+---
+title: "Complex and Multilevel Samples"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+---
+
+In this tutorial, we are going to use `lavaan` for data collected from complex survey designs. The example corresponds to the *Monitoring the Future Study* example in your course slides.
+
+
+## Load the pacakges
+
+```{r, message=FALSE, warning=FALSE}
+library(lavaan)
+library(lavaan.survey)
+```
+
+<br>
+
+
+## Read the data
+
+The data for this example is saved in a csv file named "accidents.csv", which is provided as part of the course materials.  
+
+
+```{r,echo=F}
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/SEM2019/SEM Second Course Mplus 2019/Advanced Examples/2. Real Data Examples"
+```
+
+```{r}
+setwd(mypath)  # change it to the path of your own data folder
+
+complex.data <- read.table("accidents.csv", sep = ",", header = T)
+colnames(complex.data) <- c('school', 'region', 'alcohol', 'marij', 'violate', 'accident', 'rawwt', 'relwt')
+
+complex.data$ids <- 1:nrow(complex.data)
+
+```
+
+<br>
+
+
+## Design-based approach
+
+To handle clustered data, we can either use the model-based approach or design-based approach. As for the model-based approach, `lavaan` is capable of fitting a two-level SEM with random intercepts. You can refer to this [tutorial](http://lavaan.ugent.be/tutorial/multilevel.html) for more detailed information on this feature of `lavaan`. 
+
+On the other hand, to use the design-based approach, we need to introduce another package `lavaan.survey`, which is developed to account for complex survey designs when `lavaan` is used for SEM. 
+
+### Naive estimates
+
+We can take a look at the naive estimates when we do not consider the survey design.
+
+```{r}
+
+complex.model <- '
+
+violate ~ alcohol + marij
+accident ~ violate + alcohol + marij
+alcohol ~~ marij
+
+'
+
+naive.fit <- sem(complex.model, complex.data, meanstructure = T)
+summary(naive.fit, fit.measures = T, standardized = T)
+
+```
+
+### Adjusted estimates
+
+Next we use the `svydesign()` function to define the complex survey design. We then call up the `lavaan.survey` function to update our estimation given the complex survey design.
+
+
+```{r}
+design <- svydesign(ids = ~school, 
+                    strata = ~region, 
+                    weights = ~rawwt,
+                    data = complex.data)
+
+design.fit <- lavaan.survey(naive.fit, design)
+summary(design.fit, fit.measures = T)
+
+```
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

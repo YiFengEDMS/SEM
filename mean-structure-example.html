@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Mean Structure Modeling</title>
+
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-sm-12 col-md-4 col-lg-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">HOME</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    In-class Examples
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mlr-example.html">MLR Path Analysis</a>
+    </li>
+    <li>
+      <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
+    </li>
+    <li>
+      <a href="mtmm-example.html">Multitrait-Multimethod Analysis</a>
+    </li>
+    <li>
+      <a href="reliability.html">Scale Reliability</a>
+    </li>
+    <li>
+      <a href="latent-pa-example.html">Latent Path Analysis</a>
+    </li>
+    <li>
+      <a href="mg-example.html">Multi-group Analysis</a>
+    </li>
+    <li>
+      <a href="missing-data-example.html">Missing Data</a>
+    </li>
+    <li>
+      <a href="nonnormal-data-example.html">Nonnormal Continuous Data</a>
+    </li>
+    <li>
+      <a href="ordered-categorical-data-example.html">Ordered Categorical Data</a>
+    </li>
+    <li>
+      <a href="complex-multilevel-example.html">Complex Sampling</a>
+    </li>
+    <li>
+      <a href="mimic-example.html">Group Code Analysis</a>
+    </li>
+    <li>
+      <a href="mean-structure-example.html">Mean Structure Modeling</a>
+    </li>
+    <li>
+      <a href="repeated-means-example.html">Repeated Measure Means Models</a>
+    </li>
+    <li>
+      <a href="interaction-example.html">Latent Variable Moderation</a>
+    </li>
+    <li>
+      <a href="lgm-example.html">Latent Growth Models</a>
+    </li>
+    <li>
+      <a href="lgm-extension-example.html">Latent Growth Models Extensions</a>
+    </li>
+    <li>
+      <a href="power-example.html">Monte Carlo Power Methods</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mvpa-exercise.html">Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="mediation-exercise.html">Mediation Exercise</a>
+    </li>
+    <li>
+      <a href="APIM-exercise.html">APIM Exercise</a>
+    </li>
+    <li>
+      <a href="cfa-exercise-v2.html">CFA Exercise</a>
+    </li>
+    <li>
+      <a href="residualized-cfa-exercise.html">Residualized CFA Exercise</a>
+    </li>
+    <li>
+      <a href="reliability_exercise.html">Scale Reliability Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise.html">Latent Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-2step-exercise.html">Two-step SEM Exercise</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-2.html">Multi-group CFA Exercise</a>
+    </li>
+    <li>
+      <a href="mean-structure-exercise.html">Structured Means Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise.html">Repeated Measure Means Exercise</a>
+    </li>
+    <li>
+      <a href="interaction-exercise.html">Latent Interaction Exercise</a>
+    </li>
+    <li>
+      <a href="lgm-exercise.html">Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="conditional-lgm-exercise.html">Conditional Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="power-exercise.html">Power Analysis</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions-DEMO
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="cfa-exercise-DEMO.html">CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise-DEMO.html">Latent Path Analysis Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-DEMO.html">Multi-group CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise-DEMO.html">Repeated Measure Means Exercise-DEMO</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Videos.html">Tutorial Videos</a>
+</li>
+<li>
+  <a href="resources.html">Resources</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Mean Structure Modeling</h1>
+
+</div>
+
+
+<p>In this tutorial, we are going to use <code>lavaan</code> for structured means analysis.</p>
+<div id="load-the-pacakges" class="section level2">
+<h2>Load the pacakges</h2>
+<pre class="r"><code>library(lavaan)
+library(semPlot)</code></pre>
+<p><br></p>
+</div>
+<div id="example-1-single-latent-factor" class="section level2">
+<h2>Example 1: Single latent factor</h2>
+<div id="read-the-data" class="section level3">
+<h3>Read the data</h3>
+<p>The data for this example is saved in two txt files named “means_data_girls.txt” and “means_data_boys.txt”, respectively. We need to combine them into a single data set and create a grouping variable “gender”.</p>
+<pre class="r"><code>setwd(mypath)  # change it to the path of your own data folder
+
+girl &lt;- read.delim(&quot;means_data_girls.txt&quot;, sep = &quot;\t&quot;, header = T)
+boy &lt;- read.delim(&quot;means_data_boys.txt&quot;, sep = &quot;\t&quot;, header = T)
+colnames(girl) &lt;- c(&#39;satvoc&#39;, &#39;satcomp&#39;, &#39;satlang&#39;)
+colnames(boy) &lt;- colnames(girl)
+
+girl$gender &lt;- 1
+boy$gender &lt;- 2
+
+both &lt;- rbind(girl,boy)
+both$gender &lt;- ordered(both$gender)
+
+# check the data
+str(both)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    1998 obs. of  4 variables:
+##  $ satvoc : int  700 710 740 680 710 700 770 660 720 700 ...
+##  $ satcomp: int  680 690 720 700 670 710 740 660 710 720 ...
+##  $ satlang: int  640 680 710 650 710 690 710 620 740 680 ...
+##  $ gender : Ord.factor w/ 2 levels &quot;1&quot;&lt;&quot;2&quot;: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+<pre class="r"><code>summary(both)</code></pre>
+<pre><code>##      satvoc       satcomp         satlang      gender 
+##  Min.   :540   Min.   :540.0   Min.   :530.0   1:999  
+##  1st Qu.:670   1st Qu.:660.0   1st Qu.:640.0   2:999  
+##  Median :700   Median :690.0   Median :660.0          
+##  Mean   :701   Mean   :688.7   Mean   :661.8          
+##  3rd Qu.:730   3rd Qu.:720.0   3rd Qu.:690.0          
+##  Max.   :850   Max.   :840.0   Max.   :780.0</code></pre>
+<p><br></p>
+</div>
+<div id="fit-the-model-to-the-data" class="section level3">
+<h3>Fit the model to the data</h3>
+<p>Next, we fit a multi-group CFA model to the data.</p>
+<p><img src="mean-structure-example_files/figure-html/unnamed-chunk-4-1.png" width="80%" /><img src="mean-structure-example_files/figure-html/unnamed-chunk-4-2.png" width="80%" /></p>
+<p>We use the following model syntax to specify our model. In order to force the latent variable to have a mean of zero in girls group (gender = 1) and a freely estimated mean in boys group (gender = 2), we multiply the intercept by a vector <code>c(0,NA)</code>. We also use the pre-multiplication method to constrain the factor loadings and indicator intercepts to be equal across groups.</p>
+<pre class="r"><code>mean.model &lt;- &#39;
+
+rprof =~ 1*satlang + c(a,a)*satvoc + c(b,b)*satcomp
+
+# mean structure 
+
+rprof ~ c(0,NA)*1
+satlang ~ c(c,c)*1
+satvoc ~ c(d,d)*1
+satcomp ~ c(e,e)*1
+
+# variances
+
+rprof ~~ rprof
+satlang ~~ satlang
+satvoc ~~ satvoc
+satcomp ~~ satcomp
+
+&#39;
+
+mean.fit &lt;- lavaan(mean.model, both, group = &quot;gender&quot;)
+summary(mean.fit, fit.measures = T, standardized = T)</code></pre>
+<pre><code>## lavaan 0.6-8 ended normally after 154 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        19
+##   Number of equality constraints                     5
+##                                                       
+##   Number of observations per group:                   
+##     1                                              999
+##     2                                              999
+##                                                       
+## Model Test User Model:
+##                                                       
+##   Test statistic                                 5.350
+##   Degrees of freedom                                 4
+##   P-value (Chi-square)                           0.253
+##   Test statistic for each group:
+##     1                                            2.194
+##     2                                            3.156
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                              3106.046
+##   Degrees of freedom                                 6
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    1.000
+##   Tucker-Lewis Index (TLI)                       0.999
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)             -29315.178
+##   Loglikelihood unrestricted model (H1)     -29312.502
+##                                                       
+##   Akaike (AIC)                               58658.355
+##   Bayesian (BIC)                             58736.754
+##   Sample-size adjusted Bayesian (BIC)        58692.275
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.018
+##   90 Percent confidence interval - lower         0.000
+##   90 Percent confidence interval - upper         0.054
+##   P-value RMSEA &lt;= 0.05                          0.921
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.012
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## 
+## Group 1 [1]:
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   rprof =~                                                              
+##     satlang           1.000                              28.243    0.737
+##     satvoc     (a)    1.434    0.038   37.957    0.000   40.512    0.883
+##     satcomp    (b)    1.241    0.033   38.068    0.000   35.059    0.884
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##     rprof             0.000                               0.000    0.000
+##    .satlang    (c)  668.238    1.099  607.903    0.000  668.238   17.447
+##    .satvoc     (d)  710.061    1.412  502.966    0.000  710.061   15.474
+##    .satcomp    (e)  696.623    1.220  571.073    0.000  696.623   17.561
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##     rprof           797.691   51.486   15.493    0.000    1.000    1.000
+##    .satlang         669.262   34.934   19.158    0.000  669.262    0.456
+##    .satvoc          464.487   40.101   11.583    0.000  464.487    0.221
+##    .satcomp         344.509   29.943   11.505    0.000  344.509    0.219
+## 
+## 
+## Group 2 [2]:
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   rprof =~                                                              
+##     satlang           1.000                              28.837    0.732
+##     satvoc     (a)    1.434    0.038   37.957    0.000   41.364    0.865
+##     satcomp    (b)    1.241    0.033   38.068    0.000   35.796    0.890
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##     rprof           -12.753    1.379   -9.252    0.000   -0.442   -0.442
+##    .satlang    (c)  668.238    1.099  607.903    0.000  668.238   16.959
+##    .satvoc     (d)  710.061    1.412  502.966    0.000  710.061   14.845
+##    .satcomp    (e)  696.623    1.220  571.073    0.000  696.623   17.327
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##     rprof           831.589   53.781   15.462    0.000    1.000    1.000
+##    .satlang         720.993   37.720   19.114    0.000  720.993    0.464
+##    .satvoc          576.727   45.233   12.750    0.000  576.727    0.252
+##    .satcomp         335.024   31.463   10.648    0.000  335.024    0.207</code></pre>
+<hr />
+</div>
+</div>
+<div id="example-2-multiple-latent-factors" class="section level2">
+<h2>Example 2: Multiple latent factors</h2>
+<div id="read-the-data-1" class="section level3">
+<h3>Read the data</h3>
+<p>The data for this example is saved in two txt files named “chinese_means.txt” and “korean_means.txt”, respectively. We need to combine them into a single data set and create a grouping variable “country”.</p>
+<pre class="r"><code>setwd(mypath)  # change it to the path of your own data folder
+
+chinese &lt;- read.delim(&quot;chinese_means.txt&quot;, sep = &quot;\t&quot;, header = F)
+korean &lt;- read.delim(&quot;korean_means.txt&quot;, sep = &quot;\t&quot;, header = F)
+
+chinese$country &lt;- 1
+korean$country &lt;- 2
+
+both.data &lt;- rbind(chinese, korean)
+both.data$country &lt;- ordered(both.data$country)
+
+colnames(both.data) &lt;- c(&#39;read1&#39;, &#39;read2&#39;, &#39;read3&#39;,&#39;list1&#39;,&#39;list2&#39;,&#39;list3&#39;,
+                         &#39;speak1&#39;,&#39;speak2&#39;,&#39;speak3&#39;, &#39;write1&#39;,&#39;write2&#39;,&#39;write3&#39;,&#39;country&#39;)
+
+# check the data
+str(both.data)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    182 obs. of  13 variables:
+##  $ read1  : int  10 11 11 20 21 10 5 4 12 25 ...
+##  $ read2  : int  10 8 21 17 17 16 11 7 19 26 ...
+##  $ read3  : int  14 23 1 23 19 14 11 12 16 23 ...
+##  $ list1  : int  14 5 11 13 13 8 14 10 10 21 ...
+##  $ list2  : int  17 13 8 19 12 7 21 15 12 16 ...
+##  $ list3  : int  12 12 4 19 12 6 19 12 12 21 ...
+##  $ speak1 : int  19 13 18 20 19 15 17 17 15 20 ...
+##  $ speak2 : int  15 14 17 18 19 15 15 19 18 23 ...
+##  $ speak3 : int  17 17 15 23 17 15 18 20 13 19 ...
+##  $ write1 : int  12 12 14 20 20 14 15 11 17 22 ...
+##  $ write2 : int  17 14 15 17 20 12 17 15 17 22 ...
+##  $ write3 : int  17 15 15 21 22 15 21 14 20 24 ...
+##  $ country: Ord.factor w/ 2 levels &quot;1&quot;&lt;&quot;2&quot;: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+<pre class="r"><code>summary(both.data)</code></pre>
+<pre><code>##      read1           read2           read3           list1           list2      
+##  Min.   : 3.00   Min.   : 2.00   Min.   : 1.00   Min.   : 1.00   Min.   : 0.00  
+##  1st Qu.:12.00   1st Qu.:14.00   1st Qu.:16.00   1st Qu.:12.00   1st Qu.:13.00  
+##  Median :18.00   Median :19.00   Median :20.00   Median :16.00   Median :17.00  
+##  Mean   :17.76   Mean   :18.83   Mean   :19.76   Mean   :15.92   Mean   :16.82  
+##  3rd Qu.:23.00   3rd Qu.:24.00   3rd Qu.:25.00   3rd Qu.:20.00   3rd Qu.:21.00  
+##  Max.   :30.00   Max.   :30.00   Max.   :30.00   Max.   :30.00   Max.   :30.00  
+##      list3           speak1          speak2          speak3          write1     
+##  Min.   : 1.00   Min.   : 0.00   Min.   : 5.00   Min.   : 9.00   Min.   : 7.00  
+##  1st Qu.:14.00   1st Qu.:15.00   1st Qu.:17.00   1st Qu.:17.00   1st Qu.:15.00  
+##  Median :18.00   Median :18.00   Median :18.00   Median :19.00   Median :20.00  
+##  Mean   :18.12   Mean   :18.08   Mean   :18.64   Mean   :19.17   Mean   :18.86  
+##  3rd Qu.:22.00   3rd Qu.:20.00   3rd Qu.:21.50   3rd Qu.:22.00   3rd Qu.:22.00  
+##  Max.   :30.00   Max.   :28.00   Max.   :29.00   Max.   :30.00   Max.   :30.00  
+##      write2          write3      country
+##  Min.   : 8.00   Min.   : 8.00   1:86   
+##  1st Qu.:17.00   1st Qu.:18.00   2:96   
+##  Median :21.00   Median :21.00          
+##  Mean   :19.79   Mean   :20.51          
+##  3rd Qu.:22.00   3rd Qu.:24.00          
+##  Max.   :29.00   Max.   :30.00</code></pre>
+<p><br></p>
+</div>
+<div id="fit-the-model-to-the-data-1" class="section level3">
+<h3>Fit the model to the data</h3>
+<p><img src="mean-structure-example_files/figure-html/unnamed-chunk-8-1.png" width="80%" /><img src="mean-structure-example_files/figure-html/unnamed-chunk-8-2.png" width="80%" /></p>
+<p>Next, we fit a multi-group CFA model to the data. We constrain the loadings and intercepts to be equal across groups using the <code>group.equal = c("loadings","intercepts")</code> argument in the fitting function. Again, we use the pre-multiplication method to tell <code>lavaan</code> that we want to fix the means of the latent variables in group 1 to be zero, and that we want the means in group 2 to be freely estimated.</p>
+<pre class="r"><code>multiple.model &lt;- &#39;
+
+# define latent variables
+
+read =~ 1*read1 + read2 + read3
+list =~ 1*list1 + list2 + list3
+speak =~ 1*speak1 + speak2 + speak3 
+write =~ 1*write1 + write2 + write3
+
+# variances 
+
+read ~~ read
+list ~~ list
+speak ~~ speak
+write ~~ write
+
+read1 ~~ read1
+read2 ~~ read2
+read3 ~~ read3
+list1 ~~ list1
+list2 ~~ list2
+list3 ~~ list3
+speak1 ~~ speak1
+speak2 ~~ speak2
+speak3 ~~ speak3
+write1 ~~ write1
+write2 ~~ write2
+write3 ~~ write3
+
+# covariances
+
+read ~~ list + speak + write
+list ~~ speak + write
+speak ~~ write
+
+read1 ~~ list1 + speak1 + write1
+read2 ~~ list2 + speak2 + write2
+read3 ~~ list3 + speak3 + write3
+list1 ~~ speak1 + write1
+list2 ~~ speak2 + write2
+list3 ~~ speak3 + write3
+speak1 ~~ write1
+speak2 ~~ write2
+speak3 ~~ write3
+
+# means
+
+read~c(0,NA)*1
+list~c(0,NA)*1
+speak~c(0,NA)*1
+write~c(0,NA)*1
+
+# intercepts
+
+read1~1
+read2~1
+read3~1
+list1~1
+list2~1
+list3~1
+speak1~1
+speak2~1
+speak3~1
+write1~1
+write2~1
+write3~1
+
+&#39;
+
+multiple.fit=lavaan(multiple.model,both.data,group=&quot;country&quot;, group.equal = c(&quot;loadings&quot;,&quot;intercepts&quot;))
+
+summary(multiple.fit, fit.measures = T, standardized = T)</code></pre>
+<pre><code>## lavaan 0.6-8 ended normally after 414 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                       124
+##   Number of equality constraints                    20
+##                                                       
+##   Number of observations per group:                   
+##     1                                               86
+##     2                                               96
+##                                                       
+## Model Test User Model:
+##                                                       
+##   Test statistic                                77.561
+##   Degrees of freedom                                76
+##   P-value (Chi-square)                           0.429
+##   Test statistic for each group:
+##     1                                           45.868
+##     2                                           31.693
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                              2147.146
+##   Degrees of freedom                               132
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    0.999
+##   Tucker-Lewis Index (TLI)                       0.999
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -5622.143
+##   Loglikelihood unrestricted model (H1)      -5583.363
+##                                                       
+##   Akaike (AIC)                               11452.286
+##   Bayesian (BIC)                             11785.503
+##   Sample-size adjusted Bayesian (BIC)        11456.122
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.015
+##   90 Percent confidence interval - lower         0.000
+##   90 Percent confidence interval - upper         0.062
+##   P-value RMSEA &lt;= 0.05                          0.857
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.045
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## 
+## Group 1 [1]:
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   read =~                                                               
+##     read1             1.000                               6.005    0.869
+##     read2   (.p2.)    1.008    0.057   17.702    0.000    6.055    0.863
+##     read3   (.p3.)    0.889    0.056   15.911    0.000    5.340    0.755
+##   list =~                                                               
+##     list1             1.000                               4.917    0.830
+##     list2   (.p5.)    0.983    0.074   13.371    0.000    4.833    0.746
+##     list3   (.p6.)    1.008    0.069   14.676    0.000    4.957    0.750
+##   speak =~                                                              
+##     speak1            1.000                               2.489    0.841
+##     speak2  (.p8.)    1.020    0.063   16.321    0.000    2.540    0.890
+##     speak3  (.p9.)    0.989    0.061   16.112    0.000    2.461    0.848
+##   write =~                                                              
+##     write1            1.000                               3.802    0.884
+##     write2  (.11.)    0.897    0.057   15.789    0.000    3.410    0.836
+##     write3  (.12.)    0.943    0.052   18.161    0.000    3.587    0.899
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   read ~~                                                               
+##     list             22.970    4.688    4.900    0.000    0.778    0.778
+##     speak             7.192    2.014    3.571    0.000    0.481    0.481
+##     write            19.551    3.585    5.454    0.000    0.856    0.856
+##   list ~~                                                               
+##     speak             9.212    1.934    4.762    0.000    0.753    0.753
+##     write            16.505    3.055    5.403    0.000    0.883    0.883
+##   speak ~~                                                              
+##     write             7.378    1.468    5.025    0.000    0.780    0.780
+##  .read1 ~~                                                              
+##    .list1             3.071    1.849    1.661    0.097    3.071    0.272
+##    .speak1            0.673    0.815    0.825    0.409    0.673    0.123
+##    .write1            0.579    1.093    0.530    0.596    0.579    0.084
+##  .read2 ~~                                                              
+##    .list2             2.117    2.232    0.948    0.343    2.117    0.139
+##    .speak2            0.605    0.759    0.796    0.426    0.605    0.131
+##    .write2            0.024    1.162    0.020    0.984    0.024    0.003
+##  .read3 ~~                                                              
+##    .list3            10.457    2.840    3.682    0.000   10.457    0.516
+##    .speak3            1.311    0.952    1.378    0.168    1.311    0.184
+##    .write3            2.066    1.157    1.785    0.074    2.066    0.255
+##  .list1 ~~                                                              
+##    .speak1            2.279    0.805    2.833    0.005    2.279    0.430
+##    .write1            1.370    1.013    1.352    0.176    1.370    0.206
+##  .list2 ~~                                                              
+##    .speak2           -0.961    0.839   -1.145    0.252   -0.961   -0.171
+##    .write2           -1.785    1.273   -1.402    0.161   -1.785   -0.185
+##  .list3 ~~                                                              
+##    .speak3            1.165    0.919    1.267    0.205    1.165    0.173
+##    .write3            1.641    1.095    1.499    0.134    1.641    0.215
+##  .speak1 ~~                                                             
+##    .write1            1.344    0.485    2.770    0.006    1.344    0.418
+##  .speak2 ~~                                                             
+##    .write2           -0.322    0.443   -0.727    0.467   -0.322   -0.110
+##  .speak3 ~~                                                             
+##    .write3            0.099    0.401    0.247    0.805    0.099    0.037
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##     read              0.000                               0.000    0.000
+##     list              0.000                               0.000    0.000
+##     speak             0.000                               0.000    0.000
+##     write             0.000                               0.000    0.000
+##    .read1   (.57.)   16.159    0.712   22.703    0.000   16.159    2.339
+##    .read2   (.58.)   17.285    0.717   24.108    0.000   17.285    2.463
+##    .read3   (.59.)   18.103    0.657   27.547    0.000   18.103    2.561
+##    .list1   (.60.)   14.097    0.609   23.132    0.000   14.097    2.379
+##    .list2   (.61.)   15.245    0.625   24.409    0.000   15.245    2.355
+##    .list3   (.62.)   16.007    0.629   25.467    0.000   16.007    2.421
+##    .speak1  (.63.)   17.670    0.307   57.505    0.000   17.670    5.969
+##    .speak2  (.64.)   18.152    0.300   60.591    0.000   18.152    6.356
+##    .speak3  (.65.)   18.661    0.298   62.675    0.000   18.661    6.429
+##    .write1  (.66.)   18.240    0.449   40.669    0.000   18.240    4.242
+##    .write2  (.67.)   19.220    0.414   46.472    0.000   19.220    4.711
+##    .write3  (.68.)   19.922    0.418   47.670    0.000   19.922    4.993
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##     read             36.064    6.641    5.431    0.000    1.000    1.000
+##     list             24.181    4.724    5.119    0.000    1.000    1.000
+##     speak             6.197    1.157    5.356    0.000    1.000    1.000
+##     write            14.457    2.588    5.585    0.000    1.000    1.000
+##    .read1            11.663    2.726    4.279    0.000   11.663    0.244
+##    .read2            12.580    2.848    4.416    0.000   12.580    0.255
+##    .read3            21.466    3.794    5.657    0.000   21.466    0.429
+##    .list1            10.927    2.345    4.660    0.000   10.927    0.311
+##    .list2            18.559    3.440    5.396    0.000   18.559    0.443
+##    .list3            19.137    3.461    5.530    0.000   19.137    0.438
+##    .speak1            2.565    0.502    5.112    0.000    2.565    0.293
+##    .speak2            1.703    0.423    4.023    0.000    1.703    0.209
+##    .speak3            2.367    0.479    4.942    0.000    2.367    0.281
+##    .write1            4.030    0.829    4.864    0.000    4.030    0.218
+##    .write2            5.018    0.941    5.331    0.000    5.018    0.301
+##    .write3            3.052    0.661    4.616    0.000    3.052    0.192
+## 
+## 
+## Group 2 [2]:
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   read =~                                                               
+##     read1             1.000                               5.673    0.883
+##     read2   (.p2.)    1.008    0.057   17.702    0.000    5.720    0.932
+##     read3   (.p3.)    0.889    0.056   15.911    0.000    5.044    0.891
+##   list =~                                                               
+##     list1             1.000                               5.333    0.813
+##     list2   (.p5.)    0.983    0.074   13.371    0.000    5.241    0.857
+##     list3   (.p6.)    1.008    0.069   14.676    0.000    5.376    0.922
+##   speak =~                                                              
+##     speak1            1.000                               4.094    0.832
+##     speak2  (.p8.)    1.020    0.063   16.321    0.000    4.178    0.930
+##     speak3  (.p9.)    0.989    0.061   16.112    0.000    4.048    0.934
+##   write =~                                                              
+##     write1            1.000                               4.413    0.886
+##     write2  (.11.)    0.897    0.057   15.789    0.000    3.958    0.848
+##     write3  (.12.)    0.943    0.052   18.161    0.000    4.164    0.900
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   read ~~                                                               
+##     list             24.198    4.512    5.363    0.000    0.800    0.800
+##     speak            14.398    3.039    4.738    0.000    0.620    0.620
+##     write            20.370    3.594    5.668    0.000    0.814    0.814
+##   list ~~                                                               
+##     speak            18.848    3.397    5.548    0.000    0.863    0.863
+##     write            20.552    3.659    5.617    0.000    0.873    0.873
+##   speak ~~                                                              
+##     write            16.131    2.827    5.707    0.000    0.893    0.893
+##  .read1 ~~                                                              
+##    .list1             1.988    1.455    1.366    0.172    1.988    0.173
+##    .speak1           -1.509    1.026   -1.471    0.141   -1.509   -0.183
+##    .write1           -0.727    0.918   -0.792    0.429   -0.727   -0.105
+##  .read2 ~~                                                              
+##    .list2             0.222    1.060    0.209    0.834    0.222    0.032
+##    .speak2            0.197    0.615    0.320    0.749    0.197    0.054
+##    .write2            0.990    0.816    1.212    0.225    0.990    0.180
+##  .read3 ~~                                                              
+##    .list3             1.453    0.915    1.588    0.112    1.453    0.249
+##    .speak3           -0.183    0.605   -0.302    0.762   -0.183   -0.046
+##    .write3            0.421    0.727    0.580    0.562    0.421    0.081
+##  .list1 ~~                                                              
+##    .speak1            1.241    1.224    1.015    0.310    1.241    0.119
+##    .write1            2.500    1.128    2.217    0.027    2.500    0.283
+##  .list2 ~~                                                              
+##    .speak2           -0.541    0.757   -0.714    0.475   -0.541   -0.104
+##    .write2            0.270    0.973    0.277    0.782    0.270    0.035
+##  .list3 ~~                                                              
+##    .speak3            0.135    0.621    0.217    0.828    0.135    0.039
+##    .write3           -0.491    0.715   -0.686    0.493   -0.491   -0.108
+##  .speak1 ~~                                                             
+##    .write1            2.751    0.841    3.270    0.001    2.751    0.436
+##  .speak2 ~~                                                             
+##    .write2            0.612    0.586    1.043    0.297    0.612    0.150
+##  .speak3 ~~                                                             
+##    .write3           -0.304    0.499   -0.610    0.542   -0.304   -0.098
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##     read              3.018    0.920    3.280    0.001    0.532    0.532
+##     list              3.291    0.828    3.973    0.000    0.617    0.617
+##     speak             0.909    0.517    1.757    0.079    0.222    0.222
+##     write             1.136    0.637    1.784    0.074    0.257    0.257
+##    .read1   (.57.)   16.159    0.712   22.703    0.000   16.159    2.516
+##    .read2   (.58.)   17.285    0.717   24.108    0.000   17.285    2.817
+##    .read3   (.59.)   18.103    0.657   27.547    0.000   18.103    3.197
+##    .list1   (.60.)   14.097    0.609   23.132    0.000   14.097    2.149
+##    .list2   (.61.)   15.245    0.625   24.409    0.000   15.245    2.494
+##    .list3   (.62.)   16.007    0.629   25.467    0.000   16.007    2.744
+##    .speak1  (.63.)   17.670    0.307   57.505    0.000   17.670    3.589
+##    .speak2  (.64.)   18.152    0.300   60.591    0.000   18.152    4.040
+##    .speak3  (.65.)   18.661    0.298   62.675    0.000   18.661    4.307
+##    .write1  (.66.)   18.240    0.449   40.669    0.000   18.240    3.662
+##    .write2  (.67.)   19.220    0.414   46.472    0.000   19.220    4.117
+##    .write3  (.68.)   19.922    0.418   47.670    0.000   19.922    4.309
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##     read             32.179    5.542    5.806    0.000    1.000    1.000
+##     list             28.438    5.337    5.329    0.000    1.000    1.000
+##     speak            16.763    3.024    5.544    0.000    1.000    1.000
+##     write            19.478    3.311    5.884    0.000    1.000    1.000
+##    .read1             9.055    1.731    5.231    0.000    9.055    0.220
+##    .read2             4.934    1.287    3.835    0.000    4.934    0.131
+##    .read3             6.631    1.297    5.111    0.000    6.631    0.207
+##    .list1            14.595    2.427    6.013    0.000   14.595    0.339
+##    .list2             9.901    1.812    5.465    0.000    9.901    0.265
+##    .list3             5.118    1.276    4.009    0.000    5.118    0.150
+##    .speak1            7.478    1.221    6.127    0.000    7.478    0.308
+##    .speak2            2.729    0.652    4.188    0.000    2.729    0.135
+##    .speak3            2.392    0.608    3.937    0.000    2.392    0.127
+##    .write1            5.333    1.003    5.319    0.000    5.333    0.215
+##    .write2            6.133    1.051    5.835    0.000    6.133    0.281
+##    .write3            4.043    0.824    4.904    0.000    4.043    0.189</code></pre>
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+
+</div>
+</div>
+</div>
+
+<hr>
+© Copyright 2021 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

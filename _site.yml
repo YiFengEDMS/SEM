@@ -1,0 +1,96 @@
+name: "lavaan tutorials for the SEM short course taught by Dr. Greg Hancock"
+navbar:
+  type: inverse 
+  title: "HOME"
+  left:
+    - text: "In-class Examples"
+      menu:
+      - text: MLR Path Analysis
+        href: mlr-example.html      
+      - text: Measured Variable Path Analysis
+        href: mvpa-example.html
+      - text: Confirmatory Factor Analysis
+        href: cfa-example-v2.html
+      - text: Multitrait-Multimethod Analysis
+        href: mtmm-example.html
+      - text: Scale Reliability
+        href: reliability.html         
+      - text: Latent Path Analysis
+        href: latent-pa-example.html 
+      - text: Multi-group Analysis
+        href: mg-example.html
+      # - text: Missing Data
+      #   href: missing-data-example.html 
+      # - text: Nonnormal Continuous Data
+      #   href: nonnormal-data-example.html 
+      # - text: Ordered Categorical Data
+      #   href: ordered-categorical-data-example.html 
+      # - text: Complex Sampling
+      #   href: complex-multilevel-example.html 
+      # - text: Group Code Analysis
+      #   href: mimic-example.html  
+      # - text: Mean Structure Modeling
+      #   href: mean-structure-example.html   
+      # - text: Repeated Measure Means Models
+      #   href: repeated-means-example.html      
+      # - text: Latent Variable Moderation
+      #   href: interaction-example.html    
+      # - text: Latent Growth Models
+      #   href: lgm-example.html     
+      # - text: Latent Growth Models Extensions
+      #   href: lgm-extension-example.html 
+      # - text: Monte Carlo Power Methods
+      #   href: power-example.html         
+    - text: "Exercise Solutions"
+      menu:
+      - text: Path Analysis Exercise
+        href: mvpa-exercise.html
+      - text: Mediation Exercise
+        href: mediation-exercise.html 
+      - text: APIM Exercise
+        href: APIM-exercise.html       
+      - text: CFA Exercise
+        href: cfa-exercise-v2.html
+      - text: Residualized CFA Exercise
+        href: residualized-cfa-exercise.html
+      - text: Scale Reliability Exercise
+        href: reliability_exercise.html
+      - text: Latent Path Analysis Exercise
+        href: latent-pa-exercise.html 
+      - text: Two-step SEM Exercise
+        href: latent-pa-2step-exercise.html      
+      - text: Multi-group CFA Exercise
+        href: mg-cfa-exercise-2.html     
+      # - text: Structured Means Analysis Exercise
+      #   href: mean-structure-exercise.html  
+      # - text: Repeated Measure Means Exercise
+      #   href: repeated-means-exercise.html 
+      # - text: Latent Interaction Exercise
+      #   href: interaction-exercise.html   
+      # - text: Latent Growth Models Exercise
+      #   href: lgm-exercise.html    
+      # - text: Conditional Latent Growth Models Exercise
+      #   href: conditional-lgm-exercise.html  
+      # - text: Power Analysis
+      #   href: power-exercise.html         
+    - text: "Exercise Solutions-DEMO"
+      menu:
+      - text: CFA Exercise-DEMO
+        href: cfa-exercise-DEMO.html
+      - text: Latent Path Analysis Exercise-DEMO
+        href: latent-pa-exercise-DEMO.html 
+      - text: Multi-group CFA Exercise-DEMO
+        href: mg-cfa-exercise-DEMO.html
+      # - text: Repeated Measure Means Exercise-DEMO
+      #   href: repeated-means-exercise-DEMO.html 
+    - text: "Tutorial Videos"
+      href: Videos.html  
+    - text: "Resources"
+      href: resources.html
+output_dir: "."
+output:
+  html_document:
+    theme: yeti
+#    highlight: kate
+    include:
+      after_body: _footer.html

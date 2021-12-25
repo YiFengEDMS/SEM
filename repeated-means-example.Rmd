@@ -1,0 +1,267 @@
+---
+title: "Mean Structure Modeling"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+---
+
+In this tutorial, we are going to use `lavaan` for repeated measure means models. 
+
+## Load the pacakges
+
+```{r, message=FALSE, warning=FALSE}
+library(lavaan)
+library(semPlot)
+```
+
+<br>
+
+## Example 1: Two time points 
+
+### Read the data
+
+This example corresponds to the Duncan & Stoolmiller (1993) example in your course slides. We have the sample means, standard deviations, and correlation matrix of the data. We first convert the correlation matrix to variance-covariance matrix. 
+
+
+```{r}
+cormat <- "
+1.000
+.812 1.000
+.819 .752 1.000
+.672 .616 .621 1.000
+.464 .620 .514 .680 1.000
+.612 .640 .719 .819 .676 1.000
+"
+
+sdev <- c(2.46, 1.76, 2.74, 2.63, 1.89, 2.84)
+smean <- c(10.96, 11.83, 9.90, 11.03, 12.14, 10.12)
+
+Cmat <- getCov(cormat)
+Dmat <- diag(sdev)
+covmat <- Dmat %*% Cmat %*% Dmat
+
+colnames(covmat) <- paste0("v", 1:6)
+```
+
+<br>
+
+
+### Fit the model to the data
+
+Next, we fit a multi-group CFA model to the data. 
+
+```{r, echo = F, warnings = F, message = F, out.width='80%'}
+
+repeat.model='
+socsupp1=~1*v1+a*v2+b*v3
+socsupp2=~1*v4+a*v5+b*v6
+v1~~v4
+v2~~v5
+v3~~v6
+
+v1~c*1
+v2~d*1
+v3~e*1
+v4~c*1
+v5~d*1
+v6~e*1
+
+socsupp1~0*1
+socsupp2~NA*1
+
+
+'
+
+repeat.fit <- sem(repeat.model,sample.cov=covmat,sample.nobs=84,sample.mean=smean)
+#summary(repeat.fit,fit.measures=T)
+
+semPaths(repeat.fit, title = T, curvePivot = TRUE, intercepts = T, ask = FALSE, edge.label.cex = 1, sizeMan = 10, title.cex = 2, sizeLat = 10, sizeInt2 = 8, sizeInt = 8, whatLabels = "omit")
+
+```
+
+
+We use the following model syntax to specify our model. We use the same parameter labels to contrain the corresponding factor loadings and intercepts to be equal across time points.
+
+Because we are using the variance-covariance matrix as the input data, we need to add the `sample.mean = ` argument to supply the sample means.
+
+```{r}
+
+repeat.model <- '
+
+# measurement model 
+
+socsupp1 =~ 1*v1 + a*v2 + b*v3
+socsupp2 =~ 1*v4 + a*v5 + b*v6
+
+# residual covariances
+ 
+v1 ~~ v4
+v2 ~~ v5
+v3 ~~ v6
+
+# intercepts
+
+v1 ~ c*1
+v2 ~ d*1
+v3 ~ e*1
+v4 ~ c*1
+v5 ~ d*1
+v6 ~ e*1
+ 
+# means of latent factors
+
+socsupp1 ~ 0*1
+socsupp2 ~ NA*1
+
+'
+
+repeat.fit <- sem(repeat.model, sample.cov = covmat, sample.nobs = 84, sample.mean = smean)
+summary(repeat.fit, fit.measures=T)
+
+```
+
+---
+
+## Example 2: More than two time points
+
+### Read the data
+
+The data for this example is saved in a txt file named "latent_means2_data.txt".
+
+
+```{r,echo=F}
+
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/SEM2019/SEM Second Course Mplus 2019/Advanced Examples/3. Means Examples"
+
+```
+
+```{r}
+setwd(mypath)  # change it to the path of your own data folder
+
+data2 <- read.delim("latent_means2_data.txt", sep = "\t", header = F)
+
+colnames(data2) <- c('read1', 'read2', 'read3', 'list1', 'list2', 'list3',
+                     'speak1', 'speak2','speak3', 'write1', 'write2', 'write3')
+
+
+# check the data
+str(data2)
+summary(data2)
+
+```
+
+<br>
+
+
+### Fit the model to the data
+
+
+```{r, echo = F, warnings = F, message = F, out.width='80%'}
+
+model2='
+
+english1=~1*read1+a*list1+b*speak1+c*write1
+english2=~1*read2+a*list2+b*speak2+c*write2
+english3=~1*read3+a*list3+b*speak3+c*write3
+
+read1~~read2+read3
+read2~~read3
+list1~~list2+list3
+list2~~list3
+speak1~~speak2+speak3
+speak2~~speak3
+write1~~write2+write3
+write2~~write3
+
+read1~d*1
+read2~d*1
+read3~d*1
+list1~e*1
+list2~e*1
+list3~e*1
+speak1~f*1
+speak2~f*1
+speak3~f*1
+write1~g*1
+write2~g*1
+write3~g*1
+
+english1~0*1
+english2~c(NA,h)*1
+english3~c(NA,j)*1
+
+diff:=h-j
+
+'
+
+fit2=sem(model2,data2)
+#summary(fit2,fit.measures=T,standardized=T)
+
+semPaths(fit2, title = T, curvePivot = TRUE, intercepts = T, ask = FALSE, edge.label.cex = 1, sizeMan = 5, title.cex = 2, sizeLat = 10, sizeInt2 = 5, sizeInt = 5, whatLabels = "omit")
+
+```
+
+
+We use the following model syntax to specify the model. As in the previous example, we specify the parameter labels to impose the equality constraints. Additionally, when we write the means formulas for the latent factors, we used a vector such as `c(NA,h)` as the multiplier, instead of a single character string. It is used because we want to give the parameter a label while allowing it to be freely estimated. Later, we used the parameter labels to create a new parameter that reflects the difference between the latent factor mean at time 2 vs. the latent factor mean at time 3 `diff:=h-j`. 
+
+```{r}
+
+model2 <- '
+
+# measurement model 
+
+english1 =~ 1*read1 + a*list1 + b*speak1 + c*write1
+english2 =~ 1*read2 + a*list2 + b*speak2 + c*write2
+english3 =~ 1*read3 + a*list3 + b*speak3 + c*write3
+
+# covariances
+
+read1 ~~ read2 + read3
+read2 ~~ read3 
+list1 ~~ list2 + list3
+list2 ~~ list3 
+speak1 ~~ speak2 + speak3
+speak2 ~~ speak3
+write1 ~~ write2 + write3
+write2 ~~ write3
+
+# intercepts
+
+read1 ~ d*1
+read2 ~ d*1
+read3 ~ d*1
+list1 ~ e*1
+list2 ~ e*1
+list3 ~ e*1
+speak1 ~ f*1
+speak2 ~ f*1
+speak3 ~ f*1
+write1 ~ g*1
+write2 ~ g*1
+write3 ~ g*1
+
+
+# means
+
+english1 ~ 0*1
+english2 ~ c(NA,h)*1
+english3 ~ c(NA,j)*1
+
+# difference between means
+
+diff := h - j
+
+'
+
+fit2 <- sem(model2, data2)
+summary(fit2, fit.measures = T, standardized = T)
+
+
+```
+
+
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

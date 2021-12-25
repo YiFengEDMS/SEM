@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Tutorials: SEM with lavaan in R</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">HOME</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    In-class Examples
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mlr-example.html">MLR Path Analysis</a>
+    </li>
+    <li>
+      <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
+    </li>
+    <li>
+      <a href="mtmm-example.html">Multitrait-Multimethod Analysis</a>
+    </li>
+    <li>
+      <a href="reliability.html">Scale Reliability</a>
+    </li>
+    <li>
+      <a href="latent-pa-example.html">Latent Path Analysis</a>
+    </li>
+    <li>
+      <a href="mg-example.html">Multi-group Analysis</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mvpa-exercise.html">Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="mediation-exercise.html">Mediation Exercise</a>
+    </li>
+    <li>
+      <a href="APIM-exercise.html">APIM Exercise</a>
+    </li>
+    <li>
+      <a href="cfa-exercise-v2.html">CFA Exercise</a>
+    </li>
+    <li>
+      <a href="residualized-cfa-exercise.html">Residualized CFA Exercise</a>
+    </li>
+    <li>
+      <a href="reliability_exercise.html">Scale Reliability Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise.html">Latent Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-2step-exercise.html">Two-step SEM Exercise</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-2.html">Multi-group CFA Exercise</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions-DEMO
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="cfa-exercise-DEMO.html">CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise-DEMO.html">Latent Path Analysis Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-DEMO.html">Multi-group CFA Exercise-DEMO</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Videos.html">Tutorial Videos</a>
+</li>
+<li>
+  <a href="resources.html">Resources</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Tutorials: SEM with lavaan in R</h1>
+<h4 class="author"><a href="https://terpconnect.umd.edu/~yifeng94/">Yi Feng</a> &amp; <a href="https://education.umd.edu/directory/gregory-r-hancock">Gregory R. Hancock</a></h4>
+<address class="author_afil">
+<a href="https://education.umd.edu/measurement-statistics-evaluation-program">Program in Measurement, Statistics and Evaluation</a><br>
+</div>
+
+
+<hr />
+<p>Hi there, welcome. This website supplies the supplementary materials for the structural equation modeling(SEM) courses taught by <a href="https://education.umd.edu/directory/gregory-r-hancock">Dr. Gregory R. Hancock</a>. Dr. Hancock teaches <a href="https://education.umd.edu/measurement-statistics-evaluation-program#workshops">winter short courses on SEM</a> as well as <a href="https://www.testudo.umd.edu/">EDMS722 Structural Equation Modeling</a> at University of Maryland, College Park.</p>
+<p>In class, you have already gained a good knowledge about how to use <a href="https://www.statmodel.com/">M<em>plus</em></a> with a variety of models. Here we are going to introduce you to another useful tool that can be used to conduct latent variable analysis: <a href="http://lavaan.ugent.be/tutorial/index.html"><code>lavvan</code></a>.</p>
+<p><code>lavaan</code> is a free open-source package in R that is developed for latent variable modeling. <code>lavaan</code> is a powerful tool that can accomodate most of the models you have learned in this course. The authors of <code>lavaan</code> package has developed a series of <a href="http://lavaan.ugent.be/tutorial/index.html">tutorials</a> for <code>lavaan</code> users. We would recommend you to go over their tutorials if you are new to <code>lavaan</code>. After all, the developers have the best knowledge of their software package.</p>
+<p>The tutorials we supply here are all based on the examples and exercises you have already seen in class, where you have practiced with Mplus. We will walk you through these examples using <code>lavaan</code> in our tutorials. Both Mplus and <code>lavaan</code> are great tools for SEM. We provide the <code>lavaan</code> tutorials here with the hope to help you better learn about SEM in this course. First, with the tutorial materials available, you can better focus on the more important contents when you are in the class. It can be frustrating and distracting when you want to focus on the lectures while R is yelling at you with some error message. We want to take that burden off you so you can enjoy your class time better. Actually, once you have had a solid grasp on the mechanisms of SEM, it will not be too difficult to translate your knowledge to a software language (Mplus, lavaan, LISREL, OpenMx, STATA…). Providing the <code>lavaan</code> materials here, in addition to the Mplus materials you have learned in class, we wish to add to your toolkit by showing you how to use <code>lavaan</code>, such that you will have an additional (free) tool at your disposal when you need to employ SEM in your own research projects.</p>
+<hr />
+<p><strong>To get you started:</strong></p>
+<p>Before we get started, please make sure you have installed R or RStuido, as well as the <code>lavaan</code> package on your device.</p>
+<ol style="list-style-type: decimal">
+<li>Install the latest version of <a href="https://www.rstudio.com/products/rstudio/download/">RStudio</a> or <a href="https://cran.r-project.org/">R</a>.</li>
+<li>Install <a href="http://lavaan.ugent.be/tutorial/install.html"><code>lavaan</code></a> from CRAN.</li>
+</ol>
+<pre class="r"><code>install.packages(&quot;lavaan&quot;, dependencies=TRUE)
+library(lavaan)</code></pre>
+<p><strong>Important</strong></p>
+<p>Please make sure you have correctly set up your working directory to where your data are stored. To see your current working directory:</p>
+<pre class="r"><code>getwd()</code></pre>
+<p>To change your working directory, you can either use the <code>setwd()</code> function, or click the “Session –&gt; Set Working Directory” button in the menu.</p>
+<pre class="r"><code>mypath &lt;- &quot;/SEM Second Course Mplus 2019/Advanced Examples/5. Growth Examples&quot;
+setwd(mypath)</code></pre>
+<hr />
+<!--
+## **First Course**
+-->
+<p><strong>In-class Examples</strong></p>
+<ol style="list-style-type: decimal">
+<li><a href="mlr-example.html">MLR Path Analysis</a></li>
+<li><a href="mvpa-example.html">Measured Variable Path Analysis</a></li>
+<li><a href="cfa-example-v2.html">Confirmatory Factor Analysis</a></li>
+<li><a href="mtmm-example.html">Multitrait-Multimethod Analysis</a></li>
+<li><a href="reliability.html">Scale Reliability</a></li>
+<li><a href="latent-pa-example.html">Latent Path Analysis</a></li>
+<li><a href="mg-example.html">Multi-group Analysis</a></li>
+</ol>
+<p><strong>Hands-on Exercises</strong></p>
+<ol style="list-style-type: decimal">
+<li><a href="mvpa-exercise.html">Path Analysis Exercise</a></li>
+<li><a href="mediation-exercise.html">Mediation Exercise</a></li>
+<li><a href="APIM-exercise.html">APIM Exercise</a></li>
+<li><a href="cfa-exercise-v2.html">CFA Exercise</a></li>
+<li><a href="residualized-cfa-exercise.html">Residualized CFA Exercise</a></li>
+<li><a href="reliability_exercise.html">Scale Reliability</a></li>
+<li><a href="latent-pa-exercise.html">Latent Path Analysis Exercise</a></li>
+<li><a href="latent-pa-2step-exercise.html">Two-step SEM Exercise</a></li>
+<li><a href="mg-cfa-exercise-2.html">Multi-group CFA Exercise</a></li>
+</ol>
+<div id="section" class="section level2">
+<h2><!--
+--- 
+
+## **Second Course**:
+
+**In-class Examples**
+
+1. [Missing Data](missing-data-example.html) 
+1. [Nonnormal Continuous Data](nonnormal-data-example.html)
+1. [Ordered Categorical Data](ordered-categorical-data-example.html)
+1. [Complex Sampling](complex-multilevel-example.html)
+1. [Group Code Analysis](mimic-example.html)
+1. [Mean Structure Modeling](mean-structure-example.html)
+1. [Repeated Measure Means Models](repeated-means-example.html)
+1. [Latent Variable Moderation](interaction-example.html)
+1. [Latent Growth Models](lgm-example.html)
+1. [Latent Growth Models Extensions](lgm-extension-example.html)
+1. [Monte Carlo Power Methods](power-example.html)
+
+
+**Hands-on Exercises**
+
+1. [Structured Means Analysis Exercise](mean-structure-exercise.html)
+1. [Repeated Measure Means Exercise](repeated-means-exercise.html) 
+1. [Latent Interaction Exercise](interaction-exercise.html)
+1. [Latent Growth Models Exercise](lgm-exercise.html)
+1. [Conditional Latent Growth Models Exercise](conditional-lgm-exercise.html)
+1. [Power Analysis](power-exercise.html)
+
+--></h2>
+<p>If you only have access to the Mplus Demo version and you are seeking for parallel R code for the corresponding exercises, please refer to “Exercise Solutions-DEMO”.</p>
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+
+</div>
+</div>
+
+<hr>
+© Copyright 2022 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

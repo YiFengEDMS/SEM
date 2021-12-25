@@ -1,0 +1,84 @@
+---
+title: "CFA Exercise"
+output:
+  html_document:
+    toc: true
+    toc_float: false
+    toc_depth: 4
+---
+
+```{r,echo=FALSE}
+library(lavaan)
+
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/SEM2019/SEM First Course Mplus 2019/Mplus Examples"
+setwd(mypath)  # change it to the path of your own data folder
+data <- read.table("proficiencyraw-female.csv", sep=",", header=F)
+
+# give variable names
+colnames(data) <- c(paste0("goals",1:6), 
+                    paste0("rsc",1:5), 
+                    paste0("hsc",1:5), 
+                    paste0("msc",1:5), 
+                    paste0("ssc",1:5), 
+                    "SATvoc", 
+                    "SATcomp", 
+                    "SATlang", 
+                    "SATmath", 
+                    "SATprob", 
+                    "SATproc")
+
+```
+
+
+```{r}
+cfa.Model.4 <- '
+RSC=~NA*rsc1+rsc2+rsc3
+HSC=~NA*hsc1+hsc2+hsc3
+MSC=~NA*msc1+msc2+msc3
+SSC=~NA*ssc1+ssc2+ssc3
+
+RSC~~1*RSC
+HSC~~1*HSC
+MSC~~1*MSC
+SSC~~1*SSC
+
+VERBAL=~NA*rsc1+rsc2+rsc3+hsc1+hsc2+hsc3
+VERBAL~~1*VERBAL
+QUANT=~NA*msc1+msc2+msc3+ssc1+ssc2+ssc3
+QUANT~~1*QUANT
+VERBAL~~0*RSC+0*HSC+0*MSC+0*SSC    
+QUANT~~0*RSC+0*HSC+0*MSC+0*SSC
+
+rsc1~1
+rsc2~1
+rsc3~1
+hsc1~1
+hsc2~1
+hsc3~1
+msc1~1
+msc2~1
+msc3~1
+ssc1~1
+ssc2~1
+ssc3~1
+
+
+rsc1~~hsc1+msc1+ssc1
+rsc2~~hsc2+msc2+ssc2
+rsc3~~hsc3+msc3+ssc3
+
+hsc1~~msc1+ssc1
+hsc2~~msc2+ssc2
+hsc3~~msc3+ssc3
+
+msc1~~ssc1
+msc2~~ssc2
+msc3~~ssc3
+
+'
+
+cfa.Fit.4 <- sem(cfa.Model.4, data = data)
+summary(cfa.Fit.4, fit.measures = T, standardized=T)
+
+```
+

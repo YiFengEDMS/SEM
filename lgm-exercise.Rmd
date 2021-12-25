@@ -1,0 +1,41 @@
+---
+title: "Latent Growth Models Exercise"
+output:
+  html_document:
+    toc: true
+    toc_float: false
+    toc_depth: 4
+---
+
+```{r, message = F, warning = F}
+library(lavaan)
+
+cormat <- '
+1.000
+0.725 1.000
+0.595 0.705 1.000
+0.566 0.624 0.706 1.000
+'
+
+smeans <- c(1.338,1.591,2.019,2.364)
+sdev <- c(1.260,1.334,1.440,1.376)
+
+Cmat <- getCov(cormat)
+Dmat <- diag(sdev)
+covmat <- Dmat %*% Cmat %*% Dmat
+
+colnames(covmat) <- c('alc12', 'alc14', 'alc16', 'alc18')
+rownames(covmat) <- colnames(covmat)
+
+linear.model <- '
+final =~ 1*alc12 + 1*alc14 + 1*alc16 + 1*alc18
+slope =~ (-6)*alc12 + (-4)*alc14 + (-2)*alc16 + 0*alc18
+
+alc14 ~~ alc16
+'
+
+linear.fit <- growth(linear.model, sample.cov = covmat, sample.mean = smeans, sample.nobs = 357)
+summary(linear.fit, fit.measures = T, standardized = T)
+
+```
+

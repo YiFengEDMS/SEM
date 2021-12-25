@@ -1,0 +1,43 @@
+---
+title: "APIM Exercise"
+output:
+  html_document:
+    toc: true
+    toc_float: false
+    toc_depth: 4
+---
+
+```{r, include=FALSE, message = F, warning = F}
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/General/CILVR 2020-2021/Hancock-SEM/Code Files/Hancock_SEM1_Mplus_files/2b. Path Analysis Extensions/2b.Solutions"
+library(lavaan)
+```
+
+```{r, message = F}
+setwd(mypath)
+
+dat <- read.table("APIM_exercise_data.txt", sep = "\t", header = F)
+colnames(dat) <- c("momperc1", "momperc2", "kidach1", "kidach2")
+
+apim_mod <- '
+  momperc2 ~ a1*momperc1 + p21*kidach1
+  kidach2 ~ a2*kidach1 + p12*momperc1
+  momperc1 ~~ kidach1
+  momperc2 ~~ kidach2
+  
+# MODEL CONSTRAINTS
+
+ a1a2 := a1 - a2
+ p12p21 := p12 - p21
+ a1p21 := a1 - p21
+ a2p12 := a2 - p12
+ a1p12 := a1 - p12
+ a2p21 := a2 - p21
+
+
+'
+
+apim_fit <- sem(apim_mod, data = dat)
+summary(apim_fit, fit.measures = T, standardized = T)
+
+```
+

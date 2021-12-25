@@ -1,0 +1,53 @@
+---
+title: "Latent Path Analysis Exercise-DEMO"
+output:
+  html_document:
+    toc: true
+    toc_float: false
+    toc_depth: 4
+---
+
+```{r, message = F, warning = F}
+library(lavaan)
+
+cormat <- '
+1.000       
+0.418 1.000      
+0.394 0.627 1.000     
+0.129 0.202 0.266 1.000    
+0.189 0.284 0.208 0.365 1.000   
+0.544 0.281 0.324 0.201 0.161 1.000  
+0.507 0.225 0.314 0.172 0.174 0.546 1.000 
+-0.357 -0.156 -0.038 -0.199 -0.277 -0.294 -0.174 1.000
+'
+
+sdev <- c(2.090, 3.430, 2.810, 1.950, 2.060, 2.160, 2.060, 3.650)
+
+Cmat <- getCov(cormat)
+Dmat <- diag(sdev)
+covmat <- Dmat %*% Cmat %*% Dmat
+
+colnames(covmat) <- c("Per1", "JS1", "JS2", "Mot1", "Mot2", "SE1", "SE2", "VI1")
+rownames(covmat) <- colnames(covmat)
+
+
+lv.pa.model <- '
+
+PERFORM =~ 1*Per1
+Per1 ~~ 0*Per1
+
+SATIS =~ JS1 + JS2
+ESTEEM =~ SE1 + SE2
+
+VERBAL =~ VI1
+VI1 ~~ 0*VI1
+
+PERFORM ~ ESTEEM
+SATIS ~ VERBAL + PERFORM
+'
+
+lv.pa.fit <- sem(lv.pa.model, sample.cov = covmat, sample.nobs = 122)
+summary(lv.pa.fit, fit.measures = T, standardized = T)
+
+```
+

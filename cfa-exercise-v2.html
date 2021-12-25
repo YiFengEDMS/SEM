@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>CFA Exercise</title>
+
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">HOME</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    In-class Examples
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mlr-example.html">MLR Path Analysis</a>
+    </li>
+    <li>
+      <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
+    </li>
+    <li>
+      <a href="mtmm-example.html">Multitrait-Multimethod Analysis</a>
+    </li>
+    <li>
+      <a href="reliability.html">Scale Reliability</a>
+    </li>
+    <li>
+      <a href="latent-pa-example.html">Latent Path Analysis</a>
+    </li>
+    <li>
+      <a href="mg-example.html">Multi-group Analysis</a>
+    </li>
+    <li>
+      <a href="missing-data-example.html">Missing Data</a>
+    </li>
+    <li>
+      <a href="nonnormal-data-example.html">Nonnormal Continuous Data</a>
+    </li>
+    <li>
+      <a href="ordered-categorical-data-example.html">Ordered Categorical Data</a>
+    </li>
+    <li>
+      <a href="complex-multilevel-example.html">Complex Sampling</a>
+    </li>
+    <li>
+      <a href="mimic-example.html">Group Code Analysis</a>
+    </li>
+    <li>
+      <a href="mean-structure-example.html">Mean Structure Modeling</a>
+    </li>
+    <li>
+      <a href="repeated-means-example.html">Repeated Measure Means Models</a>
+    </li>
+    <li>
+      <a href="interaction-example.html">Latent Variable Moderation</a>
+    </li>
+    <li>
+      <a href="lgm-example.html">Latent Growth Models</a>
+    </li>
+    <li>
+      <a href="lgm-extension-example.html">Latent Growth Models Extensions</a>
+    </li>
+    <li>
+      <a href="power-example.html">Monte Carlo Power Methods</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mvpa-exercise.html">Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="mediation-exercise.html">Mediation Exercise</a>
+    </li>
+    <li>
+      <a href="APIM-exercise.html">APIM Exercise</a>
+    </li>
+    <li>
+      <a href="cfa-exercise-v2.html">CFA Exercise</a>
+    </li>
+    <li>
+      <a href="residualized-cfa-exercise.html">Residualized CFA Exercise</a>
+    </li>
+    <li>
+      <a href="reliability_exercise.html">Scale Reliability Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise.html">Latent Path Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="latent-pa-2step-exercise.html">Two-step SEM Exercise</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-2.html">Multi-group CFA Exercise</a>
+    </li>
+    <li>
+      <a href="mean-structure-exercise.html">Structured Means Analysis Exercise</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise.html">Repeated Measure Means Exercise</a>
+    </li>
+    <li>
+      <a href="interaction-exercise.html">Latent Interaction Exercise</a>
+    </li>
+    <li>
+      <a href="lgm-exercise.html">Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="conditional-lgm-exercise.html">Conditional Latent Growth Models Exercise</a>
+    </li>
+    <li>
+      <a href="power-exercise.html">Power Analysis</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise Solutions-DEMO
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="cfa-exercise-DEMO.html">CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="latent-pa-exercise-DEMO.html">Latent Path Analysis Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="mg-cfa-exercise-DEMO.html">Multi-group CFA Exercise-DEMO</a>
+    </li>
+    <li>
+      <a href="repeated-means-exercise-DEMO.html">Repeated Measure Means Exercise-DEMO</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Videos.html">Tutorial Videos</a>
+</li>
+<li>
+  <a href="resources.html">Resources</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">CFA Exercise</h1>
+
+</div>
+
+
+<pre class="r"><code>setwd(mypath)  # change it to the path of your own data folder
+data &lt;- read.table(&quot;proficiencyraw-female.csv&quot;, sep=&quot;,&quot;, header=F)
+
+# give variable names
+colnames(data) &lt;- c(paste0(&quot;goals&quot;,1:6), 
+                    paste0(&quot;rsc&quot;,1:5), 
+                    paste0(&quot;hsc&quot;,1:5), 
+                    paste0(&quot;msc&quot;,1:5), 
+                    paste0(&quot;ssc&quot;,1:5), 
+                    &quot;SATvoc&quot;, 
+                    &quot;SATcomp&quot;, 
+                    &quot;SATlang&quot;, 
+                    &quot;SATmath&quot;, 
+                    &quot;SATprob&quot;, 
+                    &quot;SATproc&quot;)
+cfa.Model &lt;- &#39;
+
+# measurement model
+
+RSC =~ rsc1 + rsc2 + rsc3 + rsc4 + rsc5
+HSC =~ hsc1 + hsc2 + hsc3 + hsc4 + hsc5
+MSC =~ msc1 + msc2 + msc3 + msc4 + msc5
+SSC =~ ssc1 + ssc2 + ssc3 + ssc4 + ssc5
+
+# mean structure
+rsc1~1
+rsc2~1
+rsc3~1
+rsc4~1
+rsc5~1
+hsc1~1
+hsc2~1
+hsc3~1
+hsc4~1
+hsc5~1
+msc1~1
+msc2~1
+msc3~1
+msc4~1  
+msc5~1
+ssc1~1
+ssc2~1
+ssc3~1
+ssc4~1
+ssc5~1
+
+# residual covariances
+
+rsc1~~hsc1+msc1+ssc1
+rsc2~~hsc2+msc2+ssc2
+rsc3~~hsc3+msc3+ssc3
+rsc4~~hsc4+msc4+ssc4
+rsc5~~hsc5+msc5+ssc5
+hsc1~~msc1+ssc1
+hsc2~~msc2+ssc2
+hsc3~~msc3+ssc3
+hsc4~~msc4+ssc4
+hsc5~~msc5+ssc5
+msc1~~ssc1
+msc2~~ssc2
+msc3~~ssc3
+msc4~~ssc4  
+msc5~~ssc5
+
+# covariances between the latent variables
+RSC ~~ HSC + MSC + SSC
+HSC ~~ MSC + SSC
+MSC ~~ SSC
+
+&#39;
+cfa.Fit &lt;- sem(cfa.Model, data = data)
+
+summary(cfa.Fit, fit.measures = T, standardized = T)</code></pre>
+<pre><code>## lavaan 0.6-8 ended normally after 42 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        96
+##                                                       
+##   Number of observations                          1000
+##                                                       
+## Model Test User Model:
+##                                                       
+##   Test statistic                               167.327
+##   Degrees of freedom                               134
+##   P-value (Chi-square)                           0.027
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                             10473.929
+##   Degrees of freedom                               190
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    0.997
+##   Tucker-Lewis Index (TLI)                       0.995
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)             -28759.567
+##   Loglikelihood unrestricted model (H1)     -28675.904
+##                                                       
+##   Akaike (AIC)                               57711.135
+##   Bayesian (BIC)                             58182.279
+##   Sample-size adjusted Bayesian (BIC)        57877.378
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.016
+##   90 Percent confidence interval - lower         0.006
+##   90 Percent confidence interval - upper         0.023
+##   P-value RMSEA &lt;= 0.05                          1.000
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.018
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   RSC =~                                                                
+##     rsc1              1.000                               0.827    0.649
+##     rsc2              1.246    0.064   19.549    0.000    1.031    0.764
+##     rsc3              1.002    0.058   17.171    0.000    0.828    0.646
+##     rsc4              1.207    0.061   19.878    0.000    0.998    0.790
+##     rsc5              1.045    0.059   17.615    0.000    0.864    0.663
+##   HSC =~                                                                
+##     hsc1              1.000                               0.952    0.700
+##     hsc2              1.065    0.047   22.659    0.000    1.014    0.802
+##     hsc3              0.967    0.048   20.080    0.000    0.921    0.700
+##     hsc4              0.880    0.047   18.779    0.000    0.838    0.649
+##     hsc5              1.145    0.050   22.961    0.000    1.091    0.819
+##   MSC =~                                                                
+##     msc1              1.000                               1.133    0.814
+##     msc2              0.947    0.032   29.280    0.000    1.073    0.821
+##     msc3              0.907    0.033   27.817    0.000    1.028    0.791
+##     msc4              0.964    0.034   28.020    0.000    1.092    0.795
+##     msc5              0.898    0.033   27.255    0.000    1.018    0.776
+##   SSC =~                                                                
+##     ssc1              1.000                               1.169    0.842
+##     ssc2              0.985    0.029   33.743    0.000    1.152    0.868
+##     ssc3              0.819    0.029   28.012    0.000    0.957    0.765
+##     ssc4              0.940    0.031   29.918    0.000    1.099    0.799
+##     ssc5              0.838    0.031   27.138    0.000    0.980    0.744
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##  .rsc1 ~~                                                               
+##    .hsc1              0.120    0.034    3.505    0.000    0.120    0.127
+##    .msc1             -0.026    0.029   -0.883    0.377   -0.026   -0.033
+##    .ssc1              0.069    0.028    2.497    0.013    0.069    0.095
+##  .rsc2 ~~                                                               
+##    .hsc2              0.125    0.028    4.512    0.000    0.125    0.189
+##    .msc2              0.014    0.026    0.522    0.602    0.014    0.021
+##    .ssc2              0.034    0.024    1.412    0.158    0.034    0.059
+##  .rsc3 ~~                                                               
+##    .hsc3              0.094    0.033    2.832    0.005    0.094    0.103
+##    .msc3              0.031    0.029    1.096    0.273    0.031    0.040
+##    .ssc3              0.046    0.028    1.628    0.104    0.046    0.059
+##  .rsc4 ~~                                                               
+##    .hsc4              0.087    0.030    2.908    0.004    0.087    0.113
+##    .msc4              0.017    0.026    0.636    0.525    0.017    0.026
+##    .ssc4              0.014    0.026    0.563    0.574    0.014    0.023
+##  .rsc5 ~~                                                               
+##    .hsc5              0.095    0.030    3.167    0.002    0.095    0.127
+##    .msc5              0.066    0.030    2.226    0.026    0.066    0.082
+##    .ssc5              0.124    0.031    4.007    0.000    0.124    0.145
+##  .hsc1 ~~                                                               
+##    .msc1              0.043    0.030    1.467    0.142    0.043    0.055
+##    .ssc1              0.059    0.028    2.099    0.036    0.059    0.081
+##  .hsc2 ~~                                                               
+##    .msc2              0.040    0.023    1.751    0.080    0.040    0.071
+##    .ssc2             -0.006    0.021   -0.275    0.783   -0.006   -0.012
+##  .hsc3 ~~                                                               
+##    .msc3             -0.026    0.028   -0.926    0.354   -0.026   -0.034
+##    .ssc3              0.037    0.027    1.362    0.173    0.037    0.049
+##  .hsc4 ~~                                                               
+##    .msc4              0.055    0.030    1.822    0.069    0.055    0.067
+##    .ssc4              0.092    0.030    3.121    0.002    0.092    0.114
+##  .hsc5 ~~                                                               
+##    .msc5              0.026    0.025    1.030    0.303    0.026    0.041
+##    .ssc5              0.017    0.026    0.630    0.528    0.017    0.025
+##  .msc1 ~~                                                               
+##    .ssc1              0.053    0.024    2.187    0.029    0.053    0.088
+##  .msc2 ~~                                                               
+##    .ssc2              0.048    0.021    2.303    0.021    0.048    0.097
+##  .msc3 ~~                                                               
+##    .ssc3              0.039    0.024    1.625    0.104    0.039    0.060
+##  .msc4 ~~                                                               
+##    .ssc4              0.028    0.026    1.060    0.289    0.028    0.040
+##  .msc5 ~~                                                               
+##    .ssc5              0.123    0.027    4.594    0.000    0.123    0.169
+##   RSC ~~                                                                
+##     HSC               0.385    0.038   10.229    0.000    0.488    0.488
+##     MSC              -0.226    0.036   -6.225    0.000   -0.242   -0.242
+##     SSC              -0.150    0.036   -4.181    0.000   -0.155   -0.155
+##   HSC ~~                                                                
+##     MSC              -0.148    0.039   -3.763    0.000   -0.137   -0.137
+##     SSC              -0.045    0.040   -1.135    0.256   -0.041   -0.041
+##   MSC ~~                                                                
+##     SSC               0.831    0.059   14.111    0.000    0.627    0.627
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .rsc1              3.308    0.040   82.124    0.000    3.308    2.597
+##    .rsc2              3.657    0.043   85.727    0.000    3.657    2.711
+##    .rsc3              3.645    0.041   89.949    0.000    3.645    2.844
+##    .rsc4              3.230    0.040   80.828    0.000    3.230    2.556
+##    .rsc5              3.558    0.041   86.313    0.000    3.558    2.729
+##    .hsc1              3.636    0.043   84.520    0.000    3.636    2.673
+##    .hsc2              3.694    0.040   92.374    0.000    3.694    2.921
+##    .hsc3              3.310    0.042   79.593    0.000    3.310    2.517
+##    .hsc4              3.233    0.041   79.106    0.000    3.233    2.502
+##    .hsc5              3.633    0.042   86.261    0.000    3.633    2.728
+##    .msc1              3.349    0.044   76.060    0.000    3.349    2.405
+##    .msc2              3.162    0.041   76.494    0.000    3.162    2.419
+##    .msc3              3.528    0.041   85.819    0.000    3.528    2.714
+##    .msc4              3.608    0.043   83.070    0.000    3.608    2.627
+##    .msc5              3.651    0.041   88.024    0.000    3.651    2.784
+##    .ssc1              3.269    0.044   74.440    0.000    3.269    2.354
+##    .ssc2              3.130    0.042   74.538    0.000    3.130    2.357
+##    .ssc3              3.419    0.040   86.353    0.000    3.419    2.731
+##    .ssc4              3.531    0.043   81.217    0.000    3.531    2.568
+##    .ssc5              3.621    0.042   86.868    0.000    3.621    2.747
+##     RSC               0.000                               0.000    0.000
+##     HSC               0.000                               0.000    0.000
+##     MSC               0.000                               0.000    0.000
+##     SSC               0.000                               0.000    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .rsc1              0.939    0.049   19.356    0.000    0.939    0.579
+##    .rsc2              0.758    0.046   16.487    0.000    0.758    0.416
+##    .rsc3              0.956    0.049   19.397    0.000    0.956    0.582
+##    .rsc4              0.601    0.039   15.421    0.000    0.601    0.376
+##    .rsc5              0.952    0.050   19.101    0.000    0.952    0.560
+##    .hsc1              0.943    0.050   19.057    0.000    0.943    0.510
+##    .hsc2              0.571    0.036   16.052    0.000    0.571    0.357
+##    .hsc3              0.881    0.046   19.043    0.000    0.881    0.509
+##    .hsc4              0.967    0.049   19.865    0.000    0.967    0.579
+##    .hsc5              0.584    0.038   15.239    0.000    0.584    0.329
+##    .msc1              0.655    0.037   17.610    0.000    0.655    0.338
+##    .msc2              0.557    0.032   17.339    0.000    0.557    0.326
+##    .msc3              0.633    0.035   18.322    0.000    0.633    0.375
+##    .msc4              0.694    0.038   18.197    0.000    0.694    0.368
+##    .msc5              0.685    0.037   18.717    0.000    0.685    0.398
+##    .ssc1              0.561    0.033   16.910    0.000    0.561    0.291
+##    .ssc2              0.436    0.028   15.565    0.000    0.436    0.247
+##    .ssc3              0.651    0.034   19.253    0.000    0.651    0.415
+##    .ssc4              0.683    0.037   18.427    0.000    0.683    0.361
+##    .ssc5              0.777    0.040   19.647    0.000    0.777    0.447
+##     RSC               0.684    0.064   10.759    0.000    1.000    1.000
+##     HSC               0.907    0.075   12.043    0.000    1.000    1.000
+##     MSC               1.284    0.085   15.174    0.000    1.000    1.000
+##     SSC               1.367    0.085   16.085    0.000    1.000    1.000</code></pre>
+
+<hr>
+© Copyright 2021 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
