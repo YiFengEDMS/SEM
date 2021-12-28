@@ -13,8 +13,8 @@
 
 <title>Latent path analysis</title>
 
-<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -295,12 +295,12 @@ div.tocify {
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row">
-<div class="col-sm-12 col-md-4 col-lg-3">
+<div class="col-xs-12 col-sm-4 col-md-3">
 <div id="TOC" class="tocify">
 </div>
 </div>
 
-<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -345,39 +345,6 @@ div.tocify {
     <li>
       <a href="mg-example.html">Multi-group Analysis</a>
     </li>
-    <li>
-      <a href="missing-data-example.html">Missing Data</a>
-    </li>
-    <li>
-      <a href="nonnormal-data-example.html">Nonnormal Continuous Data</a>
-    </li>
-    <li>
-      <a href="ordered-categorical-data-example.html">Ordered Categorical Data</a>
-    </li>
-    <li>
-      <a href="complex-multilevel-example.html">Complex Sampling</a>
-    </li>
-    <li>
-      <a href="mimic-example.html">Group Code Analysis</a>
-    </li>
-    <li>
-      <a href="mean-structure-example.html">Mean Structure Modeling</a>
-    </li>
-    <li>
-      <a href="repeated-means-example.html">Repeated Measure Means Models</a>
-    </li>
-    <li>
-      <a href="interaction-example.html">Latent Variable Moderation</a>
-    </li>
-    <li>
-      <a href="lgm-example.html">Latent Growth Models</a>
-    </li>
-    <li>
-      <a href="lgm-extension-example.html">Latent Growth Models Extensions</a>
-    </li>
-    <li>
-      <a href="power-example.html">Monte Carlo Power Methods</a>
-    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -414,24 +381,6 @@ div.tocify {
     <li>
       <a href="mg-cfa-exercise-2.html">Multi-group CFA Exercise</a>
     </li>
-    <li>
-      <a href="mean-structure-exercise.html">Structured Means Analysis Exercise</a>
-    </li>
-    <li>
-      <a href="repeated-means-exercise.html">Repeated Measure Means Exercise</a>
-    </li>
-    <li>
-      <a href="interaction-exercise.html">Latent Interaction Exercise</a>
-    </li>
-    <li>
-      <a href="lgm-exercise.html">Latent Growth Models Exercise</a>
-    </li>
-    <li>
-      <a href="conditional-lgm-exercise.html">Conditional Latent Growth Models Exercise</a>
-    </li>
-    <li>
-      <a href="power-exercise.html">Power Analysis</a>
-    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -449,9 +398,6 @@ div.tocify {
     </li>
     <li>
       <a href="mg-cfa-exercise-DEMO.html">Multi-group CFA Exercise-DEMO</a>
-    </li>
-    <li>
-      <a href="repeated-means-exercise-DEMO.html">Repeated Measure Means Exercise-DEMO</a>
     </li>
   </ul>
 </li>
@@ -481,9 +427,9 @@ div.tocify {
 <p>In this tutorial, we are going to use <code>lavaan</code> for latent variable path analysis.</p>
 <div id="example-1-a-latent-math-proficiency-model" class="section level2">
 <h2>Example 1: A Latent Math Proficiency Model</h2>
-<pre><code>## Warning in lav_data_full(data = data, group = group, cluster = cluster, : lavaan WARNING:
-## some observed variances are (at least) a factor 1000 times larger than others; use
-## varTable(fit) to investigate</code></pre>
+<pre><code>## Warning in lav_data_full(data = data, group = group, cluster = cluster, : lavaan
+## WARNING: some observed variances are (at least) a factor 1000 times larger than
+## others; use varTable(fit) to investigate</code></pre>
 <p><img src="latent-pa-example_files/figure-html/unnamed-chunk-2-1.png" width="80%" /></p>
 <div id="load-data" class="section level3">
 <h3>Load Data</h3>
@@ -563,7 +509,7 @@ MTHindSSC := e*d
 <h3>Examine the results</h3>
 <p>You could print out the bootstrapped parameter estimates and confidence intervals using the <code>parameterEstimates</code> function. To print out the standardized solutions, you could use the <code>standardizedSolution</code> function.</p>
 <pre class="r"><code>summary(lvpa.Fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-8 ended normally after 127 iterations
+<pre><code>## lavaan 0.6-9 ended normally after 127 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -768,119 +714,108 @@ MTHindSSC := e*d
 ##     MTHindSSC         2.139    0.434    4.922    0.000    0.074    0.074</code></pre>
 <pre class="r"><code># parameterEstimates(lvpa.Fit, ci = T, standardized = T)
 standardizedSolution(lvpa.Fit)</code></pre>
-<pre><code>##           lhs op      rhs est.std    se      z pvalue ci.lower ci.upper
-## 1         RSC =~     rsc1   0.646 0.023 28.534  0.000    0.602    0.691
-## 2         RSC =~     rsc2   0.761 0.019 40.454  0.000    0.724    0.798
-## 3         RSC =~     rsc3   0.644 0.023 27.633  0.000    0.599    0.690
-## 4         RSC =~     rsc4   0.786 0.018 43.985  0.000    0.751    0.821
-## 5         RSC =~     rsc5   0.659 0.023 29.002  0.000    0.614    0.703
-## 6         HSC =~     hsc1   0.700 0.019 36.457  0.000    0.663    0.738
-## 7         HSC =~     hsc2   0.803 0.017 48.420  0.000    0.771    0.836
-## 8         HSC =~     hsc3   0.699 0.021 33.981  0.000    0.659    0.739
-## 9         HSC =~     hsc4   0.649 0.023 28.614  0.000    0.604    0.693
-## 10        HSC =~     hsc5   0.820 0.015 53.671  0.000    0.790    0.849
-## 11        MSC =~     msc1   0.817 0.013 61.214  0.000    0.791    0.843
-## 12        MSC =~     msc2   0.820 0.016 50.741  0.000    0.788    0.851
-## 13        MSC =~     msc3   0.788 0.018 44.723  0.000    0.754    0.823
-## 14        MSC =~     msc4   0.797 0.016 49.227  0.000    0.765    0.828
-## 15        MSC =~     msc5   0.775 0.018 43.015  0.000    0.740    0.811
-## 16        SSC =~     ssc1   0.841 0.013 66.927  0.000    0.816    0.866
-## 17        SSC =~     ssc2   0.867 0.014 61.689  0.000    0.839    0.895
-## 18        SSC =~     ssc3   0.766 0.020 38.879  0.000    0.727    0.804
-## 19        SSC =~     ssc4   0.800 0.016 49.202  0.000    0.768    0.831
-## 20        SSC =~     ssc5   0.745 0.020 37.880  0.000    0.706    0.783
-## 21   TASKGOAL =~   goals1   0.619 0.026 24.039  0.000    0.569    0.670
-## 22   TASKGOAL =~   goals2   0.767 0.020 37.554  0.000    0.727    0.807
-## 23   TASKGOAL =~   goals3   0.683 0.024 28.168  0.000    0.636    0.731
-## 24   TASKGOAL =~   goals4   0.654 0.025 25.689  0.000    0.604    0.703
-## 25   TASKGOAL =~   goals5   0.840 0.016 51.336  0.000    0.808    0.872
-## 26   TASKGOAL =~   goals6   0.781 0.019 40.230  0.000    0.743    0.819
-## 27   MATHPROF =~  SATmath   0.901 0.009 94.935  0.000    0.883    0.920
-## 28   MATHPROF =~  SATprob   0.821 0.016 49.787  0.000    0.788    0.853
-## 29   MATHPROF =~  SATproc   0.795 0.016 48.453  0.000    0.763    0.828
-## 30        HSC ~~      MSC   0.000 0.000     NA     NA    0.000    0.000
-## 31        HSC ~~      SSC   0.000 0.000     NA     NA    0.000    0.000
-## 32       rsc1 ~~     hsc1   0.129 0.044  2.927  0.003    0.043    0.216
-## 33       rsc1 ~~     msc1  -0.031 0.052 -0.598  0.550   -0.134    0.071
-## 34       rsc1 ~~     ssc1   0.097 0.056  1.725  0.085   -0.013    0.207
-## 35       rsc2 ~~     hsc2   0.187 0.063  2.964  0.003    0.063    0.310
-## 36       rsc2 ~~     msc2   0.028 0.063  0.446  0.656   -0.095    0.151
-## 37       rsc2 ~~     ssc2   0.062 0.071  0.878  0.380   -0.077    0.201
-## 38       rsc3 ~~     hsc3   0.102 0.045  2.281  0.023    0.014    0.190
-## 39       rsc3 ~~     msc3   0.037 0.052  0.709  0.478   -0.065    0.139
-## 40       rsc3 ~~     ssc3   0.056 0.052  1.086  0.278   -0.045    0.158
-## 41       rsc4 ~~     hsc4   0.113 0.054  2.107  0.035    0.008    0.219
-## 42       rsc4 ~~     msc4   0.024 0.063  0.375  0.708   -0.100    0.148
-## 43       rsc4 ~~     ssc4   0.028 0.064  0.435  0.664   -0.097    0.152
-## 44       rsc5 ~~     hsc5   0.128 0.055  2.319  0.020    0.020    0.236
-## 45       rsc5 ~~     msc5   0.073 0.051  1.439  0.150   -0.026    0.172
-## 46       rsc5 ~~     ssc5   0.140 0.048  2.928  0.003    0.046    0.234
-## 47       hsc1 ~~     msc1   0.056 0.052  1.061  0.289   -0.047    0.158
-## 48       hsc1 ~~     ssc1   0.082 0.056  1.470  0.142   -0.027    0.192
-## 49       hsc2 ~~     msc2   0.065 0.072  0.895  0.371   -0.077    0.206
-## 50       hsc2 ~~     ssc2  -0.012 0.082 -0.150  0.881   -0.173    0.148
-## 51       hsc3 ~~     msc3  -0.034 0.054 -0.628  0.530   -0.140    0.072
-## 52       hsc3 ~~     ssc3   0.052 0.054  0.967  0.334   -0.054    0.158
-## 53       hsc4 ~~     msc4   0.067 0.050  1.339  0.181   -0.031    0.165
-## 54       hsc4 ~~     ssc4   0.119 0.050  2.354  0.019    0.020    0.218
-## 55       hsc5 ~~     msc5   0.028 0.065  0.436  0.663   -0.098    0.155
-## 56       hsc5 ~~     ssc5   0.021 0.061  0.351  0.725   -0.098    0.140
-## 57       msc1 ~~     ssc1   0.087 0.068  1.290  0.197   -0.045    0.220
-## 58       msc2 ~~     ssc2   0.101 0.083  1.219  0.223   -0.061    0.262
-## 59       msc3 ~~     ssc3   0.061 0.063  0.962  0.336   -0.063    0.185
-## 60       msc4 ~~     ssc4   0.037 0.059  0.617  0.537   -0.080    0.153
-## 61       msc5 ~~     ssc5   0.167 0.056  2.953  0.003    0.056    0.277
-## 62   TASKGOAL  ~      RSC   0.313 0.043  7.343  0.000    0.230    0.397
-## 63   TASKGOAL  ~      HSC   0.143 0.047  3.031  0.002    0.050    0.235
-## 64   TASKGOAL  ~      MSC   0.270 0.052  5.144  0.000    0.167    0.373
-## 65   TASKGOAL  ~      SSC   0.227 0.054  4.207  0.000    0.121    0.333
-## 66   MATHPROF  ~ TASKGOAL   0.328 0.028 11.592  0.000    0.272    0.383
-## 67   MATHPROF  ~      RSC   0.038 0.026  1.483  0.138   -0.012    0.089
-## 68   MATHPROF  ~      MSC   0.475 0.031 15.433  0.000    0.414    0.535
-## 69   MATHPROF  ~      SSC   0.283 0.030  9.471  0.000    0.225    0.342
-## 70       rsc1 ~~     rsc1   0.582 0.029 19.882  0.000    0.525    0.640
-## 71       rsc2 ~~     rsc2   0.421 0.029 14.699  0.000    0.365    0.477
-## 72       rsc3 ~~     rsc3   0.585 0.030 19.456  0.000    0.526    0.644
-## 73       rsc4 ~~     rsc4   0.382 0.028 13.576  0.000    0.327    0.437
-## 74       rsc5 ~~     rsc5   0.566 0.030 18.894  0.000    0.507    0.624
-## 75       hsc1 ~~     hsc1   0.510 0.027 18.957  0.000    0.457    0.563
-## 76       hsc2 ~~     hsc2   0.355 0.027 13.324  0.000    0.303    0.407
-## 77       hsc3 ~~     hsc3   0.511 0.029 17.774  0.000    0.455    0.568
-## 78       hsc4 ~~     hsc4   0.579 0.029 19.676  0.000    0.521    0.637
-## 79       hsc5 ~~     hsc5   0.328 0.025 13.117  0.000    0.279    0.377
-## 80       msc1 ~~     msc1   0.333 0.022 15.249  0.000    0.290    0.375
-## 81       msc2 ~~     msc2   0.328 0.026 12.387  0.000    0.276    0.380
-## 82       msc3 ~~     msc3   0.379 0.028 13.628  0.000    0.324    0.433
-## 83       msc4 ~~     msc4   0.365 0.026 14.164  0.000    0.315    0.416
-## 84       msc5 ~~     msc5   0.399 0.028 14.256  0.000    0.344    0.453
-## 85       ssc1 ~~     ssc1   0.293 0.021 13.839  0.000    0.251    0.334
-## 86       ssc2 ~~     ssc2   0.248 0.024 10.185  0.000    0.200    0.296
-## 87       ssc3 ~~     ssc3   0.414 0.030 13.726  0.000    0.355    0.473
-## 88       ssc4 ~~     ssc4   0.361 0.026 13.884  0.000    0.310    0.412
-## 89       ssc5 ~~     ssc5   0.446 0.029 15.228  0.000    0.388    0.503
-## 90     goals1 ~~   goals1   0.617 0.032 19.343  0.000    0.554    0.679
-## 91     goals2 ~~   goals2   0.412 0.031 13.170  0.000    0.351    0.474
-## 92     goals3 ~~   goals3   0.533 0.033 16.101  0.000    0.468    0.598
-## 93     goals4 ~~   goals4   0.573 0.033 17.228  0.000    0.508    0.638
-## 94     goals5 ~~   goals5   0.295 0.027 10.716  0.000    0.241    0.348
-## 95     goals6 ~~   goals6   0.391 0.030 12.895  0.000    0.331    0.450
-## 96    SATmath ~~  SATmath   0.187 0.017 10.954  0.000    0.154    0.221
-## 97    SATprob ~~  SATprob   0.326 0.027 12.056  0.000    0.273    0.379
-## 98    SATproc ~~  SATproc   0.367 0.026 14.060  0.000    0.316    0.418
-## 99        RSC ~~      RSC   1.000 0.000     NA     NA    1.000    1.000
-## 100       HSC ~~      HSC   1.000 0.000     NA     NA    1.000    1.000
-## 101       MSC ~~      MSC   1.000 0.000     NA     NA    1.000    1.000
-## 102       SSC ~~      SSC   1.000 0.000     NA     NA    1.000    1.000
-## 103  TASKGOAL ~~ TASKGOAL   0.689 0.051 13.496  0.000    0.589    0.789
-## 104  MATHPROF ~~ MATHPROF   0.243 0.021 11.384  0.000    0.202    0.285
-## 105       RSC ~~      HSC   0.472 0.055  8.516  0.000    0.363    0.580
-## 106       RSC ~~      MSC  -0.185 0.045 -4.154  0.000   -0.273   -0.098
-## 107       RSC ~~      SSC  -0.139 0.043 -3.220  0.001   -0.224   -0.054
-## 108       MSC ~~      SSC   0.628 0.035 17.990  0.000    0.559    0.696
-## 109 MTHindRSC :=      e*a   0.103 0.017  6.151  0.000    0.070    0.135
-## 110 MTHindHSC :=      e*b   0.047 0.016  2.868  0.004    0.015    0.079
-## 111 MTHindMSC :=      e*c   0.088 0.018  4.796  0.000    0.052    0.125
-##  [ reached &#39;max&#39; / getOption(&quot;max.print&quot;) -- omitted 1 rows ]</code></pre>
+<pre><code>##          lhs op      rhs label est.std    se       z pvalue ci.lower ci.upper
+## 1        RSC =~     rsc1         0.646 0.022  29.983  0.000    0.604    0.689
+## 2        RSC =~     rsc2         0.761 0.017  44.200  0.000    0.727    0.795
+## 3        RSC =~     rsc3         0.644 0.022  29.702  0.000    0.602    0.687
+## 4        RSC =~     rsc4         0.786 0.016  48.085  0.000    0.754    0.818
+## 5        RSC =~     rsc5         0.659 0.021  31.289  0.000    0.618    0.700
+## 6        HSC =~     hsc1         0.700 0.019  37.143  0.000    0.663    0.737
+## 7        HSC =~     hsc2         0.803 0.015  54.680  0.000    0.774    0.832
+## 8        HSC =~     hsc3         0.699 0.019  36.921  0.000    0.662    0.736
+## 9        HSC =~     hsc4         0.649 0.021  31.120  0.000    0.608    0.690
+## 10       HSC =~     hsc5         0.820 0.014  58.165  0.000    0.792    0.847
+## 11       MSC =~     msc1         0.817 0.013  65.321  0.000    0.792    0.841
+## 12       MSC =~     msc2         0.820 0.012  66.209  0.000    0.795    0.844
+## 13       MSC =~     msc3         0.788 0.014  56.858  0.000    0.761    0.815
+## 14       MSC =~     msc4         0.797 0.013  59.152  0.000    0.770    0.823
+## 15       MSC =~     msc5         0.775 0.014  53.801  0.000    0.747    0.804
+## 16       SSC =~     ssc1         0.841 0.011  74.764  0.000    0.819    0.863
+## 17       SSC =~     ssc2         0.867 0.010  86.149  0.000    0.847    0.887
+## 18       SSC =~     ssc3         0.766 0.015  51.730  0.000    0.737    0.795
+## 19       SSC =~     ssc4         0.800 0.013  60.533  0.000    0.774    0.825
+## 20       SSC =~     ssc5         0.745 0.016  47.487  0.000    0.714    0.775
+## 21  TASKGOAL =~   goals1         0.619 0.022  28.770  0.000    0.577    0.661
+## 22  TASKGOAL =~   goals2         0.767 0.015  49.817  0.000    0.736    0.797
+## 23  TASKGOAL =~   goals3         0.683 0.019  35.993  0.000    0.646    0.720
+## 24  TASKGOAL =~   goals4         0.654 0.020  32.392  0.000    0.614    0.693
+## 25  TASKGOAL =~   goals5         0.840 0.012  68.991  0.000    0.816    0.864
+## 26  TASKGOAL =~   goals6         0.781 0.015  52.847  0.000    0.752    0.810
+## 27  MATHPROF =~  SATmath         0.901 0.009 100.167  0.000    0.884    0.919
+## 28  MATHPROF =~  SATprob         0.821 0.012  66.390  0.000    0.797    0.845
+## 29  MATHPROF =~  SATproc         0.795 0.014  58.814  0.000    0.769    0.822
+## 30       HSC ~~      MSC         0.000 0.000      NA     NA    0.000    0.000
+## 31       HSC ~~      SSC         0.000 0.000      NA     NA    0.000    0.000
+## 32      rsc1 ~~     hsc1         0.129 0.035   3.663  0.000    0.060    0.198
+## 33      rsc1 ~~     msc1        -0.031 0.037  -0.848  0.396   -0.104    0.041
+## 34      rsc1 ~~     ssc1         0.097 0.037   2.596  0.009    0.024    0.170
+## 35      rsc2 ~~     hsc2         0.187 0.040   4.717  0.000    0.109    0.264
+## 36      rsc2 ~~     msc2         0.028 0.040   0.706  0.480   -0.050    0.105
+## 37      rsc2 ~~     ssc2         0.062 0.041   1.504  0.133   -0.019    0.143
+## 38      rsc3 ~~     hsc3         0.102 0.035   2.891  0.004    0.033    0.172
+## 39      rsc3 ~~     msc3         0.037 0.036   1.022  0.307   -0.034    0.108
+## 40      rsc3 ~~     ssc3         0.056 0.036   1.581  0.114   -0.014    0.126
+## 41      rsc4 ~~     hsc4         0.113 0.038   2.991  0.003    0.039    0.188
+## 42      rsc4 ~~     msc4         0.024 0.040   0.595  0.552   -0.054    0.102
+## 43      rsc4 ~~     ssc4         0.028 0.040   0.696  0.486   -0.050    0.105
+## 44      rsc5 ~~     hsc5         0.128 0.039   3.306  0.001    0.052    0.204
+## 45      rsc5 ~~     msc5         0.073 0.036   2.015  0.044    0.002    0.144
+## 46      rsc5 ~~     ssc5         0.140 0.035   4.002  0.000    0.072    0.209
+## 47      hsc1 ~~     msc1         0.056 0.037   1.489  0.136   -0.018    0.129
+## 48      hsc1 ~~     ssc1         0.082 0.038   2.178  0.029    0.008    0.156
+## 49      hsc2 ~~     msc2         0.065 0.040   1.617  0.106   -0.014    0.143
+## 50      hsc2 ~~     ssc2        -0.012 0.042  -0.291  0.771   -0.095    0.070
+## 51      hsc3 ~~     msc3        -0.034 0.037  -0.931  0.352   -0.106    0.038
+## 52      hsc3 ~~     ssc3         0.052 0.036   1.449  0.147   -0.018    0.123
+## 53      hsc4 ~~     msc4         0.067 0.036   1.857  0.063   -0.004    0.138
+## 54      hsc4 ~~     ssc4         0.119 0.036   3.331  0.001    0.049    0.189
+## 55      hsc5 ~~     msc5         0.028 0.040   0.707  0.479   -0.050    0.106
+## 56      hsc5 ~~     ssc5         0.021 0.039   0.545  0.585   -0.055    0.098
+## 57      msc1 ~~     ssc1         0.087 0.039   2.241  0.025    0.011    0.164
+## 58      msc2 ~~     ssc2         0.101 0.040   2.493  0.013    0.022    0.180
+## 59      msc3 ~~     ssc3         0.061 0.036   1.674  0.094   -0.010    0.132
+## 60      msc4 ~~     ssc4         0.037 0.037   0.983  0.326   -0.037    0.110
+## 61      msc5 ~~     ssc5         0.167 0.035   4.757  0.000    0.098    0.235
+## 62  TASKGOAL  ~      RSC     a   0.313 0.037   8.355  0.000    0.240    0.387
+## 63  TASKGOAL  ~      HSC     b   0.143 0.037   3.877  0.000    0.071    0.215
+## 64  TASKGOAL  ~      MSC     c   0.270 0.042   6.473  0.000    0.188    0.352
+## 65  TASKGOAL  ~      SSC     d   0.227 0.041   5.510  0.000    0.146    0.308
+## 66  MATHPROF  ~ TASKGOAL     e   0.328 0.027  12.139  0.000    0.275    0.380
+## 67  MATHPROF  ~      RSC     f   0.038 0.026   1.484  0.138   -0.012    0.089
+## 68  MATHPROF  ~      MSC     g   0.475 0.029  16.149  0.000    0.417    0.532
+## 69  MATHPROF  ~      SSC     h   0.283 0.029   9.632  0.000    0.226    0.341
+## 70      rsc1 ~~     rsc1         0.582 0.028  20.892  0.000    0.528    0.637
+## 71      rsc2 ~~     rsc2         0.421 0.026  16.060  0.000    0.369    0.472
+## 72      rsc3 ~~     rsc3         0.585 0.028  20.913  0.000    0.530    0.640
+## 73      rsc4 ~~     rsc4         0.382 0.026  14.842  0.000    0.331    0.432
+## 74      rsc5 ~~     rsc5         0.566 0.028  20.383  0.000    0.511    0.620
+## 75      hsc1 ~~     hsc1         0.510 0.026  19.314  0.000    0.458    0.562
+## 76      hsc2 ~~     hsc2         0.355 0.024  15.047  0.000    0.309    0.401
+## 77      hsc3 ~~     hsc3         0.511 0.026  19.313  0.000    0.459    0.563
+## 78      hsc4 ~~     hsc4         0.579 0.027  21.399  0.000    0.526    0.632
+## 79      hsc5 ~~     hsc5         0.328 0.023  14.215  0.000    0.283    0.374
+## 80      msc1 ~~     msc1         0.333 0.020  16.272  0.000    0.292    0.373
+## 81      msc2 ~~     msc2         0.328 0.020  16.162  0.000    0.288    0.368
+## 82      msc3 ~~     msc3         0.379 0.022  17.326  0.000    0.336    0.422
+## 83      msc4 ~~     msc4         0.365 0.021  17.019  0.000    0.323    0.407
+## 84      msc5 ~~     msc5         0.399 0.022  17.831  0.000    0.355    0.442
+## 85      ssc1 ~~     ssc1         0.293 0.019  15.459  0.000    0.255    0.330
+## 86      ssc2 ~~     ssc2         0.248 0.017  14.223  0.000    0.214    0.282
+## 87      ssc3 ~~     ssc3         0.414 0.023  18.263  0.000    0.369    0.458
+## 88      ssc4 ~~     ssc4         0.361 0.021  17.082  0.000    0.319    0.402
+## 89      ssc5 ~~     ssc5         0.446 0.023  19.090  0.000    0.400    0.491
+## 90    goals1 ~~   goals1         0.617 0.027  23.149  0.000    0.565    0.669
+## 91    goals2 ~~   goals2         0.412 0.024  17.471  0.000    0.366    0.459
+## 92    goals3 ~~   goals3         0.533 0.026  20.574  0.000    0.483    0.584
+## 93    goals4 ~~   goals4         0.573 0.026  21.723  0.000    0.521    0.625
+## 94    goals5 ~~   goals5         0.295 0.020  14.401  0.000    0.254    0.335
+## 95    goals6 ~~   goals6         0.391 0.023  16.939  0.000    0.345    0.436
+## 96   SATmath ~~  SATmath         0.187 0.016  11.557  0.000    0.156    0.219
+## 97   SATprob ~~  SATprob         0.326 0.020  16.077  0.000    0.287    0.366
+## 98   SATproc ~~  SATproc         0.367 0.022  17.067  0.000    0.325    0.409
+## 99       RSC ~~      RSC         1.000 0.000      NA     NA    1.000    1.000
+## 100      HSC ~~      HSC         1.000 0.000      NA     NA    1.000    1.000
+##  [ reached &#39;max&#39; / getOption(&quot;max.print&quot;) -- omitted 12 rows ]</code></pre>
 </div>
 </div>
 <div id="example-2-two-step-lvpa" class="section level2">
@@ -948,7 +883,7 @@ EXBEH2 =~ eb1t2 + d*eb2t2 + e*eb3t2
 
 DD.fit &lt;- sem(DD.model, sample.cov = covmat, sample.nobs = 84)
 summary(DD.fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-8 ended normally after 153 iterations
+<pre><code>## lavaan 0.6-9 ended normally after 153 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -1519,7 +1454,7 @@ eb3t1~~eb3t2
 
 DD.fit2 &lt;- sem(DD.model2, sample.cov = covmat, sample.nobs = 84)
 summary(DD.fit2, fit.measures = T, standardized = T, modindices = T)</code></pre>
-<pre><code>## lavaan 0.6-8 ended normally after 178 iterations
+<pre><code>## lavaan 0.6-9 ended normally after 178 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -2055,7 +1990,7 @@ eb3t1~~eb3t2
 
 DD.fit3 &lt;- sem(DD.model3, sample.cov = covmat, sample.nobs = 84)
 summary(DD.fit3, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-8 ended normally after 168 iterations
+<pre><code>## lavaan 0.6-9 ended normally after 168 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -2247,7 +2182,7 @@ SOCSUP2 ~ SOCSUP1
 
 DD.fit4 &lt;- sem(DD.model4, sample.cov = covmat, sample.nobs = 84)
 summary(DD.fit4, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-8 ended normally after 137 iterations
+<pre><code>## lavaan 0.6-9 ended normally after 137 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -2425,7 +2360,7 @@ with(DD.mod4, subset(DD.mod4[order(mi, decreasing = T), ], subset = mi &gt;= 3.8
 </div>
 
 <hr>
-© Copyright 2021 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2022 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 
@@ -2465,6 +2400,9 @@ $(document).ready(function () {
 
 <script>
 $(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
 
     // move toc-ignore selectors from section div to header
     $('div.section.toc-ignore')

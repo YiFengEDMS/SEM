@@ -13,8 +13,8 @@
 
 <title>Latent Path Analysis Exercise: Two step SEM</title>
 
-<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -269,39 +269,6 @@ $(document).ready(function () {
     <li>
       <a href="mg-example.html">Multi-group Analysis</a>
     </li>
-    <li>
-      <a href="missing-data-example.html">Missing Data</a>
-    </li>
-    <li>
-      <a href="nonnormal-data-example.html">Nonnormal Continuous Data</a>
-    </li>
-    <li>
-      <a href="ordered-categorical-data-example.html">Ordered Categorical Data</a>
-    </li>
-    <li>
-      <a href="complex-multilevel-example.html">Complex Sampling</a>
-    </li>
-    <li>
-      <a href="mimic-example.html">Group Code Analysis</a>
-    </li>
-    <li>
-      <a href="mean-structure-example.html">Mean Structure Modeling</a>
-    </li>
-    <li>
-      <a href="repeated-means-example.html">Repeated Measure Means Models</a>
-    </li>
-    <li>
-      <a href="interaction-example.html">Latent Variable Moderation</a>
-    </li>
-    <li>
-      <a href="lgm-example.html">Latent Growth Models</a>
-    </li>
-    <li>
-      <a href="lgm-extension-example.html">Latent Growth Models Extensions</a>
-    </li>
-    <li>
-      <a href="power-example.html">Monte Carlo Power Methods</a>
-    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -338,24 +305,6 @@ $(document).ready(function () {
     <li>
       <a href="mg-cfa-exercise-2.html">Multi-group CFA Exercise</a>
     </li>
-    <li>
-      <a href="mean-structure-exercise.html">Structured Means Analysis Exercise</a>
-    </li>
-    <li>
-      <a href="repeated-means-exercise.html">Repeated Measure Means Exercise</a>
-    </li>
-    <li>
-      <a href="interaction-exercise.html">Latent Interaction Exercise</a>
-    </li>
-    <li>
-      <a href="lgm-exercise.html">Latent Growth Models Exercise</a>
-    </li>
-    <li>
-      <a href="conditional-lgm-exercise.html">Conditional Latent Growth Models Exercise</a>
-    </li>
-    <li>
-      <a href="power-exercise.html">Power Analysis</a>
-    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -373,9 +322,6 @@ $(document).ready(function () {
     </li>
     <li>
       <a href="mg-cfa-exercise-DEMO.html">Multi-group CFA Exercise-DEMO</a>
-    </li>
-    <li>
-      <a href="repeated-means-exercise-DEMO.html">Repeated Measure Means Exercise-DEMO</a>
     </li>
   </ul>
 </li>
@@ -431,7 +377,7 @@ SES =~ educ + sei
 
 step1.fit &lt;- sem(step1.model, sample.cov = covmat, sample.nobs = 932)
 summary(step1.fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-8 ended normally after 71 iterations
+<pre><code>## lavaan 0.6-9 ended normally after 71 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -536,7 +482,7 @@ powles67~~powles71
 
 step1.fit2 &lt;- sem(step1.model2, sample.cov = covmat, sample.nobs = 932)
 summary(step1.fit2, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-8 ended normally after 79 iterations
+<pre><code>## lavaan 0.6-9 ended normally after 79 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -644,7 +590,7 @@ powles67 ~~ powles71
 
 step2.fit &lt;- sem(step2.model, sample.cov = covmat, sample.nobs = 932)
 summary(step2.fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-8 ended normally after 68 iterations
+<pre><code>## lavaan 0.6-9 ended normally after 68 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -740,7 +686,7 @@ step2.mod[step2.mod$mi &gt;= 3.841, ]</code></pre>
 ## &lt;0 rows&gt; (or 0-length row.names)</code></pre>
 
 <hr>
-© Copyright 2021 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2022 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

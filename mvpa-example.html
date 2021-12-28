@@ -13,8 +13,8 @@
 
 <title>Measured Variable Path Analysis</title>
 
-<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -35,7 +35,7 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<script src="site_libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
 <script src="site_libs/viz-1.8.2/viz.js"></script>
 <link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
 <script src="site_libs/grViz-binding-1.0.6.1/grViz.js"></script>
@@ -299,12 +299,12 @@ div.tocify {
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row">
-<div class="col-sm-12 col-md-4 col-lg-3">
+<div class="col-xs-12 col-sm-4 col-md-3">
 <div id="TOC" class="tocify">
 </div>
 </div>
 
-<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -349,39 +349,6 @@ div.tocify {
     <li>
       <a href="mg-example.html">Multi-group Analysis</a>
     </li>
-    <li>
-      <a href="missing-data-example.html">Missing Data</a>
-    </li>
-    <li>
-      <a href="nonnormal-data-example.html">Nonnormal Continuous Data</a>
-    </li>
-    <li>
-      <a href="ordered-categorical-data-example.html">Ordered Categorical Data</a>
-    </li>
-    <li>
-      <a href="complex-multilevel-example.html">Complex Sampling</a>
-    </li>
-    <li>
-      <a href="mimic-example.html">Group Code Analysis</a>
-    </li>
-    <li>
-      <a href="mean-structure-example.html">Mean Structure Modeling</a>
-    </li>
-    <li>
-      <a href="repeated-means-example.html">Repeated Measure Means Models</a>
-    </li>
-    <li>
-      <a href="interaction-example.html">Latent Variable Moderation</a>
-    </li>
-    <li>
-      <a href="lgm-example.html">Latent Growth Models</a>
-    </li>
-    <li>
-      <a href="lgm-extension-example.html">Latent Growth Models Extensions</a>
-    </li>
-    <li>
-      <a href="power-example.html">Monte Carlo Power Methods</a>
-    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -418,24 +385,6 @@ div.tocify {
     <li>
       <a href="mg-cfa-exercise-2.html">Multi-group CFA Exercise</a>
     </li>
-    <li>
-      <a href="mean-structure-exercise.html">Structured Means Analysis Exercise</a>
-    </li>
-    <li>
-      <a href="repeated-means-exercise.html">Repeated Measure Means Exercise</a>
-    </li>
-    <li>
-      <a href="interaction-exercise.html">Latent Interaction Exercise</a>
-    </li>
-    <li>
-      <a href="lgm-exercise.html">Latent Growth Models Exercise</a>
-    </li>
-    <li>
-      <a href="conditional-lgm-exercise.html">Conditional Latent Growth Models Exercise</a>
-    </li>
-    <li>
-      <a href="power-exercise.html">Power Analysis</a>
-    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -453,9 +402,6 @@ div.tocify {
     </li>
     <li>
       <a href="mg-cfa-exercise-DEMO.html">Multi-group CFA Exercise-DEMO</a>
-    </li>
-    <li>
-      <a href="repeated-means-exercise-DEMO.html">Repeated Measure Means Exercise-DEMO</a>
     </li>
   </ul>
 </li>
@@ -493,8 +439,8 @@ library(lavaanPlot)</code></pre>
 <div id="example-1" class="section level2">
 <h2>Example 1</h2>
 <p>In this example, there are 4 measured variables: ReadSC1, MathSC1, Goals2, and SATmath.</p>
-<div id="htmlwidget-6dc2076653eb0bdda392" style="width:40%;height:480px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-6dc2076653eb0bdda392">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n ReadSC1; MathSC1; Goals2; SATmath \n node [shape = oval] \n  \n \n edge [ color = grey ] \n ReadSC1->Goals2 MathSC1->Goals2 Goals2->SATmath ReadSC1->SATmath MathSC1->SATmath  \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-0bb2534cb3e9c293d1f3" style="width:40%;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0bb2534cb3e9c293d1f3">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n ReadSC1; MathSC1; Goals2; SATmath \n node [shape = oval] \n  \n \n edge [ color = grey ] \n ReadSC1->Goals2 MathSC1->Goals2 Goals2->SATmath ReadSC1->SATmath MathSC1->SATmath  \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <div id="import-the-data" class="section level3">
 <h3>Import the data</h3>
 <p>In this example, our data is a correlation matrix. For more information about the data, please refer back to the course slides.</p>
@@ -550,7 +496,7 @@ MathSC1 ~~ MathSC1
 <h3>Summarize the results</h3>
 <p>Next you can summarize the results using the <code>summary()</code>function. To get more info on the model fit measures, you can use the optional argument <code>fit.measures = TRUE</code>. To take a look at the standardzied parameter estimates, you can use the optional argument <code>standardized = TRUE</code>. The standardized solutions are listed in the column labeled “Std.all”.</p>
 <pre class="r"><code>summary(mvpa.fit.1, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-8 ended normally after 51 iterations
+<pre><code>## lavaan 0.6-9 ended normally after 51 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -627,8 +573,8 @@ MathSC1 ~~ MathSC1
 <div id="example-2" class="section level2">
 <h2>Example 2</h2>
 <p>In the second example, there are 3 measured variables of interest: ReadSC1, MathSC1, and SATmath.</p>
-<div id="htmlwidget-637ad9abd8f1b915a18e" style="width:30%;height:480px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-637ad9abd8f1b915a18e">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n ReadSC1; MathSC1; SATmath \n node [shape = oval] \n  \n \n edge [ color = grey ] \n ReadSC1->MathSC1 MathSC1->SATmath  \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-c9e1afddd8d6172bf2b9" style="width:30%;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c9e1afddd8d6172bf2b9">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n ReadSC1; MathSC1; SATmath \n node [shape = oval] \n  \n \n edge [ color = grey ] \n ReadSC1->MathSC1 MathSC1->SATmath  \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <div id="import-the-data-1" class="section level3">
 <h3>Import the data</h3>
 <p>In this example, our data is still a correlation matrix. Similarly, we first read in the lower half of the correlation matrix and convert it to a full symmetrix covariance matrix.</p>
@@ -674,7 +620,7 @@ SATmath ~ MathSC1
 <h3>Summarize the results</h3>
 <p>Next you can summarize the results using the <code>summary()</code>function. To get more info on the model fit measures, you can use the optional argument <code>fit.measures = TRUE</code>. To take a look at the standardzied parameter estimates, you can use the optional argument <code>standardized = TRUE</code>. The standardized solutions are listed in the column labeled “Std.all”.</p>
 <pre class="r"><code>summary(mvpa.fit.2, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-8 ended normally after 24 iterations
+<pre><code>## lavaan 0.6-9 ended normally after 24 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -743,7 +689,7 @@ SATmath ~ MathSC1
 </div>
 
 <hr>
-© Copyright 2021 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2022 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 
@@ -783,6 +729,9 @@ $(document).ready(function () {
 
 <script>
 $(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
 
     // move toc-ignore selectors from section div to header
     $('div.section.toc-ignore')

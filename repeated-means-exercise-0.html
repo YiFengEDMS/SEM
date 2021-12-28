@@ -11,7 +11,7 @@
 
 
 
-<title>Mediation Exercise</title>
+<title>Repeated Measure Means Exercise</title>
 
 <script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -343,7 +343,7 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Mediation Exercise</h1>
+<h1 class="title toc-ignore">Repeated Measure Means Exercise</h1>
 
 </div>
 
@@ -351,124 +351,150 @@ $(document).ready(function () {
 <pre class="r"><code>library(lavaan)
 setwd(mypath)  # change it to the path of your own data folder
 
-mediation.data &lt;- read.table(&quot;Mediation_Exercise_data.csv&quot;, sep = &quot;,&quot;, header = F)
+repeat.data &lt;- read.delim(&quot;ENGLISHchinese2.txt&quot;, sep = &quot;\t&quot;, header = F)
 
-colnames(mediation.data) &lt;- c(&quot;climate&quot;,
-                           &quot;control&quot;,
-                           &quot;burnout&quot;,
-                           &quot;attitude&quot;,
-                           &quot;educout&quot;,
-                           &quot;psychout&quot;)
+colnames(repeat.data) &lt;- c(&#39;read1&#39;, &#39;read3&#39;, &#39;list1&#39;, &#39;list3&#39;,
+                           &#39;speak1&#39;, &#39;speak3&#39;, &#39;write1&#39;, &#39;write3&#39;)
 
-mediation.model &lt;- &#39;
+repeat.model &lt;- &#39;
 
- burnout ~ a*climate + b*control
- attitude ~ c*burnout + d*climate + e*control
- educout ~ f*attitude
- psychout ~ g*attitude
- 
- educout ~~ psychout
- 
- ac := a*c
- bc := b*c
- fd := f*d
- fe := f*e
- fc := f*c
- gd := g*d
- ge := g*e
- gc := g*c
+# define the latent variables
+
+english1 =~ 1*read1 + a*list1 + b*speak1 + c*write1
+english3 =~ 1*read3 + a*list3 + b*speak3 + c*write3
+
+# residual covariances
+
+read1 ~~ read3
+list1 ~~ list3
+speak1 ~~ speak3
+write1 ~~ write3
+read3 ~~ list3
+
+# intercepts
+
+read1 ~ d*1
+read3 ~ d*1
+list1 ~ e*1
+list3 ~ e*1
+speak1 ~ f*1
+speak3 ~ f*1
+write1 ~ g*1
+write3 ~ g*1
+
+english1 ~ 0*1
+english3 ~ NA*1
+
 
 &#39;
 
-mediation.fit &lt;- sem(mediation.model, data = mediation.data, se = &quot;bootstrap&quot;)</code></pre>
-<pre class="r"><code>summary(mediation.fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-9 ended normally after 42 iterations
+repeat.fit &lt;- sem(repeat.model, data = repeat.data)
+summary(repeat.fit, fit.measures = T, standardized = T)</code></pre>
+<pre><code>## lavaan 0.6-9 ended normally after 112 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
-##   Number of model parameters                        12
+##   Number of model parameters                        31
+##   Number of equality constraints                     7
 ##                                                       
-##   Number of observations                           109
+##   Number of observations                            86
 ##                                                       
 ## Model Test User Model:
 ##                                                       
-##   Test statistic                                 3.885
-##   Degrees of freedom                                 6
-##   P-value (Chi-square)                           0.692
+##   Test statistic                                32.814
+##   Degrees of freedom                                20
+##   P-value (Chi-square)                           0.035
 ## 
 ## Model Test Baseline Model:
 ## 
-##   Test statistic                               192.120
-##   Degrees of freedom                                14
+##   Test statistic                               536.846
+##   Degrees of freedom                                28
 ##   P-value                                        0.000
 ## 
 ## User Model versus Baseline Model:
 ## 
-##   Comparative Fit Index (CFI)                    1.000
-##   Tucker-Lewis Index (TLI)                       1.028
+##   Comparative Fit Index (CFI)                    0.975
+##   Tucker-Lewis Index (TLI)                       0.965
 ## 
 ## Loglikelihood and Information Criteria:
 ## 
-##   Loglikelihood user model (H0)              -1101.180
-##   Loglikelihood unrestricted model (H1)      -1099.238
+##   Loglikelihood user model (H0)              -1811.634
+##   Loglikelihood unrestricted model (H1)      -1795.227
 ##                                                       
-##   Akaike (AIC)                                2226.361
-##   Bayesian (BIC)                              2258.657
-##   Sample-size adjusted Bayesian (BIC)         2220.739
+##   Akaike (AIC)                                3671.268
+##   Bayesian (BIC)                              3730.173
+##   Sample-size adjusted Bayesian (BIC)         3654.451
 ## 
 ## Root Mean Square Error of Approximation:
 ## 
-##   RMSEA                                          0.000
-##   90 Percent confidence interval - lower         0.000
-##   90 Percent confidence interval - upper         0.096
-##   P-value RMSEA &lt;= 0.05                          0.809
+##   RMSEA                                          0.086
+##   90 Percent confidence interval - lower         0.023
+##   90 Percent confidence interval - upper         0.138
+##   P-value RMSEA &lt;= 0.05                          0.132
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
-##   SRMR                                           0.032
+##   SRMR                                           0.057
 ## 
 ## Parameter Estimates:
 ## 
-##   Standard errors                            Bootstrap
-##   Number of requested bootstrap draws             1000
-##   Number of successful bootstrap draws            1000
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
 ## 
-## Regressions:
+## Latent Variables:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   burnout ~                                                             
-##     climate    (a)   -0.380    0.082   -4.630    0.000   -0.380   -0.409
-##     control    (b)    0.292    0.091    3.220    0.001    0.292    0.249
-##   attitude ~                                                            
-##     burnout    (c)    0.025    0.011    2.264    0.024    0.025    0.232
-##     climate    (d)    0.015    0.009    1.591    0.112    0.015    0.150
-##     control    (e)   -0.056    0.012   -4.683    0.000   -0.056   -0.443
-##   educout ~                                                             
-##     attitude   (f)    2.215    0.290    7.645    0.000    2.215    0.633
-##   psychout ~                                                            
-##     attitude   (g)    3.447    0.319   10.795    0.000    3.447    0.691
+##   english1 =~                                                           
+##     read1             1.000                               4.903    0.730
+##     list1      (a)    1.028    0.099   10.359    0.000    5.043    0.813
+##     speak1     (b)    0.430    0.051    8.496    0.000    2.107    0.730
+##     write1     (c)    0.774    0.073   10.632    0.000    3.793    0.907
+##   english3 =~                                                           
+##     read3             1.000                               4.955    0.705
+##     list3      (a)    1.028    0.099   10.359    0.000    5.095    0.753
+##     speak3     (b)    0.430    0.051    8.496    0.000    2.129    0.703
+##     write3     (c)    0.774    0.073   10.632    0.000    3.833    0.928
 ## 
 ## Covariances:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##  .educout ~~                                                            
-##    .psychout          1.139    0.983    1.159    0.246    1.139    0.105
+##  .read1 ~~                                                              
+##    .read3             7.115    2.633    2.702    0.007    7.115    0.311
+##  .list1 ~~                                                              
+##    .list3             4.295    1.984    2.165    0.030    4.295    0.266
+##  .speak1 ~~                                                             
+##    .speak3            2.103    0.568    3.701    0.000    2.103    0.496
+##  .write1 ~~                                                             
+##    .write3            0.077    0.731    0.105    0.916    0.077    0.028
+##  .read3 ~~                                                              
+##    .list3             7.925    2.659    2.980    0.003    7.925    0.357
+##   english1 ~~                                                           
+##     english3         22.602    5.199    4.348    0.000    0.930    0.930
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .read1      (d)   16.066    0.680   23.625    0.000   16.066    2.391
+##    .read3      (d)   16.066    0.680   23.625    0.000   16.066    2.287
+##    .list1      (e)   14.057    0.646   21.759    0.000   14.057    2.265
+##    .list3      (e)   14.057    0.646   21.759    0.000   14.057    2.076
+##    .speak1     (f)   17.598    0.302   58.308    0.000   17.598    6.102
+##    .speak3     (f)   17.598    0.302   58.308    0.000   17.598    5.814
+##    .write1     (g)   18.086    0.442   40.942    0.000   18.086    4.326
+##    .write3     (g)   18.086    0.442   40.942    0.000   18.086    4.380
+##     english1          0.000                               0.000    0.000
+##     english3          2.639    0.368    7.161    0.000    0.533    0.533
 ## 
 ## Variances:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .burnout          67.858    8.124    8.353    0.000   67.858    0.719
-##    .attitude          0.886    0.106    8.395    0.000    0.886    0.799
-##    .educout           8.166    1.018    8.021    0.000    8.166    0.600
-##    .psychout         14.411    1.781    8.092    0.000   14.411    0.522
-## 
-## Defined Parameters:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##     ac               -0.010    0.005   -2.021    0.043   -0.010   -0.095
-##     bc                0.007    0.004    1.753    0.080    0.007    0.058
-##     fd                0.033    0.022    1.522    0.128    0.033    0.095
-##     fe               -0.125    0.032   -3.893    0.000   -0.125   -0.281
-##     fc                0.056    0.026    2.116    0.034    0.056    0.147
-##     gd                0.052    0.033    1.572    0.116    0.052    0.103
-##     ge               -0.195    0.044   -4.449    0.000   -0.195   -0.307
-##     gc                0.087    0.037    2.345    0.019    0.087    0.160</code></pre>
+##    .read1            21.123    3.600    5.868    0.000   21.123    0.468
+##    .list1            13.076    2.484    5.263    0.000   13.076    0.340
+##    .speak1            3.880    0.662    5.865    0.000    3.880    0.466
+##    .write1            3.090    0.950    3.252    0.001    3.090    0.177
+##    .read3            24.780    4.105    6.036    0.000   24.780    0.502
+##    .list3            19.867    3.441    5.773    0.000   19.867    0.433
+##    .speak3            4.629    0.779    5.940    0.000    4.629    0.505
+##    .write3            2.358    0.947    2.491    0.013    2.358    0.138
+##     english1         24.043    5.450    4.412    0.000    1.000    1.000
+##     english3         24.550    5.740    4.277    0.000    1.000    1.000</code></pre>
 
 <hr>
 © Copyright 2022 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
