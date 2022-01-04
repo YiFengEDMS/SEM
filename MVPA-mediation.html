@@ -11,7 +11,7 @@
 
 
 
-<title>Tutorials: SEM with lavaan in R</title>
+<title>MVPA-Mediation Example</title>
 
 <script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -255,9 +255,6 @@ $(document).ready(function () {
       <a href="mvpa-example.html">Measured Variable Path Analysis</a>
     </li>
     <li>
-      <a href="MVPA-mediation.html">Mediation</a>
-    </li>
-    <li>
       <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
     </li>
     <li>
@@ -346,95 +343,195 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Tutorials: SEM with lavaan in R</h1>
-<h4 class="author"><a href="https://terpconnect.umd.edu/~yifeng94/">Yi Feng</a> &amp; <a href="https://education.umd.edu/directory/gregory-r-hancock">Gregory R. Hancock</a></h4>
-<address class="author_afil">
-<a href="https://education.umd.edu/measurement-statistics-evaluation-program">Program in Measurement, Statistics and Evaluation</a><br>
+<h1 class="title toc-ignore">MVPA-Mediation Example</h1>
+
 </div>
 
 
-<hr />
-<p>Hi there, welcome. This website supplies the supplementary materials for the structural equation modeling(SEM) courses taught by <a href="https://education.umd.edu/directory/gregory-r-hancock">Dr. Gregory R. Hancock</a>. Dr. Hancock teaches <a href="https://education.umd.edu/measurement-statistics-evaluation-program#workshops">winter short courses on SEM</a> as well as <a href="https://www.testudo.umd.edu/">EDMS722 Structural Equation Modeling</a> at University of Maryland, College Park.</p>
-<p>In class, you have already gained a good knowledge about how to use <a href="https://www.statmodel.com/">M<em>plus</em></a> with a variety of models. Here we are going to introduce you to another useful tool that can be used to conduct latent variable analysis: <a href="http://lavaan.ugent.be/tutorial/index.html"><code>lavvan</code></a>.</p>
-<p><code>lavaan</code> is a free open-source package in R that is developed for latent variable modeling. <code>lavaan</code> is a powerful tool that can accomodate most of the models you have learned in this course. The authors of <code>lavaan</code> package has developed a series of <a href="http://lavaan.ugent.be/tutorial/index.html">tutorials</a> for <code>lavaan</code> users. We would recommend you to go over their tutorials if you are new to <code>lavaan</code>. After all, the developers have the best knowledge of their software package.</p>
-<p>The tutorials we supply here are all based on the examples and exercises you have already seen in class, where you have practiced with Mplus. We will walk you through these examples using <code>lavaan</code> in our tutorials. Both Mplus and <code>lavaan</code> are great tools for SEM. We provide the <code>lavaan</code> tutorials here with the hope to help you better learn about SEM in this course. First, with the tutorial materials available, you can better focus on the more important contents when you are in the class. It can be frustrating and distracting when you want to focus on the lectures while R is yelling at you with some error message. We want to take that burden off you so you can enjoy your class time better. Actually, once you have had a solid grasp on the mechanisms of SEM, it will not be too difficult to translate your knowledge to a software language (Mplus, lavaan, LISREL, OpenMx, STATA…). Providing the <code>lavaan</code> materials here, in addition to the Mplus materials you have learned in class, we wish to add to your toolkit by showing you how to use <code>lavaan</code>, such that you will have an additional (free) tool at your disposal when you need to employ SEM in your own research projects.</p>
-<hr />
-<p><strong>To get you started:</strong></p>
-<p>Before we get started, please make sure you have installed R or RStuido, as well as the <code>lavaan</code> package on your device.</p>
-<ol style="list-style-type: decimal">
-<li>Install the latest version of <a href="https://www.rstudio.com/products/rstudio/download/">RStudio</a> or <a href="https://cran.r-project.org/">R</a>.</li>
-<li>Install <a href="http://lavaan.ugent.be/tutorial/install.html"><code>lavaan</code></a> from CRAN.</li>
-</ol>
-<pre class="r"><code>install.packages(&quot;lavaan&quot;, dependencies=TRUE)
-library(lavaan)</code></pre>
-<p><strong>Important</strong></p>
-<p>Please make sure you have correctly set up your working directory to where your data are stored. To see your current working directory:</p>
-<pre class="r"><code>getwd()</code></pre>
-<p>To change your working directory, you can either use the <code>setwd()</code> function, or click the “Session –&gt; Set Working Directory” button in the menu.</p>
-<pre class="r"><code>mypath &lt;- &quot;/SEM Second Course Mplus 2019/Advanced Examples/5. Growth Examples&quot;
-setwd(mypath)</code></pre>
-<hr />
-<!--
-## **First Course**
--->
-<p><strong>In-class Examples</strong></p>
-<ol style="list-style-type: decimal">
-<li><a href="mlr-example.html">MLR Path Analysis</a></li>
-<li><a href="mvpa-example.html">Measured Variable Path Analysis</a></li>
-<li><a href="MVPA-mediation.html">Mediation</a></li>
-<li><a href="cfa-example-v2.html">Confirmatory Factor Analysis</a></li>
-<li><a href="mtmm-example.html">Multitrait-Multimethod Analysis</a></li>
-<li><a href="reliability.html">Scale Reliability</a></li>
-<li><a href="latent-pa-example.html">Latent Path Analysis</a></li>
-<li><a href="mg-example.html">Multi-group Analysis</a></li>
-</ol>
-<p><strong>Hands-on Exercises</strong></p>
-<ol style="list-style-type: decimal">
-<li><a href="mvpa-exercise.html">Path Analysis Exercise</a></li>
-<li><a href="mediation-exercise.html">Mediation Exercise</a></li>
-<li><a href="APIM-exercise.html">APIM Exercise</a></li>
-<li><a href="cfa-exercise-v2.html">CFA Exercise</a></li>
-<li><a href="residualized-cfa-exercise.html">Residualized CFA Exercise</a></li>
-<li><a href="reliability_exercise.html">Scale Reliability</a></li>
-<li><a href="latent-pa-exercise.html">Latent Path Analysis Exercise</a></li>
-<li><a href="latent-pa-2step-exercise.html">Two-step SEM Exercise</a></li>
-<li><a href="mg-cfa-exercise-2.html">Multi-group CFA Exercise</a></li>
-</ol>
-<div id="section" class="section level2">
-<h2><!--
---- 
+<p><img src="MVPA-mediation_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code>library(lavaan)
+setwd(mypath)  # change it to the path of your own data folder
 
-## **Second Course**:
+mediation.data &lt;- read.table(&quot;mvpa_mediation_data.csv&quot;, sep = &quot;,&quot;, header = F)
 
-**In-class Examples**
+colnames(mediation.data) &lt;- paste0(&quot;V&quot;, 1:4)
 
-1. [Missing Data](missing-data-example.html) 
-1. [Nonnormal Continuous Data](nonnormal-data-example.html)
-1. [Ordered Categorical Data](ordered-categorical-data-example.html)
-1. [Complex Sampling](complex-multilevel-example.html)
-1. [Group Code Analysis](mimic-example.html)
-1. [Mean Structure Modeling](mean-structure-example.html)
-1. [Repeated Measure Means Models](repeated-means-example.html)
-1. [Latent Variable Moderation](interaction-example.html)
-1. [Latent Growth Models](lgm-example.html)
-1. [Latent Growth Models Extensions](lgm-extension-example.html)
-1. [Monte Carlo Power Methods](power-example.html)
+mediation.model &lt;- &#39;
 
+ V3 ~ a*V1
+ V2 ~ b*V1
+ V4 ~ c*V1 + d*V2 + e*V3
+ V2 ~~ V3
+ 
+ # Indirect Effects
+ ae := a*e
+ bd := b*d
+ 
+ # Total Effect
+ t := a*e + b*d + c
 
-**Hands-on Exercises**
+&#39;
 
-1. [Structured Means Analysis Exercise](mean-structure-exercise.html)
-1. [Repeated Measure Means Exercise](repeated-means-exercise.html) 
-1. [Latent Interaction Exercise](interaction-exercise.html)
-1. [Latent Growth Models Exercise](lgm-exercise.html)
-1. [Conditional Latent Growth Models Exercise](conditional-lgm-exercise.html)
-1. [Power Analysis](power-exercise.html)
-
---></h2>
-<p>If you only have access to the Mplus Demo version and you are seeking for parallel R code for the corresponding exercises, please refer to “Exercise Solutions-DEMO”.</p>
+mediation.fit &lt;- sem(mediation.model, data = mediation.data, se = &quot;bootstrap&quot;)</code></pre>
+<pre class="r"><code>library(lavaan)
+summary(mediation.fit, fit.measures = T, standardized = F)</code></pre>
+<pre><code>## lavaan 0.6-9 ended normally after 48 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                         9
+##                                                       
+##   Number of observations                          1000
+##                                                       
+## Model Test User Model:
+##                                                       
+##   Test statistic                                 0.000
+##   Degrees of freedom                                 0
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                               589.591
+##   Degrees of freedom                                 6
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    1.000
+##   Tucker-Lewis Index (TLI)                       1.000
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -8059.340
+##   Loglikelihood unrestricted model (H1)      -8059.340
+##                                                       
+##   Akaike (AIC)                               16136.680
+##   Bayesian (BIC)                             16180.849
+##   Sample-size adjusted Bayesian (BIC)        16152.265
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.000
+##   90 Percent confidence interval - lower         0.000
+##   90 Percent confidence interval - upper         0.000
+##   P-value RMSEA &lt;= 0.05                             NA
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.000
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                            Bootstrap
+##   Number of requested bootstrap draws             1000
+##   Number of successful bootstrap draws            1000
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   V3 ~                                                
+##     V1         (a)   -0.158    0.029   -5.531    0.000
+##   V2 ~                                                
+##     V1         (b)    0.149    0.027    5.478    0.000
+##   V4 ~                                                
+##     V1         (c)   13.457    0.666   20.203    0.000
+##     V2         (d)    8.804    0.727   12.106    0.000
+##     V3         (e)    0.046    0.718    0.065    0.948
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##  .V3 ~~                                               
+##    .V2                0.244    0.049    4.998    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .V3                1.573    0.059   26.629    0.000
+##    .V2                1.583    0.058   27.135    0.000
+##    .V4              826.683   35.926   23.010    0.000
+## 
+## Defined Parameters:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     ae               -0.007    0.116   -0.063    0.950
+##     bd                1.308    0.262    4.995    0.000
+##     t                14.758    0.685   21.554    0.000</code></pre>
+<pre class="r"><code>summary(mediation.fit, fit.measures = T, standardized = T)</code></pre>
+<pre><code>## lavaan 0.6-9 ended normally after 48 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                         9
+##                                                       
+##   Number of observations                          1000
+##                                                       
+## Model Test User Model:
+##                                                       
+##   Test statistic                                 0.000
+##   Degrees of freedom                                 0
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                               589.591
+##   Degrees of freedom                                 6
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    1.000
+##   Tucker-Lewis Index (TLI)                       1.000
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -8059.340
+##   Loglikelihood unrestricted model (H1)      -8059.340
+##                                                       
+##   Akaike (AIC)                               16136.680
+##   Bayesian (BIC)                             16180.849
+##   Sample-size adjusted Bayesian (BIC)        16152.265
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.000
+##   90 Percent confidence interval - lower         0.000
+##   90 Percent confidence interval - upper         0.000
+##   P-value RMSEA &lt;= 0.05                             NA
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.000
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                            Bootstrap
+##   Number of requested bootstrap draws             1000
+##   Number of successful bootstrap draws            1000
+## 
+## Regressions:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   V3 ~                                                                  
+##     V1         (a)   -0.158    0.029   -5.531    0.000   -0.158   -0.173
+##   V2 ~                                                                  
+##     V1         (b)    0.149    0.027    5.478    0.000    0.149    0.163
+##   V4 ~                                                                  
+##     V1         (c)   13.457    0.666   20.203    0.000   13.457    0.507
+##     V2         (d)    8.804    0.727   12.106    0.000    8.804    0.303
+##     V3         (e)    0.046    0.718    0.065    0.948    0.046    0.002
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##  .V3 ~~                                                                 
+##    .V2                0.244    0.049    4.998    0.000    0.244    0.155
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .V3                1.573    0.059   26.629    0.000    1.573    0.970
+##    .V2                1.583    0.058   27.135    0.000    1.583    0.974
+##    .V4              826.683   35.926   23.010    0.000  826.683    0.602
+## 
+## Defined Parameters:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##     ae               -0.007    0.116   -0.063    0.950   -0.007   -0.000
+##     bd                1.308    0.262    4.995    0.000    1.308    0.049
+##     t                14.758    0.685   21.554    0.000   14.758    0.556</code></pre>
 <div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
 
-</div>
 </div>
 
 <hr>

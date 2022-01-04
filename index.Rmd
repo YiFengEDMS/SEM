@@ -62,6 +62,7 @@ setwd(mypath)
 
 1. [MLR Path Analysis](mlr-example.html)
 1. [Measured Variable Path Analysis](mvpa-example.html)
+1. [Mediation](MVPA-mediation.html)
 1. [Confirmatory Factor Analysis](cfa-example-v2.html)
 1. [Multitrait-Multimethod Analysis](mtmm-example.html)
 1. [Scale Reliability](reliability.html)

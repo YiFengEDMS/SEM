@@ -9,6 +9,8 @@ navbar:
         href: mlr-example.html      
       - text: Measured Variable Path Analysis
         href: mvpa-example.html
+      - text: Mediation  
+        href: MVPA-mediation.html
       - text: Confirmatory Factor Analysis
         href: cfa-example-v2.html
       - text: Multitrait-Multimethod Analysis

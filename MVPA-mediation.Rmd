@@ -1,0 +1,88 @@
+---
+title: "MVPA-Mediation Example"
+output:
+  html_document:
+    toc: true
+    toc_float: false
+    toc_depth: 4
+---
+
+```{r,echo=F, eval = T}
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/SEM_Intro_2022/2b. Path Analysis Extensions/2b.Examples"
+```
+
+```{r, warning=FALSE, message = F, echo = F, include = T}
+library(lavaan)
+library(semPlot)
+setwd(mypath)  # change it to the path of your own data folder
+
+mediation.data <- read.table("mvpa_mediation_data.csv", sep = ",", header = F)
+
+colnames(mediation.data) <- paste0("V", 1:4)
+
+mediation.model <- '
+
+ V3 ~ a*V1
+ V2 ~ b*V1
+ V4 ~ c*V1 + d*V2 + e*V3
+ V2 ~~ V3
+ 
+ # Indirect Effects
+ ae := a*e
+ bd := b*d
+ 
+ # Total Effect
+ t := a*e + b*d + c
+
+'
+
+mediation.fit <- sem(mediation.model, data = mediation.data)
+
+semPaths(mediation.fit, title = FALSE, curvePivot = TRUE, intercepts = F, optimizeLatRes = T)
+
+```
+
+
+
+```{r, warning=FALSE, message = F, eval = F}
+library(lavaan)
+setwd(mypath)  # change it to the path of your own data folder
+
+mediation.data <- read.table("mvpa_mediation_data.csv", sep = ",", header = F)
+
+colnames(mediation.data) <- paste0("V", 1:4)
+
+mediation.model <- '
+
+ V3 ~ a*V1
+ V2 ~ b*V1
+ V4 ~ c*V1 + d*V2 + e*V3
+ V2 ~~ V3
+ 
+ # Indirect Effects
+ ae := a*e
+ bd := b*d
+ 
+ # Total Effect
+ t := a*e + b*d + c
+
+'
+
+mediation.fit <- sem(mediation.model, data = mediation.data, se = "bootstrap")
+
+```
+
+
+```{r, echo = F}
+load("mediationFit-mvpa.rda")
+
+```
+
+```{r, echo = T, message = F}
+library(lavaan)
+summary(mediation.fit, fit.measures = T, standardized = F)
+summary(mediation.fit, fit.measures = T, standardized = T)
+```
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
