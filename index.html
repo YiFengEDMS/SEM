@@ -13,10 +13,10 @@
 
 <title>Tutorials: SEM with lavaan in R</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -60,6 +60,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -80,6 +81,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -137,11 +141,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -170,8 +178,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -179,16 +187,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -229,10 +230,10 @@ $(document).ready(function () {
 
 
 
-<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -242,7 +243,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     In-class Examples
      
     <span class="caret"></span>
@@ -275,7 +276,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions
      
     <span class="caret"></span>
@@ -311,7 +312,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions-DEMO
      
     <span class="caret"></span>
@@ -347,30 +348,79 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Tutorials: SEM with lavaan in R</h1>
-<h4 class="author"><a href="https://terpconnect.umd.edu/~yifeng94/">Yi Feng</a> &amp; <a href="https://education.umd.edu/directory/gregory-r-hancock">Gregory R. Hancock</a></h4>
+<h4 class="author"><a href="https://terpconnect.umd.edu/~yifeng94/">Yi
+Feng</a> &amp; <a
+href="https://education.umd.edu/directory/gregory-r-hancock">Gregory R.
+Hancock</a></h4>
 <address class="author_afil">
-<a href="https://education.umd.edu/measurement-statistics-evaluation-program">Program in Measurement, Statistics and Evaluation</a><br>
+<a
+href="https://education.umd.edu/measurement-statistics-evaluation-program">Program
+in Quantitative Methodology: Measurement and Statistics</a><br>
 </div>
 
 
 <hr />
-<p>Hi there, welcome. This website supplies the supplementary materials for the structural equation modeling(SEM) courses taught by <a href="https://education.umd.edu/directory/gregory-r-hancock">Dr. Gregory R. Hancock</a>. Dr. Hancock teaches <a href="https://education.umd.edu/measurement-statistics-evaluation-program#workshops">winter short courses on SEM</a> as well as <a href="https://www.testudo.umd.edu/">EDMS722 Structural Equation Modeling</a> at University of Maryland, College Park.</p>
-<p>In class, you have already gained a good knowledge about how to use <a href="https://www.statmodel.com/">M<em>plus</em></a> with a variety of models. Here we are going to introduce you to another useful tool that can be used to conduct latent variable analysis: <a href="http://lavaan.ugent.be/tutorial/index.html"><code>lavvan</code></a>.</p>
-<p><code>lavaan</code> is a free open-source package in R that is developed for latent variable modeling. <code>lavaan</code> is a powerful tool that can accomodate most of the models you have learned in this course. The authors of <code>lavaan</code> package has developed a series of <a href="http://lavaan.ugent.be/tutorial/index.html">tutorials</a> for <code>lavaan</code> users. We would recommend you to go over their tutorials if you are new to <code>lavaan</code>. After all, the developers have the best knowledge of their software package.</p>
-<p>The tutorials we supply here are all based on the examples and exercises you have already seen in class, where you have practiced with Mplus. We will walk you through these examples using <code>lavaan</code> in our tutorials. Both Mplus and <code>lavaan</code> are great tools for SEM. We provide the <code>lavaan</code> tutorials here with the hope to help you better learn about SEM in this course. First, with the tutorial materials available, you can better focus on the more important contents when you are in the class. It can be frustrating and distracting when you want to focus on the lectures while R is yelling at you with some error message. We want to take that burden off you so you can enjoy your class time better. Actually, once you have had a solid grasp on the mechanisms of SEM, it will not be too difficult to translate your knowledge to a software language (Mplus, lavaan, LISREL, OpenMx, STATA…). Providing the <code>lavaan</code> materials here, in addition to the Mplus materials you have learned in class, we wish to add to your toolkit by showing you how to use <code>lavaan</code>, such that you will have an additional (free) tool at your disposal when you need to employ SEM in your own research projects.</p>
+<p>Hi there, welcome. This website supplies the supplementary materials
+for the structural equation modeling(SEM) courses taught by <a
+href="https://education.umd.edu/directory/gregory-r-hancock">Dr. Gregory
+R. Hancock</a>. Dr. Hancock teaches <a
+href="https://education.umd.edu/measurement-statistics-evaluation-program#workshops">winter
+short courses on SEM</a> as well as <a
+href="https://www.testudo.umd.edu/">EDMS722 Structural Equation
+Modeling</a> at University of Maryland, College Park.</p>
+<p>In class, you have already gained a good knowledge about how to use
+<a href="https://www.statmodel.com/">M<em>plus</em></a> with a variety
+of models. Here we are going to introduce you to another useful tool
+that can be used to conduct latent variable analysis: <a
+href="http://lavaan.ugent.be/tutorial/index.html"><code>lavvan</code></a>.</p>
+<p><code>lavaan</code> is a free open-source package in R that is
+developed for latent variable modeling. <code>lavaan</code> is a
+powerful tool that can accomodate most of the models you have learned in
+this course. The authors of <code>lavaan</code> package has developed a
+series of <a
+href="http://lavaan.ugent.be/tutorial/index.html">tutorials</a> for
+<code>lavaan</code> users. We would recommend you to go over their
+tutorials if you are new to <code>lavaan</code>. After all, the
+developers have the best knowledge of their software package.</p>
+<p>The tutorials we supply here are all based on the examples and
+exercises you have already seen in class, where you have practiced with
+Mplus. We will walk you through these examples using <code>lavaan</code>
+in our tutorials. Both Mplus and <code>lavaan</code> are great tools for
+SEM. We provide the <code>lavaan</code> tutorials here with the hope to
+help you better learn about SEM in this course. First, with the tutorial
+materials available, you can better focus on the more important contents
+when you are in the class. It can be frustrating and distracting when
+you want to focus on the lectures while R is yelling at you with some
+error message. We want to take that burden off you so you can enjoy your
+class time better. Actually, once you have had a solid grasp on the
+mechanisms of SEM, it will not be too difficult to translate your
+knowledge to a software language (Mplus, lavaan, LISREL, OpenMx,
+STATA…). Providing the <code>lavaan</code> materials here, in addition
+to the Mplus materials you have learned in class, we wish to add to your
+toolkit by showing you how to use <code>lavaan</code>, such that you
+will have an additional (free) tool at your disposal when you need to
+employ SEM in your own research projects.</p>
 <hr />
 <p><strong>To get you started:</strong></p>
-<p>Before we get started, please make sure you have installed R or RStuido, as well as the <code>lavaan</code> package on your device.</p>
+<p>Before we get started, please make sure you have installed R or
+RStuido, as well as the <code>lavaan</code> package on your device.</p>
 <ol style="list-style-type: decimal">
-<li>Install the latest version of <a href="https://www.rstudio.com/products/rstudio/download/">RStudio</a> or <a href="https://cran.r-project.org/">R</a>.</li>
-<li>Install <a href="http://lavaan.ugent.be/tutorial/install.html"><code>lavaan</code></a> from CRAN.</li>
+<li>Install the latest version of <a
+href="https://www.rstudio.com/products/rstudio/download/">RStudio</a> or
+<a href="https://cran.r-project.org/">R</a>.</li>
+<li>Install <a
+href="http://lavaan.ugent.be/tutorial/install.html"><code>lavaan</code></a>
+from CRAN.</li>
 </ol>
 <pre class="r"><code>install.packages(&quot;lavaan&quot;, dependencies=TRUE)
 library(lavaan)</code></pre>
 <p><strong>Important</strong></p>
-<p>Please make sure you have correctly set up your working directory to where your data are stored. To see your current working directory:</p>
+<p>Please make sure you have correctly set up your working directory to
+where your data are stored. To see your current working directory:</p>
 <pre class="r"><code>getwd()</code></pre>
-<p>To change your working directory, you can either use the <code>setwd()</code> function, or click the “Session –&gt; Set Working Directory” button in the menu.</p>
+<p>To change your working directory, you can either use the
+<code>setwd()</code> function, or click the “Session –&gt; Set Working
+Directory” button in the menu.</p>
 <pre class="r"><code>mypath &lt;- &quot;/SEM Second Course Mplus 2019/Advanced Examples/5. Growth Examples&quot;
 setwd(mypath)</code></pre>
 <hr />
@@ -394,10 +444,13 @@ setwd(mypath)</code></pre>
 <li><a href="mediation-exercise.html">Mediation Exercise</a></li>
 <li><a href="APIM-exercise.html">APIM Exercise</a></li>
 <li><a href="cfa-exercise-v2.html">CFA Exercise</a></li>
-<li><a href="residualized-cfa-exercise.html">Residualized CFA Exercise</a></li>
+<li><a href="residualized-cfa-exercise.html">Residualized CFA
+Exercise</a></li>
 <li><a href="reliability_exercise.html">Scale Reliability</a></li>
-<li><a href="latent-pa-exercise.html">Latent Path Analysis Exercise</a></li>
-<li><a href="latent-pa-2step-exercise.html">Two-step SEM Exercise</a></li>
+<li><a href="latent-pa-exercise.html">Latent Path Analysis
+Exercise</a></li>
+<li><a href="latent-pa-2step-exercise.html">Two-step SEM
+Exercise</a></li>
 <li><a href="mg-cfa-exercise-2.html">Multi-group CFA Exercise</a></li>
 </ol>
 <div id="section" class="section level2">
@@ -431,14 +484,17 @@ setwd(mypath)</code></pre>
 1. [Power Analysis](power-exercise.html)
 
 --></h2>
-<p>If you only have access to the Mplus Demo version and you are seeking for parallel R code for the corresponding exercises, please refer to “Exercise Solutions-DEMO”.</p>
-<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+<p>If you only have access to the Mplus Demo version and you are seeking
+for parallel R code for the corresponding exercises, please refer to
+“Exercise Solutions-DEMO”.</p>
+<div class="tocify-extend-page" data-unique="tocify-extend-page"
+style="height: 0;">
 
 </div>
 </div>
 
 <hr>
-© Copyright 2022 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

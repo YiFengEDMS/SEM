@@ -2,7 +2,7 @@
 title: "Tutorials: SEM with lavaan in R"
 author:  
 - name: "[Yi Feng](https://terpconnect.umd.edu/~yifeng94/) & [Gregory R. Hancock](https://education.umd.edu/directory/gregory-r-hancock)"  
-  affiliation: "[Program in Measurement, Statistics and Evaluation](https://education.umd.edu/measurement-statistics-evaluation-program)"
+  affiliation: "[Program in Quantitative Methodology: Measurement and Statistics](https://education.umd.edu/quantitative-methodology-measurement-and-statistics-program)"
 #date: "r Sys.Date()"
 output:
   html_document:
