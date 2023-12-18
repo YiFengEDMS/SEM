@@ -13,10 +13,10 @@
 
 <title>Monte Carlo Power Methods</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -60,6 +60,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -80,6 +81,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -137,11 +141,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -170,8 +178,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -179,16 +187,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -229,10 +230,10 @@ $(document).ready(function () {
 
 
 
-<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -242,7 +243,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     In-class Examples
      
     <span class="caret"></span>
@@ -253,6 +254,9 @@ $(document).ready(function () {
     </li>
     <li>
       <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="MVPA-mediation.html">Mediation</a>
     </li>
     <li>
       <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
@@ -272,7 +276,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions
      
     <span class="caret"></span>
@@ -308,7 +312,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions-DEMO
      
     <span class="caret"></span>
@@ -349,26 +353,39 @@ $(document).ready(function () {
 
 <div id="TOC">
 <ul>
-<li><a href="#load-the-pacakges">Load the pacakges</a></li>
-<li><a href="#define-the-population-model">Define the population model</a></li>
-<li><a href="#define-the-analysis-model">Define the analysis model</a></li>
-<li><a href="#conduct-power-analysis">Conduct power analysis</a></li>
+<li><a href="#load-the-pacakges" id="toc-load-the-pacakges">Load the
+pacakges</a></li>
+<li><a href="#define-the-population-model"
+id="toc-define-the-population-model">Define the population
+model</a></li>
+<li><a href="#define-the-analysis-model"
+id="toc-define-the-analysis-model">Define the analysis model</a></li>
+<li><a href="#conduct-power-analysis"
+id="toc-conduct-power-analysis">Conduct power analysis</a></li>
 </ul>
 </div>
 
-<p>In this tutorial, we are going to use <code>lavaan</code> and <code>simsem</code> for SEM power analysis based on Monte Carlo methods.</p>
+<p>In this tutorial, we are going to use <code>lavaan</code> and
+<code>simsem</code> for SEM power analysis based on Monte Carlo
+methods.</p>
 <div id="load-the-pacakges" class="section level2">
 <h2>Load the pacakges</h2>
 <pre class="r"><code>library(lavaan)
 library(simsem)
 library(semPlot)</code></pre>
 <p><br></p>
-<p>In this example, we would like to conduct power analysis for a latent variable path analysis model. The parameters of focal interest are the path coefficients and the covariance between the two exogenous latent variables.</p>
+<p>In this example, we would like to conduct power analysis for a latent
+variable path analysis model. The parameters of focal interest are the
+path coefficients and the covariance between the two exogenous latent
+variables.</p>
 <p><img src="power-example_files/figure-html/unnamed-chunk-2-1.png" width="80%" /></p>
 </div>
 <div id="define-the-population-model" class="section level2">
 <h2>Define the population model</h2>
-<p>We first use the <code>lavaan</code> model syntax to define our population model and supply all the parameter values. To supply the population value of a parameter, we just need to multiply the parameter with the numeric value.</p>
+<p>We first use the <code>lavaan</code> model syntax to define our
+population model and supply all the parameter values. To supply the
+population value of a parameter, we just need to multiply the parameter
+with the numeric value.</p>
 <pre class="r"><code>popmodel &lt;- &#39;
 
 # measurement model 
@@ -406,7 +423,11 @@ f1 ~~ (-0.3)*f2
 </div>
 <div id="define-the-analysis-model" class="section level2">
 <h2>Define the analysis model</h2>
-<p>Next we use the <code>lavaan</code> model syntax to define the analysis model. This is the model syntax you would write as if you have a data set at hand (we are very familiar with it already). The analysis model does not necessarily have to be the same as the population model.</p>
+<p>Next we use the <code>lavaan</code> model syntax to define the
+analysis model. This is the model syntax you would write as if you have
+a data set at hand (we are very familiar with it already). The analysis
+model does not necessarily have to be the same as the population
+model.</p>
 <pre class="r"><code>Analyze.model &lt;- &#39;
 
 f1 =~ NA*v1 + v2 + v3
@@ -434,8 +455,17 @@ f1 ~~ f2
 </div>
 <div id="conduct-power-analysis" class="section level2">
 <h2>Conduct power analysis</h2>
-<p>Last, we call up the <code>sim()</code> function available in the <code>simsem</code> R package. This function will automatically generate multiple copies of data based on the population model and fit the analysis model to the simulated data. It will output the results summarized over replications.</p>
-<p>For this example, we request <code>sim()</code> to generate 1000 copies of data, each has a sample size of 303. We also request <code>sim()</code> to use <code>lavaan</code>’s <code>sem()</code> function when fitting the analysis model to the simulated data. For more detailed information about the <code>simsem</code> package, please refer to its <a href="https://simsem.org/">webpage</a>.</p>
+<p>Last, we call up the <code>sim()</code> function available in the
+<code>simsem</code> R package. This function will automatically generate
+multiple copies of data based on the population model and fit the
+analysis model to the simulated data. It will output the results
+summarized over replications.</p>
+<p>For this example, we request <code>sim()</code> to generate 1000
+copies of data, each has a sample size of 303. We also request
+<code>sim()</code> to use <code>lavaan</code>’s <code>sem()</code>
+function when fitting the analysis model to the simulated data. For more
+detailed information about the <code>simsem</code> package, please refer
+to its <a href="https://simsem.org/">webpage</a>.</p>
 <pre class="r"><code>Output &lt;- sim(1000, Analyze.model, n = 303, generate = popmodel, lavaanfun = &quot;sem&quot;)</code></pre>
 <pre class="r"><code>summary(Output)</code></pre>
 <pre><code>## RESULT OBJECT
@@ -452,46 +482,46 @@ f1 ~~ f2
 ##       tli      0.988    0.982    0.973    0.955    1.000  0.009
 ##       srmr     0.037    0.041    0.046    0.057    0.028  0.007
 ## ========= Parameter Estimates and Standard Errors ============
-##        Estimate Average Estimate SD Average SE Power (Not equal 0) Std Est
-## f1=~v1            0.493       0.069      0.069               1.000   0.494
-## f1=~v2           -0.702       0.077      0.075               1.000  -0.704
-## f1=~v3            0.600       0.072      0.071               1.000   0.601
-## f2=~v4            0.800       0.054      0.053               1.000   0.801
-## f2=~v5            0.899       0.052      0.051               1.000   0.900
-## f2=~v6           -0.598       0.056      0.055               1.000  -0.599
-## f3=~v8            0.964       0.065      0.060               1.000   0.965
-## v1~~v1            0.747       0.076      0.074               1.000   0.752
-## v2~~v2            0.497       0.094      0.090               0.988   0.501
-## v3~~v3            0.630       0.079      0.079               1.000   0.635
-## v4~~v4            0.356       0.047      0.047               1.000   0.358
-## v5~~v5            0.189       0.050      0.048               0.959   0.190
-## v6~~v6            0.635       0.056      0.057               1.000   0.639
-## v7~~v7            0.117       0.054      0.050               0.645   0.118
-## v8~~v8            0.068       0.056      0.052               0.301   0.069
-## f3~~f3            0.767       0.092      0.086               1.000   0.765
-## f3~f1             0.196       0.071      0.071               0.792   0.196
-## f3~f2             0.498       0.069      0.068               1.000   0.498
-## f1~~f2           -0.296       0.075      0.071               0.971  -0.296
-##        Std Est SD Std Ave SE Average Param Average Bias Coverage
-## f1=~v1      0.063      0.061         0.500       -0.007    0.948
-## f1=~v2      0.066      0.064        -0.700       -0.002    0.955
-## f1=~v3      0.062      0.061         0.600        0.000    0.947
-## f2=~v4      0.031      0.031         0.800        0.000    0.942
-## f2=~v5      0.029      0.028         0.900       -0.001    0.942
-## f2=~v6      0.042      0.042        -0.600        0.002    0.950
-## f3=~v8      0.030      0.028         0.964        0.000    0.940
-## v1~~v1      0.062      0.060         0.750       -0.003    0.941
-## v2~~v2      0.093      0.090         0.510       -0.013    0.951
-## v3~~v3      0.075      0.074         0.640       -0.010    0.947
-## v4~~v4      0.050      0.049         0.360       -0.004    0.938
-## v5~~v5      0.052      0.050         0.190       -0.001    0.954
-## v6~~v6      0.050      0.050         0.640       -0.005    0.944
-## v7~~v7      0.056      0.051         0.120       -0.003    0.951
-## v8~~v8      0.057      0.053         0.070       -0.002    0.952
-## f3~~f3      0.052      0.051         0.770       -0.003    0.931
-## f3~f1       0.070      0.070         0.200       -0.004    0.946
-## f3~f2       0.057      0.057         0.500       -0.002    0.948
-## f1~~f2      0.075      0.071        -0.300        0.004    0.933
+##        Estimate Average Estimate SD Average SE Power (Not equal 0)
+## f1=~v1            0.493       0.069      0.069               1.000
+## f1=~v2           -0.702       0.077      0.075               1.000
+## f1=~v3            0.600       0.072      0.071               1.000
+## f2=~v4            0.800       0.054      0.053               1.000
+## f2=~v5            0.899       0.052      0.051               1.000
+## f2=~v6           -0.598       0.056      0.055               1.000
+## f3=~v8            0.964       0.065      0.060               1.000
+## v1~~v1            0.747       0.076      0.074               1.000
+## v2~~v2            0.497       0.094      0.090               0.988
+## v3~~v3            0.630       0.079      0.079               1.000
+## v4~~v4            0.356       0.047      0.047               1.000
+## v5~~v5            0.189       0.050      0.048               0.959
+## v6~~v6            0.635       0.056      0.057               1.000
+## v7~~v7            0.117       0.054      0.050               0.645
+## v8~~v8            0.068       0.056      0.052               0.301
+## f3~~f3            0.767       0.092      0.086               1.000
+## f3~f1             0.196       0.071      0.071               0.792
+## f3~f2             0.498       0.069      0.068               1.000
+## f1~~f2           -0.296       0.075      0.071               0.971
+##        Std Est Std Est SD Std Ave SE Average Param Average Bias Coverage
+## f1=~v1   0.494      0.063      0.061         0.500       -0.007    0.948
+## f1=~v2  -0.704      0.066      0.064        -0.700       -0.002    0.955
+## f1=~v3   0.601      0.062      0.061         0.600        0.000    0.947
+## f2=~v4   0.801      0.031      0.031         0.800        0.000    0.942
+## f2=~v5   0.900      0.029      0.028         0.900       -0.001    0.942
+## f2=~v6  -0.599      0.042      0.042        -0.600        0.002    0.950
+## f3=~v8   0.965      0.030      0.028         0.964        0.000    0.940
+## v1~~v1   0.752      0.062      0.060         0.750       -0.003    0.941
+## v2~~v2   0.501      0.093      0.090         0.510       -0.013    0.951
+## v3~~v3   0.635      0.075      0.074         0.640       -0.010    0.947
+## v4~~v4   0.358      0.050      0.049         0.360       -0.004    0.938
+## v5~~v5   0.190      0.052      0.050         0.190       -0.001    0.954
+## v6~~v6   0.639      0.050      0.050         0.640       -0.005    0.944
+## v7~~v7   0.118      0.056      0.051         0.120       -0.003    0.951
+## v8~~v8   0.069      0.057      0.053         0.070       -0.002    0.952
+## f3~~f3   0.765      0.052      0.051         0.770       -0.003    0.931
+## f3~f1    0.196      0.070      0.070         0.200       -0.004    0.946
+## f3~f2    0.498      0.057      0.057         0.500       -0.002    0.948
+## f1~~f2  -0.296      0.075      0.071        -0.300        0.004    0.933
 ## ========= Correlation between Fit Indices ============
 ##        chisq    aic    bic  rmsea    cfi    tli   srmr
 ## chisq  1.000  0.074  0.074  0.924 -0.903 -0.998  0.715
@@ -510,13 +540,14 @@ f1 ~~ f2
 ##    3. At least one SE were negative or NA = 0 
 ##    4. Nonpositive-definite latent or observed (residual) covariance matrix 
 ##       (e.g., Heywood case or linear dependency) = 126</code></pre>
-<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+<div class="tocify-extend-page" data-unique="tocify-extend-page"
+style="height: 0;">
 
 </div>
 </div>
 
 <hr>
-© Copyright 2022 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

@@ -13,10 +13,10 @@
 
 <title>Scale Reliability Exercise</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -60,6 +60,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -80,6 +81,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -137,11 +141,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -170,8 +178,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -179,16 +187,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -229,10 +230,10 @@ $(document).ready(function () {
 
 
 
-<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -242,7 +243,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     In-class Examples
      
     <span class="caret"></span>
@@ -253,6 +254,9 @@ $(document).ready(function () {
     </li>
     <li>
       <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="MVPA-mediation.html">Mediation</a>
     </li>
     <li>
       <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
@@ -272,7 +276,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions
      
     <span class="caret"></span>
@@ -308,7 +312,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions-DEMO
      
     <span class="caret"></span>
@@ -381,42 +385,43 @@ omega := (sumL^2)/(sumL^2 + sumTH)
 &#39;</code></pre>
 <pre class="r"><code>mod.fit &lt;- sem(model, dat, se = &quot;bootstrap&quot;, bootstrap = 5000)</code></pre>
 <pre class="r"><code>parameterEstimates(mod.fit, ci = T)</code></pre>
-<pre><code>##      lhs op                     rhs label   est    se      z pvalue ci.lower
-## 1    TGO =~                      V1    L1 1.358 0.095 14.362      0    1.164
-## 2    TGO =~                      V2    L2 1.175 0.092 12.704      0    0.987
-## 3    TGO =~                      V3    L3 1.116 0.098 11.387      0    0.913
-## 4    TGO =~                      V4    L4 0.892 0.119  7.475      0    0.643
-## 5    TGO =~                      V5    L5 1.107 0.125  8.845      0    0.855
-## 6    TGO ~~                     TGO       1.000 0.000     NA     NA    1.000
-## 7     V1 ~~                      V1   TH1 0.863 0.131  6.577      0    0.593
-## 8     V2 ~~                      V2   TH2 1.326 0.160  8.265      0    1.014
-## 9     V3 ~~                      V3   TH3 1.186 0.125  9.503      0    0.936
-## 10    V4 ~~                      V4   TH4 2.008 0.259  7.757      0    1.516
-## 11    V5 ~~                      V5   TH5 2.210 0.221  9.994      0    1.775
-## 17  sumL :=          L1+L2+L3+L4+L5  sumL 5.649 0.336 16.821      0    4.966
-## 18 sumTH :=     TH1+TH2+TH3+TH4+TH5 sumTH 7.594 0.391 19.420      0    6.765
-## 19 omega := (sumL^2)/(sumL^2+sumTH) omega 0.808 0.022 37.114      0    0.760
-##    ci.upper
-## 1     1.539
-## 2     1.349
-## 3     1.300
-## 4     1.116
-## 5     1.350
-## 6     1.000
-## 7     1.114
-## 8     1.635
-## 9     1.422
-## 10    2.534
-## 11    2.648
-## 17    6.308
-## 18    8.301
-## 19    0.845</code></pre>
-<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+<pre><code>##      lhs op                     rhs label   est    se      z pvalue
+## 1    TGO =~                      V1    L1 1.358 0.095 14.362      0
+## 2    TGO =~                      V2    L2 1.175 0.092 12.704      0
+## 3    TGO =~                      V3    L3 1.116 0.098 11.387      0
+## 4    TGO =~                      V4    L4 0.892 0.119  7.475      0
+## 5    TGO =~                      V5    L5 1.107 0.125  8.845      0
+## 6    TGO ~~                     TGO       1.000 0.000     NA     NA
+## 7     V1 ~~                      V1   TH1 0.863 0.131  6.577      0
+## 8     V2 ~~                      V2   TH2 1.326 0.160  8.265      0
+## 9     V3 ~~                      V3   TH3 1.186 0.125  9.503      0
+## 10    V4 ~~                      V4   TH4 2.008 0.259  7.757      0
+## 11    V5 ~~                      V5   TH5 2.210 0.221  9.994      0
+## 17  sumL :=          L1+L2+L3+L4+L5  sumL 5.649 0.336 16.821      0
+## 18 sumTH :=     TH1+TH2+TH3+TH4+TH5 sumTH 7.594 0.391 19.420      0
+## 19 omega := (sumL^2)/(sumL^2+sumTH) omega 0.808 0.022 37.114      0
+##    ci.lower ci.upper
+## 1     1.164    1.539
+## 2     0.987    1.349
+## 3     0.913    1.300
+## 4     0.643    1.116
+## 5     0.855    1.350
+## 6     1.000    1.000
+## 7     0.593    1.114
+## 8     1.014    1.635
+## 9     0.936    1.422
+## 10    1.516    2.534
+## 11    1.775    2.648
+## 17    4.966    6.308
+## 18    6.765    8.301
+## 19    0.760    0.845</code></pre>
+<div class="tocify-extend-page" data-unique="tocify-extend-page"
+style="height: 0;">
 
 </div>
 
 <hr>
-© Copyright 2022 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

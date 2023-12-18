@@ -4,7 +4,7 @@ output:
   html_document:
     toc: true
     toc_float: true
-    toc_depth: 2
+    toc_depth: 3
 ---
 
 In this tutorial, we are going to use `lavaan` for multitrait-multimethod analysis.

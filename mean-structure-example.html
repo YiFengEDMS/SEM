@@ -13,10 +13,10 @@
 
 <title>Mean Structure Modeling</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -29,7 +29,7 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
@@ -63,6 +63,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -83,6 +84,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -140,11 +144,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -173,8 +181,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -182,16 +190,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -305,10 +306,10 @@ div.tocify {
 
 
 
-<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -318,7 +319,7 @@ div.tocify {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     In-class Examples
      
     <span class="caret"></span>
@@ -329,6 +330,9 @@ div.tocify {
     </li>
     <li>
       <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="MVPA-mediation.html">Mediation</a>
     </li>
     <li>
       <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
@@ -348,7 +352,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions
      
     <span class="caret"></span>
@@ -384,7 +388,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions-DEMO
      
     <span class="caret"></span>
@@ -424,7 +428,8 @@ div.tocify {
 </div>
 
 
-<p>In this tutorial, we are going to use <code>lavaan</code> for structured means analysis.</p>
+<p>In this tutorial, we are going to use <code>lavaan</code> for
+structured means analysis.</p>
 <div id="load-the-pacakges" class="section level2">
 <h2>Load the pacakges</h2>
 <pre class="r"><code>library(lavaan)
@@ -435,7 +440,10 @@ library(semPlot)</code></pre>
 <h2>Example 1: Single latent factor</h2>
 <div id="read-the-data" class="section level3">
 <h3>Read the data</h3>
-<p>The data for this example is saved in two txt files named “means_data_girls.txt” and “means_data_boys.txt”, respectively. We need to combine them into a single data set and create a grouping variable “gender”.</p>
+<p>The data for this example is saved in two txt files named
+“means_data_girls.txt” and “means_data_boys.txt”, respectively. We need
+to combine them into a single data set and create a grouping variable
+“gender”.</p>
 <pre class="r"><code>setwd(mypath)  # change it to the path of your own data folder
 
 girl &lt;- read.delim(&quot;means_data_girls.txt&quot;, sep = &quot;\t&quot;, header = T)
@@ -470,7 +478,12 @@ str(both)</code></pre>
 <h3>Fit the model to the data</h3>
 <p>Next, we fit a multi-group CFA model to the data.</p>
 <p><img src="mean-structure-example_files/figure-html/unnamed-chunk-4-1.png" width="80%" /><img src="mean-structure-example_files/figure-html/unnamed-chunk-4-2.png" width="80%" /></p>
-<p>We use the following model syntax to specify our model. In order to force the latent variable to have a mean of zero in girls group (gender = 1) and a freely estimated mean in boys group (gender = 2), we multiply the intercept by a vector <code>c(0,NA)</code>. We also use the pre-multiplication method to constrain the factor loadings and indicator intercepts to be equal across groups.</p>
+<p>We use the following model syntax to specify our model. In order to
+force the latent variable to have a mean of zero in girls group (gender
+= 1) and a freely estimated mean in boys group (gender = 2), we multiply
+the intercept by a vector <code>c(0,NA)</code>. We also use the
+pre-multiplication method to constrain the factor loadings and indicator
+intercepts to be equal across groups.</p>
 <pre class="r"><code>mean.model &lt;- &#39;
 
 rprof =~ 1*satlang + c(a,a)*satvoc + c(b,b)*satcomp
@@ -493,17 +506,17 @@ satcomp ~~ satcomp
 
 mean.fit &lt;- lavaan(mean.model, both, group = &quot;gender&quot;)
 summary(mean.fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-9 ended normally after 154 iterations
+<pre><code>## lavaan 0.6.15 ended normally after 153 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
 ##   Number of model parameters                        19
 ##   Number of equality constraints                     5
-##                                                       
+## 
 ##   Number of observations per group:                   
 ##     1                                              999
 ##     2                                              999
-##                                                       
+## 
 ## Model Test User Model:
 ##                                                       
 ##   Test statistic                                 5.350
@@ -531,14 +544,15 @@ summary(mean.fit, fit.measures = T, standardized = T)</code></pre>
 ##                                                       
 ##   Akaike (AIC)                               58658.355
 ##   Bayesian (BIC)                             58736.754
-##   Sample-size adjusted Bayesian (BIC)        58692.275
+##   Sample-size adjusted Bayesian (SABIC)      58692.275
 ## 
 ## Root Mean Square Error of Approximation:
 ## 
 ##   RMSEA                                          0.018
 ##   90 Percent confidence interval - lower         0.000
 ##   90 Percent confidence interval - upper         0.054
-##   P-value RMSEA &lt;= 0.05                          0.921
+##   P-value H_0: RMSEA &lt;= 0.050                    0.921
+##   P-value H_0: RMSEA &gt;= 0.080                    0.001
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -604,7 +618,10 @@ summary(mean.fit, fit.measures = T, standardized = T)</code></pre>
 <h2>Example 2: Multiple latent factors</h2>
 <div id="read-the-data-1" class="section level3">
 <h3>Read the data</h3>
-<p>The data for this example is saved in two txt files named “chinese_means.txt” and “korean_means.txt”, respectively. We need to combine them into a single data set and create a grouping variable “country”.</p>
+<p>The data for this example is saved in two txt files named
+“chinese_means.txt” and “korean_means.txt”, respectively. We need to
+combine them into a single data set and create a grouping variable
+“country”.</p>
 <pre class="r"><code>setwd(mypath)  # change it to the path of your own data folder
 
 chinese &lt;- read.delim(&quot;chinese_means.txt&quot;, sep = &quot;\t&quot;, header = F)
@@ -636,33 +653,39 @@ str(both.data)</code></pre>
 ##  $ write3 : int  17 15 15 21 22 15 21 14 20 24 ...
 ##  $ country: Ord.factor w/ 2 levels &quot;1&quot;&lt;&quot;2&quot;: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
 <pre class="r"><code>summary(both.data)</code></pre>
-<pre><code>##      read1           read2           read3           list1           list2      
-##  Min.   : 3.00   Min.   : 2.00   Min.   : 1.00   Min.   : 1.00   Min.   : 0.00  
-##  1st Qu.:12.00   1st Qu.:14.00   1st Qu.:16.00   1st Qu.:12.00   1st Qu.:13.00  
-##  Median :18.00   Median :19.00   Median :20.00   Median :16.00   Median :17.00  
-##  Mean   :17.76   Mean   :18.83   Mean   :19.76   Mean   :15.92   Mean   :16.82  
-##  3rd Qu.:23.00   3rd Qu.:24.00   3rd Qu.:25.00   3rd Qu.:20.00   3rd Qu.:21.00  
-##  Max.   :30.00   Max.   :30.00   Max.   :30.00   Max.   :30.00   Max.   :30.00  
-##      list3           speak1          speak2          speak3          write1     
-##  Min.   : 1.00   Min.   : 0.00   Min.   : 5.00   Min.   : 9.00   Min.   : 7.00  
-##  1st Qu.:14.00   1st Qu.:15.00   1st Qu.:17.00   1st Qu.:17.00   1st Qu.:15.00  
-##  Median :18.00   Median :18.00   Median :18.00   Median :19.00   Median :20.00  
-##  Mean   :18.12   Mean   :18.08   Mean   :18.64   Mean   :19.17   Mean   :18.86  
-##  3rd Qu.:22.00   3rd Qu.:20.00   3rd Qu.:21.50   3rd Qu.:22.00   3rd Qu.:22.00  
-##  Max.   :30.00   Max.   :28.00   Max.   :29.00   Max.   :30.00   Max.   :30.00  
-##      write2          write3      country
-##  Min.   : 8.00   Min.   : 8.00   1:86   
-##  1st Qu.:17.00   1st Qu.:18.00   2:96   
-##  Median :21.00   Median :21.00          
-##  Mean   :19.79   Mean   :20.51          
-##  3rd Qu.:22.00   3rd Qu.:24.00          
-##  Max.   :29.00   Max.   :30.00</code></pre>
+<pre><code>##      read1           read2           read3           list1      
+##  Min.   : 3.00   Min.   : 2.00   Min.   : 1.00   Min.   : 1.00  
+##  1st Qu.:12.00   1st Qu.:14.00   1st Qu.:16.00   1st Qu.:12.00  
+##  Median :18.00   Median :19.00   Median :20.00   Median :16.00  
+##  Mean   :17.76   Mean   :18.83   Mean   :19.76   Mean   :15.92  
+##  3rd Qu.:23.00   3rd Qu.:24.00   3rd Qu.:25.00   3rd Qu.:20.00  
+##  Max.   :30.00   Max.   :30.00   Max.   :30.00   Max.   :30.00  
+##      list2           list3           speak1          speak2     
+##  Min.   : 0.00   Min.   : 1.00   Min.   : 0.00   Min.   : 5.00  
+##  1st Qu.:13.00   1st Qu.:14.00   1st Qu.:15.00   1st Qu.:17.00  
+##  Median :17.00   Median :18.00   Median :18.00   Median :18.00  
+##  Mean   :16.82   Mean   :18.12   Mean   :18.08   Mean   :18.64  
+##  3rd Qu.:21.00   3rd Qu.:22.00   3rd Qu.:20.00   3rd Qu.:21.50  
+##  Max.   :30.00   Max.   :30.00   Max.   :28.00   Max.   :29.00  
+##      speak3          write1          write2          write3      country
+##  Min.   : 9.00   Min.   : 7.00   Min.   : 8.00   Min.   : 8.00   1:86   
+##  1st Qu.:17.00   1st Qu.:15.00   1st Qu.:17.00   1st Qu.:18.00   2:96   
+##  Median :19.00   Median :20.00   Median :21.00   Median :21.00          
+##  Mean   :19.17   Mean   :18.86   Mean   :19.79   Mean   :20.51          
+##  3rd Qu.:22.00   3rd Qu.:22.00   3rd Qu.:22.00   3rd Qu.:24.00          
+##  Max.   :30.00   Max.   :30.00   Max.   :29.00   Max.   :30.00</code></pre>
 <p><br></p>
 </div>
 <div id="fit-the-model-to-the-data-1" class="section level3">
 <h3>Fit the model to the data</h3>
 <p><img src="mean-structure-example_files/figure-html/unnamed-chunk-8-1.png" width="80%" /><img src="mean-structure-example_files/figure-html/unnamed-chunk-8-2.png" width="80%" /></p>
-<p>Next, we fit a multi-group CFA model to the data. We constrain the loadings and intercepts to be equal across groups using the <code>group.equal = c("loadings","intercepts")</code> argument in the fitting function. Again, we use the pre-multiplication method to tell <code>lavaan</code> that we want to fix the means of the latent variables in group 1 to be zero, and that we want the means in group 2 to be freely estimated.</p>
+<p>Next, we fit a multi-group CFA model to the data. We constrain the
+loadings and intercepts to be equal across groups using the
+<code>group.equal = c("loadings","intercepts")</code> argument in the
+fitting function. Again, we use the pre-multiplication method to tell
+<code>lavaan</code> that we want to fix the means of the latent
+variables in group 1 to be zero, and that we want the means in group 2
+to be freely estimated.</p>
 <pre class="r"><code>multiple.model &lt;- &#39;
 
 # define latent variables
@@ -735,17 +758,17 @@ write3~1
 multiple.fit=lavaan(multiple.model,both.data,group=&quot;country&quot;, group.equal = c(&quot;loadings&quot;,&quot;intercepts&quot;))
 
 summary(multiple.fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-9 ended normally after 414 iterations
+<pre><code>## lavaan 0.6.15 ended normally after 414 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
 ##   Number of model parameters                       124
 ##   Number of equality constraints                    20
-##                                                       
+## 
 ##   Number of observations per group:                   
 ##     1                                               86
 ##     2                                               96
-##                                                       
+## 
 ## Model Test User Model:
 ##                                                       
 ##   Test statistic                                77.561
@@ -773,14 +796,15 @@ summary(multiple.fit, fit.measures = T, standardized = T)</code></pre>
 ##                                                       
 ##   Akaike (AIC)                               11452.286
 ##   Bayesian (BIC)                             11785.503
-##   Sample-size adjusted Bayesian (BIC)        11456.122
+##   Sample-size adjusted Bayesian (SABIC)      11456.122
 ## 
 ## Root Mean Square Error of Approximation:
 ## 
 ##   RMSEA                                          0.015
 ##   90 Percent confidence interval - lower         0.000
 ##   90 Percent confidence interval - upper         0.062
-##   P-value RMSEA &lt;= 0.05                          0.857
+##   P-value H_0: RMSEA &lt;= 0.050                    0.857
+##   P-value H_0: RMSEA &gt;= 0.080                    0.004
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -989,14 +1013,15 @@ summary(multiple.fit, fit.measures = T, standardized = T)</code></pre>
 ##    .write1            5.333    1.003    5.319    0.000    5.333    0.215
 ##    .write2            6.133    1.051    5.835    0.000    6.133    0.281
 ##    .write3            4.043    0.824    4.904    0.000    4.043    0.189</code></pre>
-<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+<div class="tocify-extend-page" data-unique="tocify-extend-page"
+style="height: 0;">
 
 </div>
 </div>
 </div>
 
 <hr>
-© Copyright 2022 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

@@ -13,10 +13,10 @@
 
 <title>Nonnormal Continuous Data</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -29,7 +29,7 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
@@ -63,6 +63,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -83,6 +84,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -140,11 +144,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -173,8 +181,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -182,16 +190,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -305,10 +306,10 @@ div.tocify {
 
 
 
-<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -318,7 +319,7 @@ div.tocify {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     In-class Examples
      
     <span class="caret"></span>
@@ -329,6 +330,9 @@ div.tocify {
     </li>
     <li>
       <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="MVPA-mediation.html">Mediation</a>
     </li>
     <li>
       <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
@@ -348,7 +352,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions
      
     <span class="caret"></span>
@@ -384,7 +388,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions-DEMO
      
     <span class="caret"></span>
@@ -424,7 +428,9 @@ div.tocify {
 </div>
 
 
-<p>In this tutorial, we are going to use <code>lavaan</code> to deal with nonnormal data. The example corresponds to the <em>Achievement Goal Questionnaire</em> example in your course slides.</p>
+<p>In this tutorial, we are going to use <code>lavaan</code> to deal
+with nonnormal data. The example corresponds to the <em>Achievement Goal
+Questionnaire</em> example in your course slides.</p>
 <div id="load-the-pacakges" class="section level2">
 <h2>Load the pacakges</h2>
 <pre class="r"><code>library(lavaan)
@@ -433,7 +439,14 @@ library(semPlot)</code></pre>
 </div>
 <div id="read-the-data" class="section level2">
 <h2>Read the data</h2>
-<p>The data for this example is saved in a txt file named “nonnormal_data.txt”, which is provided as part of the course materials. You can use the <code>read.delim()</code> function to read in a txt file. There are many different ways for you to supply the file path in the <code>read.delim()</code> function call. Below I first set the working directory to the folder where my data is saved, and then I simply supply the name of the data file when calling the <code>read.delim()</code> function.</p>
+<p>The data for this example is saved in a txt file named
+“nonnormal_data.txt”, which is provided as part of the course materials.
+You can use the <code>read.delim()</code> function to read in a txt
+file. There are many different ways for you to supply the file path in
+the <code>read.delim()</code> function call. Below I first set the
+working directory to the folder where my data is saved, and then I
+simply supply the name of the data file when calling the
+<code>read.delim()</code> function.</p>
 <pre class="r"><code>setwd(mypath)  # change it to the path of your own data folder
 nonnormal &lt;- read.delim(&quot;nonnormal_data.txt&quot;, sep = &quot;\t&quot;, header = F)
 
@@ -457,35 +470,40 @@ str(nonnormal)</code></pre>
 ##  $ map2: num  18 18 20 18 20 20 18 14 18 16 ...
 ##  $ map3: num  20 18 20 18 20 18 20 18 18 20 ...</code></pre>
 <pre class="r"><code>summary(nonnormal)</code></pre>
-<pre><code>##       pap1            pap2            pap3            pav1            pav2      
-##  Min.   : 0.00   Min.   : 0.00   Min.   : 0.00   Min.   : 0.00   Min.   : 0.00  
-##  1st Qu.:14.00   1st Qu.:14.00   1st Qu.:14.00   1st Qu.:14.00   1st Qu.:11.00  
-##  Median :16.00   Median :16.00   Median :16.00   Median :16.00   Median :14.00  
-##  Mean   :16.28   Mean   :15.85   Mean   :15.18   Mean   :14.75   Mean   :12.97  
-##  3rd Qu.:18.00   3rd Qu.:18.00   3rd Qu.:18.00   3rd Qu.:18.00   3rd Qu.:16.50  
-##  Max.   :20.00   Max.   :20.00   Max.   :20.00   Max.   :20.00   Max.   :20.00  
-##       pav3            mav1           mav2            mav3            map1      
-##  Min.   : 0.00   Min.   : 0.0   Min.   : 0.00   Min.   : 0.00   Min.   : 0.00  
-##  1st Qu.:11.00   1st Qu.:11.0   1st Qu.:14.00   1st Qu.: 7.00   1st Qu.:18.00  
-##  Median :16.00   Median :14.0   Median :16.00   Median :14.00   Median :20.00  
-##  Mean   :14.46   Mean   :12.9   Mean   :15.74   Mean   :12.01   Mean   :18.46  
-##  3rd Qu.:18.00   3rd Qu.:16.0   3rd Qu.:18.00   3rd Qu.:16.00   3rd Qu.:20.00  
-##  Max.   :20.00   Max.   :20.0   Max.   :20.00   Max.   :20.00   Max.   :20.00  
-##       map2            map3     
-##  Min.   : 0.00   Min.   : 0.0  
-##  1st Qu.:16.00   1st Qu.:16.0  
-##  Median :18.00   Median :18.0  
-##  Mean   :17.85   Mean   :17.3  
-##  3rd Qu.:20.00   3rd Qu.:20.0  
-##  Max.   :20.00   Max.   :20.0</code></pre>
+<pre><code>##       pap1            pap2            pap3            pav1      
+##  Min.   : 0.00   Min.   : 0.00   Min.   : 0.00   Min.   : 0.00  
+##  1st Qu.:14.00   1st Qu.:14.00   1st Qu.:14.00   1st Qu.:14.00  
+##  Median :16.00   Median :16.00   Median :16.00   Median :16.00  
+##  Mean   :16.28   Mean   :15.85   Mean   :15.18   Mean   :14.75  
+##  3rd Qu.:18.00   3rd Qu.:18.00   3rd Qu.:18.00   3rd Qu.:18.00  
+##  Max.   :20.00   Max.   :20.00   Max.   :20.00   Max.   :20.00  
+##       pav2            pav3            mav1           mav2      
+##  Min.   : 0.00   Min.   : 0.00   Min.   : 0.0   Min.   : 0.00  
+##  1st Qu.:11.00   1st Qu.:11.00   1st Qu.:11.0   1st Qu.:14.00  
+##  Median :14.00   Median :16.00   Median :14.0   Median :16.00  
+##  Mean   :12.97   Mean   :14.46   Mean   :12.9   Mean   :15.74  
+##  3rd Qu.:16.50   3rd Qu.:18.00   3rd Qu.:16.0   3rd Qu.:18.00  
+##  Max.   :20.00   Max.   :20.00   Max.   :20.0   Max.   :20.00  
+##       mav3            map1            map2            map3     
+##  Min.   : 0.00   Min.   : 0.00   Min.   : 0.00   Min.   : 0.0  
+##  1st Qu.: 7.00   1st Qu.:18.00   1st Qu.:16.00   1st Qu.:16.0  
+##  Median :14.00   Median :20.00   Median :18.00   Median :18.0  
+##  Mean   :12.01   Mean   :18.46   Mean   :17.85   Mean   :17.3  
+##  3rd Qu.:16.00   3rd Qu.:20.00   3rd Qu.:20.00   3rd Qu.:20.0  
+##  Max.   :20.00   Max.   :20.00   Max.   :20.00   Max.   :20.0</code></pre>
 <pre class="r"><code># cor(nonnormal, use = &quot;pairwise.complete.obs&quot;)</code></pre>
 <p><br></p>
 </div>
 <div id="fit-a-cfa-model-using-mlm-estimation" class="section level2">
 <h2>Fit a CFA model using MLM estimation</h2>
 <p><img src="nonnormal-data-example_files/figure-html/unnamed-chunk-5-1.png" width="80%" /></p>
-<p>To request maximum likelihood estimation with robust standard errors and a Satorra-Bentler scaled test statistic, you need to specify <code>estimator = "MLM"</code> in the fitting function.</p>
-<p>To make the model syntax more concise, I ommited the mean structure formulas in code. Instead, I added the <code>meanstructure = T</code> argument to tell <code>lavaan</code> to include the mean structure in model estimation.</p>
+<p>To request maximum likelihood estimation with robust standard errors
+and a Satorra-Bentler scaled test statistic, you need to specify
+<code>estimator = "MLM"</code> in the fitting function.</p>
+<p>To make the model syntax more concise, I ommited the mean structure
+formulas in code. Instead, I added the <code>meanstructure = T</code>
+argument to tell <code>lavaan</code> to include the mean structure in
+model estimation.</p>
 <pre class="r"><code>nonnormal.model &lt;- &#39;
 
 pap =~ NA*pap1 + pap2 + pap3
@@ -501,21 +519,21 @@ map ~~  1*map
 
 nonnormal.fit &lt;- sem(nonnormal.model, data = nonnormal, estimator = &quot;MLM&quot;, meanstructure = T)
 summary(nonnormal.fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-9 ended normally after 26 iterations
+<pre><code>## lavaan 0.6.15 ended normally after 26 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
 ##   Number of model parameters                        42
-##                                                       
+## 
 ##   Number of observations                           300
-##                                                       
+## 
 ## Model Test User Model:
-##                                               Standard      Robust
+##                                               Standard      Scaled
 ##   Test Statistic                               110.687      71.183
 ##   Degrees of freedom                                48          48
 ##   P-value (Chi-square)                           0.000       0.017
 ##   Scaling correction factor                                  1.555
-##        Satorra-Bentler correction                                 
+##     Satorra-Bentler correction                                    
 ## 
 ## Model Test Baseline Model:
 ## 
@@ -539,18 +557,21 @@ summary(nonnormal.fit, fit.measures = T, standardized = T)</code></pre>
 ##                                                                   
 ##   Akaike (AIC)                               19087.319   19087.319
 ##   Bayesian (BIC)                             19242.878   19242.878
-##   Sample-size adjusted Bayesian (BIC)        19109.679   19109.679
+##   Sample-size adjusted Bayesian (SABIC)      19109.679   19109.679
 ## 
 ## Root Mean Square Error of Approximation:
 ## 
 ##   RMSEA                                          0.066       0.040
 ##   90 Percent confidence interval - lower         0.050       0.023
 ##   90 Percent confidence interval - upper         0.082       0.055
-##   P-value RMSEA &lt;= 0.05                          0.051       0.850
+##   P-value H_0: RMSEA &lt;= 0.050                    0.051       0.850
+##   P-value H_0: RMSEA &gt;= 0.080                    0.079       0.000
 ##                                                                   
 ##   Robust RMSEA                                               0.050
 ##   90 Percent confidence interval - lower                     0.022
 ##   90 Percent confidence interval - upper                     0.073
+##   P-value H_0: Robust RMSEA &lt;= 0.050                         0.475
+##   P-value H_0: Robust RMSEA &gt;= 0.080                         0.015
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -630,13 +651,14 @@ summary(nonnormal.fit, fit.measures = T, standardized = T)</code></pre>
 ##    .map1              1.442    0.353    4.090    0.000    1.442    0.325
 ##    .map2              4.081    0.791    5.157    0.000    4.081    0.621
 ##    .map3              3.707    1.214    3.053    0.002    3.707    0.535</code></pre>
-<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+<div class="tocify-extend-page" data-unique="tocify-extend-page"
+style="height: 0;">
 
 </div>
 </div>
 
 <hr>
-© Copyright 2022 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

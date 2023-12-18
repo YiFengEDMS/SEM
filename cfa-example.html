@@ -13,10 +13,10 @@
 
 <title>Confirmatory Factor Analysis</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -29,7 +29,7 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
@@ -63,6 +63,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -83,6 +84,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -140,11 +144,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -173,8 +181,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -182,16 +190,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -305,10 +306,10 @@ div.tocify {
 
 
 
-<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -318,7 +319,7 @@ div.tocify {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     In-class Examples
      
     <span class="caret"></span>
@@ -329,6 +330,9 @@ div.tocify {
     </li>
     <li>
       <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="MVPA-mediation.html">Mediation</a>
     </li>
     <li>
       <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
@@ -348,7 +352,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions
      
     <span class="caret"></span>
@@ -384,7 +388,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions-DEMO
      
     <span class="caret"></span>
@@ -424,7 +428,9 @@ div.tocify {
 </div>
 
 
-<p>In this tutorial, we are going to use <code>lavaan</code> for confirmatory factor analysis. The examples correspond to the self-concept CFA example in your course slides.</p>
+<p>In this tutorial, we are going to use <code>lavaan</code> for
+confirmatory factor analysis. The examples correspond to the
+self-concept CFA example in your course slides.</p>
 <div id="load-the-pacakges" class="section level2">
 <h2>Load the pacakges</h2>
 <pre class="r"><code>library(lavaan)</code></pre>
@@ -432,7 +438,13 @@ div.tocify {
 </div>
 <div id="import-the-data" class="section level2">
 <h2>Import the data</h2>
-<p>The data for this example is saved in a csv file named “proficiencyraw-female.csv”, which is provided as part of the course materials. You can use the <code>read.table()</code> function to read in a csv file. There are many different ways for you to supply the file path in the <code>read.table()</code> function call. Below I first set the working directory to the folder where my data is saved, and then I simply supply the name of the data file in the function call.</p>
+<p>The data for this example is saved in a csv file named
+“proficiencyraw-female.csv”, which is provided as part of the course
+materials. You can use the <code>read.table()</code> function to read in
+a csv file. There are many different ways for you to supply the file
+path in the <code>read.table()</code> function call. Below I first set
+the working directory to the folder where my data is saved, and then I
+simply supply the name of the data file in the function call.</p>
 <pre class="r"><code>setwd(mypath)  # change it to the path of your own data folder
 data &lt;- read.table(&quot;proficiencyraw-female.csv&quot;, sep=&quot;,&quot;, header=F)
 
@@ -450,27 +462,27 @@ colnames(data) &lt;- c(paste0(&quot;goals&quot;,1:6),
                     &quot;SATproc&quot;)</code></pre>
 <p>You can take a look at the data and get the sample statistics.</p>
 <pre class="r"><code>head(data)</code></pre>
-<pre><code>##   goals1 goals2 goals3 goals4 goals5 goals6 rsc1 rsc2 rsc3 rsc4 rsc5 hsc1 hsc2
-## 1      1      1      1      1      1      1    3    3    5    3    4    5    4
-## 2      3      3      6      3      2      2    3    4    5    5    3    3    4
-## 3      3      5      5      5      3      4    4    6    3    4    5    5    4
-## 4      4      4      4      6      4      6    2    3    3    4    4    2    4
-## 5      2      3      3      3      4      3    3    3    4    2    3    5    5
-## 6      4      4      4      3      3      5    3    4    4    4    3    2    3
-##   hsc3 hsc4 hsc5 msc1 msc2 msc3 msc4 msc5 ssc1 ssc2 ssc3 ssc4 ssc5 SATvoc SATcomp
-## 1    6    4    6    4    4    2    3    5    4    4    3    3    6    670     690
-## 2    3    3    4    1    1    2    1    1    1    1    1    1    1    700     680
-## 3    6    3    6    3    3    5    4    2    1    2    2    2    3    710     690
-## 4    2    3    4    5    5    4    3    5    3    2    4    4    4    740     720
-## 5    6    5    4    3    2    3    2    2    4    3    3    3    3    680     700
-## 6    1    4    4    4    4    5    4    2    4    4    4    4    4    710     670
-##   SATlang SATmath SATprob SATproc
-## 1     590     660     680     700
-## 2     640     640     610     640
-## 3     680     630     620     650
-## 4     710     720     710     790
-## 5     650     620     630     640
-## 6     710     730     670     670</code></pre>
+<pre><code>##   goals1 goals2 goals3 goals4 goals5 goals6 rsc1 rsc2 rsc3 rsc4 rsc5 hsc1
+## 1      1      1      1      1      1      1    3    3    5    3    4    5
+## 2      3      3      6      3      2      2    3    4    5    5    3    3
+## 3      3      5      5      5      3      4    4    6    3    4    5    5
+## 4      4      4      4      6      4      6    2    3    3    4    4    2
+## 5      2      3      3      3      4      3    3    3    4    2    3    5
+## 6      4      4      4      3      3      5    3    4    4    4    3    2
+##   hsc2 hsc3 hsc4 hsc5 msc1 msc2 msc3 msc4 msc5 ssc1 ssc2 ssc3 ssc4 ssc5
+## 1    4    6    4    6    4    4    2    3    5    4    4    3    3    6
+## 2    4    3    3    4    1    1    2    1    1    1    1    1    1    1
+## 3    4    6    3    6    3    3    5    4    2    1    2    2    2    3
+## 4    4    2    3    4    5    5    4    3    5    3    2    4    4    4
+## 5    5    6    5    4    3    2    3    2    2    4    3    3    3    3
+## 6    3    1    4    4    4    4    5    4    2    4    4    4    4    4
+##   SATvoc SATcomp SATlang SATmath SATprob SATproc
+## 1    670     690     590     660     680     700
+## 2    700     680     640     640     610     640
+## 3    710     690     680     630     620     650
+## 4    740     720     710     720     710     790
+## 5    680     700     650     620     630     640
+## 6    710     670     710     730     670     670</code></pre>
 <pre class="r"><code>str(data)</code></pre>
 <pre><code>## &#39;data.frame&#39;:    1000 obs. of  32 variables:
 ##  $ goals1 : int  1 3 3 4 2 4 4 3 2 3 ...
@@ -507,14 +519,14 @@ colnames(data) &lt;- c(paste0(&quot;goals&quot;,1:6),
 ##  $ SATproc: num  700 640 650 790 640 670 640 710 690 740 ...</code></pre>
 <pre class="r"><code># sample means
 apply(data, 2, mean)</code></pre>
-<pre><code>##  goals1  goals2  goals3  goals4  goals5  goals6    rsc1    rsc2    rsc3    rsc4 
-##   3.297   3.193   3.443   3.631   3.580   3.273   3.308   3.657   3.645   3.230 
-##    rsc5    hsc1    hsc2    hsc3    hsc4    hsc5    msc1    msc2    msc3    msc4 
-##   3.558   3.636   3.694   3.310   3.233   3.633   3.349   3.162   3.528   3.608 
-##    msc5    ssc1    ssc2    ssc3    ssc4    ssc5  SATvoc SATcomp SATlang SATmath 
-##   3.651   3.269   3.130   3.419   3.531   3.621 709.470 696.670 669.170 685.340 
-## SATprob SATproc 
-## 679.100 694.600</code></pre>
+<pre><code>##  goals1  goals2  goals3  goals4  goals5  goals6    rsc1    rsc2    rsc3 
+##   3.297   3.193   3.443   3.631   3.580   3.273   3.308   3.657   3.645 
+##    rsc4    rsc5    hsc1    hsc2    hsc3    hsc4    hsc5    msc1    msc2 
+##   3.230   3.558   3.636   3.694   3.310   3.233   3.633   3.349   3.162 
+##    msc3    msc4    msc5    ssc1    ssc2    ssc3    ssc4    ssc5  SATvoc 
+##   3.528   3.608   3.651   3.269   3.130   3.419   3.531   3.621 709.470 
+## SATcomp SATlang SATmath SATprob SATproc 
+## 696.670 669.170 685.340 679.100 694.600</code></pre>
 <pre class="r"><code># sample correlations
 knitr::kable(cor(data))</code></pre>
 <table>
@@ -1716,14 +1728,23 @@ knitr::kable(cor(data))</code></pre>
 <p><br></p>
 <hr />
 </div>
-<div id="example-1-four-factor-self-concept-model" class="section level2">
+<div id="example-1-four-factor-self-concept-model"
+class="section level2">
 <h2>Example 1: Four factor self-concept model</h2>
 <p>We first fit a four factor model to the data.</p>
 <p><img src="cfa-example_files/figure-html/unnamed-chunk-5-1.png" width="80%" /></p>
 <div id="write-the-model-syntax" class="section level3">
 <h3>Write the model syntax</h3>
-<p>We use the model syntax to tell <code>lavaan</code> what model we want to fit. Different from our previous MLR and MVPA examples, we now have latent variables that are not observed in the data. For <code>lavaan</code> to recognize the latent variables, we must define each of them using the special operator “<code>=~</code>”, which is followed by the indicators of the latent variable being defined. You can read the “<code>=~</code>” operator as “is measured by”.</p>
-<p>In our example, we have to define 4 latent variables: RSC, HSC, MSC, and SSC. By default, <code>lavaan</code> will fix the loading of the first indicator to 1 (similar with Mplus).</p>
+<p>We use the model syntax to tell <code>lavaan</code> what model we
+want to fit. Different from our previous MLR and MVPA examples, we now
+have latent variables that are not observed in the data. For
+<code>lavaan</code> to recognize the latent variables, we must define
+each of them using the special operator “<code>=~</code>”, which is
+followed by the indicators of the latent variable being defined. You can
+read the “<code>=~</code>” operator as “is measured by”.</p>
+<p>In our example, we have to define 4 latent variables: RSC, HSC, MSC,
+and SSC. By default, <code>lavaan</code> will fix the loading of the
+first indicator to 1 (similar with Mplus).</p>
 <pre class="r"><code>cfa.Model &lt;- &#39;
 
 # measurement model
@@ -1783,22 +1804,30 @@ MSC ~~ SSC
 </div>
 <div id="fit-the-model-to-the-data" class="section level3">
 <h3>Fit the model to the data</h3>
-<p>We can still use the <code>sem()</code> function for CFA. You just need to simply supply the model syntax and the data.</p>
+<p>We can still use the <code>sem()</code> function for CFA. You just
+need to simply supply the model syntax and the data.</p>
 <pre class="r"><code>cfa.Fit &lt;- sem(cfa.Model, data = data)</code></pre>
 <p><br></p>
 </div>
 <div id="summary-the-results" class="section level3">
 <h3>Summary the results</h3>
-<p>Next you can summarize the results using the <code>summary()</code>function. To get more info on the model fit measures, you can use the optional argument <code>fit.measures = TRUE</code>. To take a look at the standardzied parameter estimates, you can use the optional argument <code>standardized = TRUE</code>. Unstandardized solutions are displayed in the column labled “Estimate”. The standardized solutions are listed in the column labeled “Std.all”.</p>
+<p>Next you can summarize the results using the
+<code>summary()</code>function. To get more info on the model fit
+measures, you can use the optional argument
+<code>fit.measures = TRUE</code>. To take a look at the standardzied
+parameter estimates, you can use the optional argument
+<code>standardized = TRUE</code>. Unstandardized solutions are displayed
+in the column labled “Estimate”. The standardized solutions are listed
+in the column labeled “Std.all”.</p>
 <pre class="r"><code>summary(cfa.Fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-9 ended normally after 42 iterations
+<pre><code>## lavaan 0.6.15 ended normally after 42 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
 ##   Number of model parameters                        96
-##                                                       
+## 
 ##   Number of observations                          1000
-##                                                       
+## 
 ## Model Test User Model:
 ##                                                       
 ##   Test statistic                               167.327
@@ -1823,14 +1852,15 @@ MSC ~~ SSC
 ##                                                       
 ##   Akaike (AIC)                               57711.135
 ##   Bayesian (BIC)                             58182.279
-##   Sample-size adjusted Bayesian (BIC)        57877.378
+##   Sample-size adjusted Bayesian (SABIC)      57877.378
 ## 
 ## Root Mean Square Error of Approximation:
 ## 
 ##   RMSEA                                          0.016
 ##   90 Percent confidence interval - lower         0.006
 ##   90 Percent confidence interval - upper         0.023
-##   P-value RMSEA &lt;= 0.05                          1.000
+##   P-value H_0: RMSEA &lt;= 0.050                    1.000
+##   P-value H_0: RMSEA &gt;= 0.080                    0.000
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -1982,13 +2012,21 @@ MSC ~~ SSC
 <hr />
 </div>
 </div>
-<div id="example-2-second-order-self-concept-model" class="section level2">
+<div id="example-2-second-order-self-concept-model"
+class="section level2">
 <h2>Example 2: Second-order self-concept model</h2>
 <p>In this example, we fit a second-order factor model to the data.</p>
 <p><img src="cfa-example_files/figure-html/unnamed-chunk-9-1.png" width="80%" /></p>
 <div id="write-the-model-syntax-1" class="section level3">
 <h3>Write the model syntax</h3>
-<p>We first define the first-order latent factors, as we did in the previous example. The second-order latent factor “GENERAL” is also defined using the “<code>=~</code>” operator. Its indicators are the first-order latent factors. We can free the factor loading by multiplying the indicator with <code>NA</code>, such that lavaan knows that the value of this parameter is not fixed and needs to be estimated. We then fix the variance of the second-order latent factor to be 1, by multiplying it with 1 in the variance formula.</p>
+<p>We first define the first-order latent factors, as we did in the
+previous example. The second-order latent factor “GENERAL” is also
+defined using the “<code>=~</code>” operator. Its indicators are the
+first-order latent factors. We can free the factor loading by
+multiplying the indicator with <code>NA</code>, such that lavaan knows
+that the value of this parameter is not fixed and needs to be estimated.
+We then fix the variance of the second-order latent factor to be 1, by
+multiplying it with 1 in the variance formula.</p>
 <pre class="r"><code>cfa.Model.2 &lt;- &#39;
 
 # measurement model 
@@ -2037,22 +2075,31 @@ msc3~~ssc3
 </div>
 <div id="fit-the-model-to-the-data-1" class="section level3">
 <h3>Fit the model to the data</h3>
-<p>We can still use the <code>sem()</code> function for second-order CFA. You just need to simply supply the corresponding model syntax and the data.</p>
+<p>We can still use the <code>sem()</code> function for second-order
+CFA. You just need to simply supply the corresponding model syntax and
+the data.</p>
 <pre class="r"><code>cfa.Fit.2 &lt;- sem(cfa.Model.2,data=data)</code></pre>
 <p><br></p>
 </div>
 <div id="summary-the-results-1" class="section level3">
 <h3>Summary the results</h3>
-<p>Next you can summarize the results using the <code>summary()</code>function. To get more info on the model fit measures, you can use the optional argument <code>fit.measures = TRUE</code>. To take a look at the standardzied parameter estimates, you can use the optional argument <code>standardized = TRUE</code>. Unstandardized solutions are displayed in the column labled “Estimate”. The standardized solutions are listed in the column labeled “Std.all”.</p>
+<p>Next you can summarize the results using the
+<code>summary()</code>function. To get more info on the model fit
+measures, you can use the optional argument
+<code>fit.measures = TRUE</code>. To take a look at the standardzied
+parameter estimates, you can use the optional argument
+<code>standardized = TRUE</code>. Unstandardized solutions are displayed
+in the column labled “Estimate”. The standardized solutions are listed
+in the column labeled “Std.all”.</p>
 <pre class="r"><code>summary(cfa.Fit.2, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-9 ended normally after 40 iterations
+<pre><code>## lavaan 0.6.15 ended normally after 40 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
 ##   Number of model parameters                        58
-##                                                       
+## 
 ##   Number of observations                          1000
-##                                                       
+## 
 ## Model Test User Model:
 ##                                                       
 ##   Test statistic                               196.012
@@ -2077,14 +2124,15 @@ msc3~~ssc3
 ##                                                       
 ##   Akaike (AIC)                               36157.523
 ##   Bayesian (BIC)                             36442.172
-##   Sample-size adjusted Bayesian (BIC)        36257.961
+##   Sample-size adjusted Bayesian (SABIC)      36257.961
 ## 
 ## Root Mean Square Error of Approximation:
 ## 
 ##   RMSEA                                          0.072
 ##   90 Percent confidence interval - lower         0.062
 ##   90 Percent confidence interval - upper         0.081
-##   P-value RMSEA &lt;= 0.05                          0.000
+##   P-value H_0: RMSEA &lt;= 0.050                    0.000
+##   P-value H_0: RMSEA &gt;= 0.080                    0.080
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -2194,12 +2242,20 @@ msc3~~ssc3
 </div>
 <div id="example-3-residualized-factor-model" class="section level2">
 <h2>Example 3: Residualized factor model</h2>
-<p>In this example, we fit a residualized factor model to the self-concept data.</p>
+<p>In this example, we fit a residualized factor model to the
+self-concept data.</p>
 <p><img src="cfa-example_files/figure-html/unnamed-chunk-13-1.png" width="80%" /></p>
 <div id="write-the-model-syntax-2" class="section level3">
 <h3>Write the model syntax</h3>
-<p>The residualized latent factor “GENERAL” is defined by all the measured variables. We can free the factor loading by multiplying the first indicator with <code>NA</code>. <code>lavaan</code> thus is told that the value of this parameter is not known and needs to be estimated. We then fix the variance of the residualized latent factor to be 1, by multiplying it with 1 in the variance formula.</p>
-<p>We also fix the covariances among the latent factors to be 0. In order to do that, we multiply the variables by 0 in each of the variance formulas.</p>
+<p>The residualized latent factor “GENERAL” is defined by all the
+measured variables. We can free the factor loading by multiplying the
+first indicator with <code>NA</code>. <code>lavaan</code> thus is told
+that the value of this parameter is not known and needs to be estimated.
+We then fix the variance of the residualized latent factor to be 1, by
+multiplying it with 1 in the variance formula.</p>
+<p>We also fix the covariances among the latent factors to be 0. In
+order to do that, we multiply the variables by 0 in each of the variance
+formulas.</p>
 <pre class="r"><code>cfa.Model.3 &lt;- &#39;
 
 # measurement model
@@ -2265,14 +2321,14 @@ msc3 ~~ ssc3
 <div id="summary-the-results-2" class="section level3">
 <h3>Summary the results</h3>
 <pre class="r"><code>summary(cfa.Fit.3, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-9 ended normally after 74 iterations
+<pre><code>## lavaan 0.6.15 ended normally after 74 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
 ##   Number of model parameters                        66
-##                                                       
+## 
 ##   Number of observations                          1000
-##                                                       
+## 
 ## Model Test User Model:
 ##                                                       
 ##   Test statistic                               178.352
@@ -2297,14 +2353,15 @@ msc3 ~~ ssc3
 ##                                                       
 ##   Akaike (AIC)                               36155.863
 ##   Bayesian (BIC)                             36479.774
-##   Sample-size adjusted Bayesian (BIC)        36270.155
+##   Sample-size adjusted Bayesian (SABIC)      36270.155
 ## 
 ## Root Mean Square Error of Approximation:
 ## 
 ##   RMSEA                                          0.080
 ##   90 Percent confidence interval - lower         0.069
 ##   90 Percent confidence interval - upper         0.091
-##   P-value RMSEA &lt;= 0.05                          0.000
+##   P-value H_0: RMSEA &lt;= 0.050                    0.000
+##   P-value H_0: RMSEA &gt;= 0.080                    0.527
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -2434,14 +2491,15 @@ msc3 ~~ ssc3
 ##     HSC               0.868    0.082   10.616    0.000    1.000    1.000
 ##     MSC               0.094    0.144    0.654    0.513    1.000    1.000
 ##     SSC               0.642    0.119    5.380    0.000    1.000    1.000</code></pre>
-<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+<div class="tocify-extend-page" data-unique="tocify-extend-page"
+style="height: 0;">
 
 </div>
 </div>
 </div>
 
 <hr>
-© Copyright 2022 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

@@ -13,10 +13,10 @@
 
 <title>Confirmatory Factor Analysis</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -29,7 +29,7 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
@@ -63,6 +63,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -83,6 +84,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -140,11 +144,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -173,8 +181,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -182,16 +190,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -305,10 +306,10 @@ div.tocify {
 
 
 
-<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -318,7 +319,7 @@ div.tocify {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     In-class Examples
      
     <span class="caret"></span>
@@ -329,6 +330,9 @@ div.tocify {
     </li>
     <li>
       <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="MVPA-mediation.html">Mediation</a>
     </li>
     <li>
       <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
@@ -348,7 +352,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions
      
     <span class="caret"></span>
@@ -384,7 +388,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions-DEMO
      
     <span class="caret"></span>
@@ -424,7 +428,8 @@ div.tocify {
 </div>
 
 
-<p>In this tutorial, we are going to use <code>lavaan</code> for confirmatory factor analysis.</p>
+<p>In this tutorial, we are going to use <code>lavaan</code> for
+confirmatory factor analysis.</p>
 <div id="load-the-pacakges" class="section level2">
 <h2>Load the pacakges</h2>
 <pre class="r"><code>library(lavaan)</code></pre>
@@ -434,7 +439,13 @@ div.tocify {
 <h2>Example 1: One-factor CFA model</h2>
 <div id="import-the-data" class="section level3">
 <h3>Import the data</h3>
-<p>The data for this example is saved in a csv file named “proficiencyraw-female.csv”, which is provided as part of the course materials. You can use the <code>read.table()</code> function to read in a csv file. There are many different ways for you to supply the file path in the <code>read.table()</code> function call. Below I first set the working directory to the folder where my data is saved, and then I simply supply the name of the data file in the function call.</p>
+<p>The data for this example is saved in a csv file named
+“proficiencyraw-female.csv”, which is provided as part of the course
+materials. You can use the <code>read.table()</code> function to read in
+a csv file. There are many different ways for you to supply the file
+path in the <code>read.table()</code> function call. Below I first set
+the working directory to the folder where my data is saved, and then I
+simply supply the name of the data file in the function call.</p>
 <pre class="r"><code>setwd(mypath)  # change it to the path of your own data folder
 data &lt;- read.table(&quot;proficiencyraw-female.csv&quot;, sep=&quot;,&quot;, header=F)
 
@@ -524,8 +535,16 @@ knitr::kable(cor(data))</code></pre>
 </div>
 <div id="write-the-model-syntax" class="section level3">
 <h3>Write the model syntax</h3>
-<p>We use the model syntax to tell <code>lavaan</code> what model we want to fit. Different from our previous MLR and MVPA examples, we now have latent variables that are not observed in the data. For <code>lavaan</code> to recognize the latent variables, we must define each of them using the special operator “<code>=~</code>”, which is followed by the indicators of the latent variable being defined. You can read the “<code>=~</code>” operator as “is measured by”.</p>
-<p>In our example, we have to define one latent variable: RSC (F1). By default, <code>lavaan</code> will fix the loading of the first indicator to 1 (similar with Mplus).</p>
+<p>We use the model syntax to tell <code>lavaan</code> what model we
+want to fit. Different from our previous MLR and MVPA examples, we now
+have latent variables that are not observed in the data. For
+<code>lavaan</code> to recognize the latent variables, we must define
+each of them using the special operator “<code>=~</code>”, which is
+followed by the indicators of the latent variable being defined. You can
+read the “<code>=~</code>” operator as “is measured by”.</p>
+<p>In our example, we have to define one latent variable: RSC (F1). By
+default, <code>lavaan</code> will fix the loading of the first indicator
+to 1 (similar with Mplus).</p>
 <pre class="r"><code>cfa.Model &lt;- &#39;
 
 # measurement model
@@ -552,22 +571,30 @@ rsc5 ~~ rsc5
 </div>
 <div id="fit-the-model-to-the-data" class="section level3">
 <h3>Fit the model to the data</h3>
-<p>We can still use the <code>sem()</code> function for CFA. You just need to simply supply the model syntax and the data.</p>
+<p>We can still use the <code>sem()</code> function for CFA. You just
+need to simply supply the model syntax and the data.</p>
 <pre class="r"><code>cfa.Fit &lt;- sem(cfa.Model, data = data)</code></pre>
 <p><br></p>
 </div>
 <div id="summary-the-results" class="section level3">
 <h3>Summary the results</h3>
-<p>Next you can summarize the results using the <code>summary()</code>function. To get more info on the model fit measures, you can use the optional argument <code>fit.measures = TRUE</code>. To take a look at the standardzied parameter estimates, you can use the optional argument <code>standardized = TRUE</code>. Unstandardized solutions are displayed in the column labled “Estimate”. The standardized solutions are listed in the column labeled “Std.all”.</p>
+<p>Next you can summarize the results using the
+<code>summary()</code>function. To get more info on the model fit
+measures, you can use the optional argument
+<code>fit.measures = TRUE</code>. To take a look at the standardzied
+parameter estimates, you can use the optional argument
+<code>standardized = TRUE</code>. Unstandardized solutions are displayed
+in the column labled “Estimate”. The standardized solutions are listed
+in the column labeled “Std.all”.</p>
 <pre class="r"><code>summary(cfa.Fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-9 ended normally after 22 iterations
+<pre><code>## lavaan 0.6.15 ended normally after 22 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
 ##   Number of model parameters                        15
-##                                                       
+## 
 ##   Number of observations                          1000
-##                                                       
+## 
 ## Model Test User Model:
 ##                                                       
 ##   Test statistic                                10.129
@@ -592,14 +619,15 @@ rsc5 ~~ rsc5
 ##                                                       
 ##   Akaike (AIC)                               15114.715
 ##   Bayesian (BIC)                             15188.331
-##   Sample-size adjusted Bayesian (BIC)        15140.690
+##   Sample-size adjusted Bayesian (SABIC)      15140.690
 ## 
 ## Root Mean Square Error of Approximation:
 ## 
 ##   RMSEA                                          0.032
 ##   90 Percent confidence interval - lower         0.000
 ##   90 Percent confidence interval - upper         0.061
-##   P-value RMSEA &lt;= 0.05                          0.831
+##   P-value H_0: RMSEA &lt;= 0.050                    0.831
+##   P-value H_0: RMSEA &gt;= 0.080                    0.002
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -674,18 +702,19 @@ DEPERSON ~~ ACCOMP
 
 &#39;</code></pre>
 </div>
-<div id="fit-the-model-to-the-data-and-check-the-results" class="section level3">
+<div id="fit-the-model-to-the-data-and-check-the-results"
+class="section level3">
 <h3>Fit the model to the data and check the results</h3>
 <pre class="r"><code>cfa.fit &lt;- sem(cfa.model, sample.cov = cfa.cov, sample.nobs = 580)
 summary(cfa.fit, fit.measures=T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-9 ended normally after 44 iterations
+<pre><code>## lavaan 0.6.15 ended normally after 44 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
 ##   Number of model parameters                        27
-##                                                       
+## 
 ##   Number of observations                           580
-##                                                       
+## 
 ## Model Test User Model:
 ##                                                       
 ##   Test statistic                               249.410
@@ -710,14 +739,15 @@ summary(cfa.fit, fit.measures=T, standardized = T)</code></pre>
 ##                                                       
 ##   Akaike (AIC)                               21533.589
 ##   Bayesian (BIC)                             21651.391
-##   Sample-size adjusted Bayesian (BIC)        21565.677
+##   Sample-size adjusted Bayesian (SABIC)      21565.677
 ## 
 ## Root Mean Square Error of Approximation:
 ## 
 ##   RMSEA                                          0.082
 ##   90 Percent confidence interval - lower         0.072
 ##   90 Percent confidence interval - upper         0.092
-##   P-value RMSEA &lt;= 0.05                          0.000
+##   P-value H_0: RMSEA &lt;= 0.050                    0.000
+##   P-value H_0: RMSEA &gt;= 0.080                    0.633
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -775,7 +805,8 @@ summary(cfa.fit, fit.measures=T, standardized = T)</code></pre>
 </div>
 <div id="check-modification-indicies" class="section level3">
 <h3>Check modification indicies</h3>
-<p>We could check the modification incides and print out the ones exceeding the critical value 3.84.</p>
+<p>We could check the modification incides and print out the ones
+exceeding the critical value 3.84.</p>
 <pre class="r"><code>mod.fit &lt;- modindices(cfa.fit)
 with(mod.fit, subset(mod.fit[order(mi, decreasing = T), ], subset = mi &gt;= 3.84))</code></pre>
 <pre><code>##          lhs op rhs     mi    epc sepc.lv sepc.all sepc.nox
@@ -839,14 +870,14 @@ i10 ~~ i11
 
 cfa.fit2 &lt;- sem(cfa.model2, sample.cov = cfa.cov, sample.nobs = 580)
 summary(cfa.fit2, fit.measures=T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-9 ended normally after 46 iterations
+<pre><code>## lavaan 0.6.15 ended normally after 46 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
 ##   Number of model parameters                        29
-##                                                       
+## 
 ##   Number of observations                           580
-##                                                       
+## 
 ## Model Test User Model:
 ##                                                       
 ##   Test statistic                               138.365
@@ -871,14 +902,15 @@ summary(cfa.fit2, fit.measures=T, standardized = T)</code></pre>
 ##                                                       
 ##   Akaike (AIC)                               21426.544
 ##   Bayesian (BIC)                             21553.072
-##   Sample-size adjusted Bayesian (BIC)        21461.008
+##   Sample-size adjusted Bayesian (SABIC)      21461.008
 ## 
 ## Root Mean Square Error of Approximation:
 ## 
 ##   RMSEA                                          0.056
 ##   90 Percent confidence interval - lower         0.045
 ##   90 Percent confidence interval - upper         0.067
-##   P-value RMSEA &lt;= 0.05                          0.172
+##   P-value H_0: RMSEA &lt;= 0.050                    0.172
+##   P-value H_0: RMSEA &gt;= 0.080                    0.000
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -940,7 +972,8 @@ summary(cfa.fit2, fit.measures=T, standardized = T)</code></pre>
 <hr />
 </div>
 </div>
-<div id="example-3-second-order-self-concept-model" class="section level2">
+<div id="example-3-second-order-self-concept-model"
+class="section level2">
 <h2>Example 3 Second-order self-concept model</h2>
 <p>In this example, we fit a second-order factor model to the data.</p>
 <pre class="r"><code>setwd(mypath)  # change it to the path of your own data folder
@@ -961,7 +994,14 @@ colnames(data) &lt;- c(paste0(&quot;goals&quot;,1:6),
 <p><img src="cfa-example-v2_files/figure-html/unnamed-chunk-16-1.png" width="80%" /></p>
 <div id="write-the-model-syntax-2" class="section level3">
 <h3>Write the model syntax</h3>
-<p>We first define the first-order latent factors, as we did in the previous example. The second-order latent factor “GENERAL” is also defined using the “<code>=~</code>” operator. Its indicators are the first-order latent factors. We can free the factor loading by multiplying the indicator with <code>NA</code>, such that lavaan knows that the value of this parameter is not fixed and needs to be estimated. We then fix the variance of the second-order latent factor to be 1, by multiplying it with 1 in the variance formula.</p>
+<p>We first define the first-order latent factors, as we did in the
+previous example. The second-order latent factor “GENERAL” is also
+defined using the “<code>=~</code>” operator. Its indicators are the
+first-order latent factors. We can free the factor loading by
+multiplying the indicator with <code>NA</code>, such that lavaan knows
+that the value of this parameter is not fixed and needs to be estimated.
+We then fix the variance of the second-order latent factor to be 1, by
+multiplying it with 1 in the variance formula.</p>
 <pre class="r"><code>cfa.Model.2 &lt;- &#39;
 
 # measurement model 
@@ -1010,22 +1050,31 @@ msc3~~ssc3
 </div>
 <div id="fit-the-model-to-the-data-1" class="section level3">
 <h3>Fit the model to the data</h3>
-<p>We can still use the <code>sem()</code> function for second-order CFA. You just need to simply supply the corresponding model syntax and the data.</p>
+<p>We can still use the <code>sem()</code> function for second-order
+CFA. You just need to simply supply the corresponding model syntax and
+the data.</p>
 <pre class="r"><code>cfa.Fit.2 &lt;- sem(cfa.Model.2,data=data)</code></pre>
 <p><br></p>
 </div>
 <div id="summary-the-results-1" class="section level3">
 <h3>Summary the results</h3>
-<p>Next you can summarize the results using the <code>summary()</code>function. To get more info on the model fit measures, you can use the optional argument <code>fit.measures = TRUE</code>. To take a look at the standardzied parameter estimates, you can use the optional argument <code>standardized = TRUE</code>. Unstandardized solutions are displayed in the column labled “Estimate”. The standardized solutions are listed in the column labeled “Std.all”.</p>
+<p>Next you can summarize the results using the
+<code>summary()</code>function. To get more info on the model fit
+measures, you can use the optional argument
+<code>fit.measures = TRUE</code>. To take a look at the standardzied
+parameter estimates, you can use the optional argument
+<code>standardized = TRUE</code>. Unstandardized solutions are displayed
+in the column labled “Estimate”. The standardized solutions are listed
+in the column labeled “Std.all”.</p>
 <pre class="r"><code>summary(cfa.Fit.2, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-9 ended normally after 40 iterations
+<pre><code>## lavaan 0.6.15 ended normally after 40 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
 ##   Number of model parameters                        58
-##                                                       
+## 
 ##   Number of observations                          1000
-##                                                       
+## 
 ## Model Test User Model:
 ##                                                       
 ##   Test statistic                               196.012
@@ -1050,14 +1099,15 @@ msc3~~ssc3
 ##                                                       
 ##   Akaike (AIC)                               36157.523
 ##   Bayesian (BIC)                             36442.172
-##   Sample-size adjusted Bayesian (BIC)        36257.961
+##   Sample-size adjusted Bayesian (SABIC)      36257.961
 ## 
 ## Root Mean Square Error of Approximation:
 ## 
 ##   RMSEA                                          0.072
 ##   90 Percent confidence interval - lower         0.062
 ##   90 Percent confidence interval - upper         0.081
-##   P-value RMSEA &lt;= 0.05                          0.000
+##   P-value H_0: RMSEA &lt;= 0.050                    0.000
+##   P-value H_0: RMSEA &gt;= 0.080                    0.080
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -1167,12 +1217,20 @@ msc3~~ssc3
 </div>
 <div id="example-4-residualized-factor-model" class="section level2">
 <h2>Example 4: Residualized factor model</h2>
-<p>In this example, we fit a residualized factor model to the self-concept data.</p>
+<p>In this example, we fit a residualized factor model to the
+self-concept data.</p>
 <p><img src="cfa-example-v2_files/figure-html/unnamed-chunk-20-1.png" width="80%" /></p>
 <div id="write-the-model-syntax-3" class="section level3">
 <h3>Write the model syntax</h3>
-<p>The residualized latent factor “GENERAL” is defined by all the measured variables. We can free the factor loading by multiplying the first indicator with <code>NA</code>. <code>lavaan</code> thus is told that the value of this parameter is not known and needs to be estimated. We then fix the variance of the residualized latent factor to be 1, by multiplying it with 1 in the variance formula.</p>
-<p>We also fix the covariances among the latent factors to be 0. In order to do that, we multiply the variables by 0 in each of the variance formulas.</p>
+<p>The residualized latent factor “GENERAL” is defined by all the
+measured variables. We can free the factor loading by multiplying the
+first indicator with <code>NA</code>. <code>lavaan</code> thus is told
+that the value of this parameter is not known and needs to be estimated.
+We then fix the variance of the residualized latent factor to be 1, by
+multiplying it with 1 in the variance formula.</p>
+<p>We also fix the covariances among the latent factors to be 0. In
+order to do that, we multiply the variables by 0 in each of the variance
+formulas.</p>
 <pre class="r"><code>cfa.Model.3 &lt;- &#39;
 
 # measurement model
@@ -1238,14 +1296,14 @@ msc3 ~~ ssc3
 <div id="summary-the-results-2" class="section level3">
 <h3>Summary the results</h3>
 <pre class="r"><code>summary(cfa.Fit.3, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-9 ended normally after 74 iterations
+<pre><code>## lavaan 0.6.15 ended normally after 74 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
 ##   Number of model parameters                        66
-##                                                       
+## 
 ##   Number of observations                          1000
-##                                                       
+## 
 ## Model Test User Model:
 ##                                                       
 ##   Test statistic                               178.352
@@ -1270,14 +1328,15 @@ msc3 ~~ ssc3
 ##                                                       
 ##   Akaike (AIC)                               36155.863
 ##   Bayesian (BIC)                             36479.774
-##   Sample-size adjusted Bayesian (BIC)        36270.155
+##   Sample-size adjusted Bayesian (SABIC)      36270.155
 ## 
 ## Root Mean Square Error of Approximation:
 ## 
 ##   RMSEA                                          0.080
 ##   90 Percent confidence interval - lower         0.069
 ##   90 Percent confidence interval - upper         0.091
-##   P-value RMSEA &lt;= 0.05                          0.000
+##   P-value H_0: RMSEA &lt;= 0.050                    0.000
+##   P-value H_0: RMSEA &gt;= 0.080                    0.527
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -1407,14 +1466,15 @@ msc3 ~~ ssc3
 ##     HSC               0.868    0.082   10.616    0.000    1.000    1.000
 ##     MSC               0.094    0.144    0.654    0.513    1.000    1.000
 ##     SSC               0.642    0.119    5.380    0.000    1.000    1.000</code></pre>
-<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+<div class="tocify-extend-page" data-unique="tocify-extend-page"
+style="height: 0;">
 
 </div>
 </div>
 </div>
 
 <hr>
-© Copyright 2022 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

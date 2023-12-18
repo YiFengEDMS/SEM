@@ -13,10 +13,10 @@
 
 <title>Latent Variable Moderation</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -29,7 +29,7 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
@@ -63,6 +63,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -83,6 +84,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -140,11 +144,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -173,8 +181,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -182,16 +190,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -305,10 +306,10 @@ div.tocify {
 
 
 
-<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -318,7 +319,7 @@ div.tocify {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     In-class Examples
      
     <span class="caret"></span>
@@ -329,6 +330,9 @@ div.tocify {
     </li>
     <li>
       <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="MVPA-mediation.html">Mediation</a>
     </li>
     <li>
       <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
@@ -348,7 +352,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions
      
     <span class="caret"></span>
@@ -384,7 +388,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions-DEMO
      
     <span class="caret"></span>
@@ -424,7 +428,8 @@ div.tocify {
 </div>
 
 
-<p>In this tutorial, we are going to use <code>lavaan</code> for latent variable moderation.</p>
+<p>In this tutorial, we are going to use <code>lavaan</code> for latent
+variable moderation.</p>
 <div id="load-the-pacakges" class="section level2">
 <h2>Load the pacakges</h2>
 <pre class="r"><code>library(lavaan)
@@ -435,7 +440,9 @@ library(semTools)</code></pre>
 </div>
 <div id="read-the-data" class="section level2">
 <h2>Read the data</h2>
-<p>The data for this example is saved in a txt file named “interact1.txt”. This data set contains variables that have been centered properly.</p>
+<p>The data for this example is saved in a txt file named
+“interact1.txt”. This data set contains variables that have been
+centered properly.</p>
 <pre class="r"><code>setwd(mypath)  # change it to the path of your own data folder
 
 int.data &lt;- read.delim(&quot;interact1.txt&quot;, sep = &quot;\t&quot;, header = F)
@@ -459,59 +466,80 @@ str(int.data)</code></pre>
 ##  $ cs2c : num  21.985 -1.423 -0.106 -1.252 -1.355 ...
 ##  $ cs3c : num  11.543 -0.662 -1.399 -4.191 -1.522 ...</code></pre>
 <pre class="r"><code>summary(int.data)</code></pre>
-<pre><code>##      ach1c             ach2c               ach3c               com1c          
-##  Min.   :-325.20   Min.   :-399.8910   Min.   :-328.9490   Min.   :-7.071000  
-##  1st Qu.: -76.20   1st Qu.: -83.8910   1st Qu.: -82.4490   1st Qu.:-1.071000  
-##  Median :  -2.70   Median :   0.6090   Median :  -6.4490   Median :-0.071000  
-##  Mean   :   0.00   Mean   :   0.0004   Mean   :  -0.0004   Mean   : 0.000429  
-##  3rd Qu.:  82.55   3rd Qu.:  83.8590   3rd Qu.:  81.0510   3rd Qu.: 0.929000  
-##  Max.   : 334.80   Max.   : 321.1090   Max.   : 364.0510   Max.   : 5.929000  
-##      com2c               com3c               sup1c                sup2c           
-##  Min.   :-4.983000   Min.   :-6.123000   Min.   :-10.209000   Min.   :-12.266000  
-##  1st Qu.:-0.983000   1st Qu.:-1.123000   1st Qu.: -2.209000   1st Qu.: -2.266000  
-##  Median : 0.017000   Median :-0.123000   Median : -0.209000   Median : -0.266000  
-##  Mean   :-0.000143   Mean   :-0.000143   Mean   : -0.000429   Mean   : -0.000286  
-##  3rd Qu.: 1.017000   3rd Qu.: 1.627000   3rd Qu.:  2.791000   3rd Qu.:  2.734000  
-##  Max.   : 6.017000   Max.   : 4.877000   Max.   :  9.791000   Max.   :  9.734000  
-##      sup3c                 cs1c                cs2c                cs3c          
-##  Min.   :-10.037000   Min.   :-26.23000   Min.   :-32.32300   Min.   :-26.11100  
-##  1st Qu.: -3.037000   1st Qu.: -3.04750   1st Qu.: -3.05500   1st Qu.: -3.57100  
-##  Median : -0.037000   Median : -1.61600   Median : -1.33800   Median : -1.38650  
-##  Mean   :  0.000143   Mean   :  0.00006   Mean   : -0.00003   Mean   :  0.00004  
-##  3rd Qu.:  2.963000   3rd Qu.:  3.42375   3rd Qu.:  2.44800   3rd Qu.:  2.82600  
-##  Max.   : 10.963000   Max.   : 36.56100   Max.   : 59.76800   Max.   : 39.85500</code></pre>
-<p>If you have raw data, you can easily follow the rules discussed in class to create the centered variables in R. Or you could make use of the <code>indProd</code> function within the <code>semTools</code> package to conveniently create the product terms. The code below will generate the paired product terms between the measured indicators for parental support and academic commitment and do double mean centering.</p>
+<pre><code>##      ach1c             ach2c               ach3c          
+##  Min.   :-325.20   Min.   :-399.8910   Min.   :-328.9490  
+##  1st Qu.: -76.20   1st Qu.: -83.8910   1st Qu.: -82.4490  
+##  Median :  -2.70   Median :   0.6090   Median :  -6.4490  
+##  Mean   :   0.00   Mean   :   0.0004   Mean   :  -0.0004  
+##  3rd Qu.:  82.55   3rd Qu.:  83.8590   3rd Qu.:  81.0510  
+##  Max.   : 334.80   Max.   : 321.1090   Max.   : 364.0510  
+##      com1c               com2c               com3c          
+##  Min.   :-7.071000   Min.   :-4.983000   Min.   :-6.123000  
+##  1st Qu.:-1.071000   1st Qu.:-0.983000   1st Qu.:-1.123000  
+##  Median :-0.071000   Median : 0.017000   Median :-0.123000  
+##  Mean   : 0.000429   Mean   :-0.000143   Mean   :-0.000143  
+##  3rd Qu.: 0.929000   3rd Qu.: 1.017000   3rd Qu.: 1.627000  
+##  Max.   : 5.929000   Max.   : 6.017000   Max.   : 4.877000  
+##      sup1c                sup2c                sup3c           
+##  Min.   :-10.209000   Min.   :-12.266000   Min.   :-10.037000  
+##  1st Qu.: -2.209000   1st Qu.: -2.266000   1st Qu.: -3.037000  
+##  Median : -0.209000   Median : -0.266000   Median : -0.037000  
+##  Mean   : -0.000429   Mean   : -0.000286   Mean   :  0.000143  
+##  3rd Qu.:  2.791000   3rd Qu.:  2.734000   3rd Qu.:  2.963000  
+##  Max.   :  9.791000   Max.   :  9.734000   Max.   : 10.963000  
+##       cs1c                cs2c                cs3c          
+##  Min.   :-26.23000   Min.   :-32.32300   Min.   :-26.11100  
+##  1st Qu.: -3.04750   1st Qu.: -3.05500   1st Qu.: -3.57100  
+##  Median : -1.61600   Median : -1.33800   Median : -1.38650  
+##  Mean   :  0.00006   Mean   : -0.00003   Mean   :  0.00004  
+##  3rd Qu.:  3.42375   3rd Qu.:  2.44800   3rd Qu.:  2.82600  
+##  Max.   : 36.56100   Max.   : 59.76800   Max.   : 39.85500</code></pre>
+<p>If you have raw data, you can easily follow the rules discussed in
+class to create the centered variables in R. Or you could make use of
+the <code>indProd</code> function within the <code>semTools</code>
+package to conveniently create the product terms. The code below will
+generate the paired product terms between the measured indicators for
+parental support and academic commitment and do double mean
+centering.</p>
 <pre class="r"><code>int.data2 &lt;- int.data[, 1:9]
 int.data2 &lt;- indProd(int.data2, 4:6, 7:9, match = T, meanC = T, doubleMC = T)
 
 summary(int.data2)</code></pre>
-<pre><code>##      ach1c             ach2c               ach3c               com1c          
-##  Min.   :-325.20   Min.   :-399.8910   Min.   :-328.9490   Min.   :-7.071000  
-##  1st Qu.: -76.20   1st Qu.: -83.8910   1st Qu.: -82.4490   1st Qu.:-1.071000  
-##  Median :  -2.70   Median :   0.6090   Median :  -6.4490   Median :-0.071000  
-##  Mean   :   0.00   Mean   :   0.0004   Mean   :  -0.0004   Mean   : 0.000429  
-##  3rd Qu.:  82.55   3rd Qu.:  83.8590   3rd Qu.:  81.0510   3rd Qu.: 0.929000  
-##  Max.   : 334.80   Max.   : 321.1090   Max.   : 364.0510   Max.   : 5.929000  
-##      com2c               com3c               sup1c                sup2c           
-##  Min.   :-4.983000   Min.   :-6.123000   Min.   :-10.209000   Min.   :-12.266000  
-##  1st Qu.:-0.983000   1st Qu.:-1.123000   1st Qu.: -2.209000   1st Qu.: -2.266000  
-##  Median : 0.017000   Median :-0.123000   Median : -0.209000   Median : -0.266000  
-##  Mean   :-0.000143   Mean   :-0.000143   Mean   : -0.000429   Mean   : -0.000286  
-##  3rd Qu.: 1.017000   3rd Qu.: 1.627000   3rd Qu.:  2.791000   3rd Qu.:  2.734000  
-##  Max.   : 6.017000   Max.   : 4.877000   Max.   :  9.791000   Max.   :  9.734000  
-##      sup3c             com1c.sup1c       com2c.sup2c       com3c.sup3c     
-##  Min.   :-10.037000   Min.   :-26.230   Min.   :-32.323   Min.   :-26.111  
-##  1st Qu.: -3.037000   1st Qu.: -3.047   1st Qu.: -3.055   1st Qu.: -3.571  
-##  Median : -0.037000   Median : -1.616   Median : -1.338   Median : -1.387  
-##  Mean   :  0.000143   Mean   :  0.000   Mean   :  0.000   Mean   :  0.000  
-##  3rd Qu.:  2.963000   3rd Qu.:  3.424   3rd Qu.:  2.448   3rd Qu.:  2.826  
-##  Max.   : 10.963000   Max.   : 36.561   Max.   : 59.768   Max.   : 39.855</code></pre>
+<pre><code>##      ach1c             ach2c               ach3c          
+##  Min.   :-325.20   Min.   :-399.8910   Min.   :-328.9490  
+##  1st Qu.: -76.20   1st Qu.: -83.8910   1st Qu.: -82.4490  
+##  Median :  -2.70   Median :   0.6090   Median :  -6.4490  
+##  Mean   :   0.00   Mean   :   0.0004   Mean   :  -0.0004  
+##  3rd Qu.:  82.55   3rd Qu.:  83.8590   3rd Qu.:  81.0510  
+##  Max.   : 334.80   Max.   : 321.1090   Max.   : 364.0510  
+##      com1c               com2c               com3c          
+##  Min.   :-7.071000   Min.   :-4.983000   Min.   :-6.123000  
+##  1st Qu.:-1.071000   1st Qu.:-0.983000   1st Qu.:-1.123000  
+##  Median :-0.071000   Median : 0.017000   Median :-0.123000  
+##  Mean   : 0.000429   Mean   :-0.000143   Mean   :-0.000143  
+##  3rd Qu.: 0.929000   3rd Qu.: 1.017000   3rd Qu.: 1.627000  
+##  Max.   : 5.929000   Max.   : 6.017000   Max.   : 4.877000  
+##      sup1c                sup2c                sup3c           
+##  Min.   :-10.209000   Min.   :-12.266000   Min.   :-10.037000  
+##  1st Qu.: -2.209000   1st Qu.: -2.266000   1st Qu.: -3.037000  
+##  Median : -0.209000   Median : -0.266000   Median : -0.037000  
+##  Mean   : -0.000429   Mean   : -0.000286   Mean   :  0.000143  
+##  3rd Qu.:  2.791000   3rd Qu.:  2.734000   3rd Qu.:  2.963000  
+##  Max.   :  9.791000   Max.   :  9.734000   Max.   : 10.963000  
+##   com1c.sup1c       com2c.sup2c       com3c.sup3c     
+##  Min.   :-26.230   Min.   :-32.323   Min.   :-26.111  
+##  1st Qu.: -3.047   1st Qu.: -3.055   1st Qu.: -3.571  
+##  Median : -1.616   Median : -1.338   Median : -1.387  
+##  Mean   :  0.000   Mean   :  0.000   Mean   :  0.000  
+##  3rd Qu.:  3.424   3rd Qu.:  2.448   3rd Qu.:  2.826  
+##  Max.   : 36.561   Max.   : 59.768   Max.   : 39.855</code></pre>
 <p><br></p>
 </div>
 <div id="fit-the-model-to-the-data" class="section level2">
 <h2>Fit the model to the data</h2>
 <p><img src="interaction-example_files/figure-html/unnamed-chunk-5-1.png" width="80%" /></p>
-<p>Suppose we are using the data with the properly centered indicators and paired product terms.</p>
+<p>Suppose we are using the data with the properly centered indicators
+and paired product terms.</p>
 <pre class="r"><code>int.model &lt;- &#39;
 
 commit =~ com1c + com2c + com3c
@@ -532,21 +560,21 @@ achieve ~ commit + support + comsup
 
 int.fit &lt;- sem(int.model, int.data, estimator = &quot;MLM&quot;)  # request robust standard errors
 summary(int.fit, fit.measures = T, standardized = F)</code></pre>
-<pre><code>## lavaan 0.6-9 ended normally after 262 iterations
+<pre><code>## lavaan 0.6.15 ended normally after 262 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
 ##   Number of model parameters                        36
-##                                                       
+## 
 ##   Number of observations                           350
-##                                                       
+## 
 ## Model Test User Model:
-##                                               Standard      Robust
+##                                               Standard      Scaled
 ##   Test Statistic                                33.048      32.650
 ##   Degrees of freedom                                42          42
 ##   P-value (Chi-square)                           0.837       0.849
 ##   Scaling correction factor                                  1.012
-##        Satorra-Bentler correction                                 
+##     Satorra-Bentler correction                                    
 ## 
 ## Model Test Baseline Model:
 ## 
@@ -570,18 +598,21 @@ summary(int.fit, fit.measures = T, standardized = F)</code></pre>
 ##                                                                   
 ##   Akaike (AIC)                               29728.831   29728.831
 ##   Bayesian (BIC)                             29867.717   29867.717
-##   Sample-size adjusted Bayesian (BIC)        29753.512   29753.512
+##   Sample-size adjusted Bayesian (SABIC)      29753.512   29753.512
 ## 
 ## Root Mean Square Error of Approximation:
 ## 
 ##   RMSEA                                          0.000       0.000
 ##   90 Percent confidence interval - lower         0.000       0.000
 ##   90 Percent confidence interval - upper         0.022       0.021
-##   P-value RMSEA &lt;= 0.05                          1.000       1.000
+##   P-value H_0: RMSEA &lt;= 0.050                    1.000       1.000
+##   P-value H_0: RMSEA &gt;= 0.080                    0.000       0.000
 ##                                                                   
 ##   Robust RMSEA                                               0.000
 ##   90 Percent confidence interval - lower                     0.000
 ##   90 Percent confidence interval - upper                     0.021
+##   P-value H_0: Robust RMSEA &lt;= 0.050                         1.000
+##   P-value H_0: Robust RMSEA &gt;= 0.080                         0.000
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -661,8 +692,14 @@ summary(int.fit, fit.measures = T, standardized = F)</code></pre>
 </div>
 <div id="examine-and-interpret-the-interaction" class="section level2">
 <h2>Examine and interpret the interaction</h2>
-<p>The interaction term is not statistically significant in this example. But for illustration purpose, let’s try an interaction plot which shows the simple slopes. The interaction plot can be useful to visualize your results if a significant interaction has been detected.</p>
-<p>You can make use of the <code>probe2WayMC</code> and <code>plotProbe</code> function available within the <code>semTools</code> package to visualize the simple slopes.</p>
+<p>The interaction term is not statistically significant in this
+example. But for illustration purpose, let’s try an interaction plot
+which shows the simple slopes. The interaction plot can be useful to
+visualize your results if a significant interaction has been
+detected.</p>
+<p>You can make use of the <code>probe2WayMC</code> and
+<code>plotProbe</code> function available within the
+<code>semTools</code> package to visualize the simple slopes.</p>
 <pre class="r"><code>(prob1 &lt;- probe2WayMC(int.fit, nameX = c(&quot;commit&quot;, &quot;support&quot;, &quot;comsup&quot;), nameY = &quot;achieve&quot;,
             modVar = &quot;support&quot;,  valProbe = c(-1*sqrt(4.550), 0, 1*sqrt(4.550))))</code></pre>
 <pre><code>## $SimpleIntcept
@@ -685,13 +722,14 @@ summary(int.fit, fit.measures = T, standardized = F)</code></pre>
 ## 3       1 15.225 3.951 3.853  0.000</code></pre>
 <pre class="r"><code>plotProbe(prob1, xlim = c(-2, 2), xlab = &quot;Commit&quot;, ylab = &quot;Achieve&quot;, legendArgs = list(legend = c(&quot;-1 SD&quot;, &quot;Mean&quot;, &quot;+1 SD&quot;)))</code></pre>
 <p><img src="interaction-example_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+<div class="tocify-extend-page" data-unique="tocify-extend-page"
+style="height: 0;">
 
 </div>
 </div>
 
 <hr>
-© Copyright 2022 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

@@ -28,7 +28,7 @@ The data for this example is saved in a txt file named "interact1.txt". This dat
 
 ```{r, echo=F}
 
-mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/SEM_Intro_2022/2b. Path Analysis Extensions/2b.Examples"
+mypath <- "/Volumes/GoogleDrive/My Drive/Dpr/EDMS workshops/General/2019-2020/SEM/Course materials/Hancock_SEM_Second_Course_2020_Mplus/4. Interactions and Nonlinear/4.Examples"
 
 ```
 

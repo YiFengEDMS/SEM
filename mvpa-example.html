@@ -13,10 +13,10 @@
 
 <title>Measured Variable Path Analysis</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -29,16 +29,16 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="site_libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
 <script src="site_libs/viz-1.8.2/viz.js"></script>
 <link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
-<script src="site_libs/grViz-binding-1.0.6.1/grViz.js"></script>
+<script src="site_libs/grViz-binding-1.0.10/grViz.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -67,6 +67,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -87,6 +88,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -144,11 +148,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -177,8 +185,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -186,16 +194,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -309,10 +310,10 @@ div.tocify {
 
 
 
-<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -322,7 +323,7 @@ div.tocify {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     In-class Examples
      
     <span class="caret"></span>
@@ -333,6 +334,9 @@ div.tocify {
     </li>
     <li>
       <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="MVPA-mediation.html">Mediation</a>
     </li>
     <li>
       <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
@@ -352,7 +356,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions
      
     <span class="caret"></span>
@@ -388,7 +392,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions-DEMO
      
     <span class="caret"></span>
@@ -428,7 +432,8 @@ div.tocify {
 </div>
 
 
-<p>In this tutorial, we are going to use <code>lavaan</code> for measured variable path analysis.</p>
+<p>In this tutorial, we are going to use <code>lavaan</code> for
+measured variable path analysis.</p>
 <hr />
 <div id="load-the-pacakges" class="section level2">
 <h2>Load the pacakges</h2>
@@ -438,13 +443,22 @@ library(lavaanPlot)</code></pre>
 </div>
 <div id="example-1" class="section level2">
 <h2>Example 1</h2>
-<p>In this example, there are 4 measured variables: ReadSC1, MathSC1, Goals2, and SATmath.</p>
-<div id="htmlwidget-0bb2534cb3e9c293d1f3" style="width:40%;height:480px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-0bb2534cb3e9c293d1f3">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n ReadSC1; MathSC1; Goals2; SATmath \n node [shape = oval] \n  \n \n edge [ color = grey ] \n ReadSC1->Goals2 MathSC1->Goals2 Goals2->SATmath ReadSC1->SATmath MathSC1->SATmath  \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<p>In this example, there are 4 measured variables: ReadSC1, MathSC1,
+Goals2, and SATmath.</p>
+<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-8f629ef92857ebdaec3d" style="width:40%;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-8f629ef92857ebdaec3d">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n ReadSC1; MathSC1; Goals2; SATmath \n node [shape = oval] \n  \n \n edge [ color = grey ] \n ReadSC1->Goals2 MathSC1->Goals2 Goals2->SATmath ReadSC1->SATmath MathSC1->SATmath  \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <div id="import-the-data" class="section level3">
 <h3>Import the data</h3>
-<p>In this example, our data is a correlation matrix. For more information about the data, please refer back to the course slides.</p>
-<p>We can read the lower half of the correlation matrix into R and make it symmetric using the <code>getCov()</code> function. But we need to further convert it to a variance-covariance matrix before <code>lavaan</code> can use it as the input data. With the correlation matrix and sample standard deviations, you can easily compute the variance-covariance matrix. We then assign variable names to the covariance matrix, which is required for <code>lavaan</code> to work properly.</p>
+<p>In this example, our data is a correlation matrix. For more
+information about the data, please refer back to the course slides.</p>
+<p>We can read the lower half of the correlation matrix into R and make
+it symmetric using the <code>getCov()</code> function. But we need to
+further convert it to a variance-covariance matrix before
+<code>lavaan</code> can use it as the input data. With the correlation
+matrix and sample standard deviations, you can easily compute the
+variance-covariance matrix. We then assign variable names to the
+covariance matrix, which is required for <code>lavaan</code> to work
+properly.</p>
 <pre class="r"><code>cormat &lt;- &#39;
 1.000
 -.173 1.000
@@ -472,7 +486,14 @@ covmat</code></pre>
 </div>
 <div id="write-the-model-syntax" class="section level3">
 <h3>Write the model syntax</h3>
-<p>Now we tell <code>lavaan</code> what our model looks like. Like the MLR example, we use the tilde <code>~</code> operator to tell <code>lavaan</code> that we wish to regress Goals2 on ReadSC1 and MathSC1. We also want to regress SATmath on all the other three variables. We use the double tilde <code>~~</code> to tell <code>lavaan</code> that we wish to estimate the variances of the independent variables. We also allow the two exogenous variables to covary.</p>
+<p>Now we tell <code>lavaan</code> what our model looks like. Like the
+MLR example, we use the tilde <code>~</code> operator to tell
+<code>lavaan</code> that we wish to regress Goals2 on ReadSC1 and
+MathSC1. We also want to regress SATmath on all the other three
+variables. We use the double tilde <code>~~</code> to tell
+<code>lavaan</code> that we wish to estimate the variances of the
+independent variables. We also allow the two exogenous variables to
+covary.</p>
 <pre class="r"><code>mvpa.model1 &lt;- &#39;
 
 # regressions
@@ -488,22 +509,33 @@ MathSC1 ~~ MathSC1
 </div>
 <div id="fit-the-model-to-the-data" class="section level3">
 <h3>Fit the model to the data</h3>
-<p>After you specify the model syntax, you can fit the model to the variance-covariance matrix using the <code>sem()</code> function. In this function, we first specify the model syntax. Then we tell <code>lavaan</code> that our data is a variance-covariance matrix using the <code>sample.cov =</code> argument. We also tell <code>lavaan</code> that our sample size is 1000.</p>
+<p>After you specify the model syntax, you can fit the model to the
+variance-covariance matrix using the <code>sem()</code> function. In
+this function, we first specify the model syntax. Then we tell
+<code>lavaan</code> that our data is a variance-covariance matrix using
+the <code>sample.cov =</code> argument. We also tell <code>lavaan</code>
+that our sample size is 1000.</p>
 <pre class="r"><code>mvpa.fit.1 &lt;- sem(mvpa.model1, sample.cov = covmat, sample.nobs = 1000)</code></pre>
 <p><br></p>
 </div>
 <div id="summarize-the-results" class="section level3">
 <h3>Summarize the results</h3>
-<p>Next you can summarize the results using the <code>summary()</code>function. To get more info on the model fit measures, you can use the optional argument <code>fit.measures = TRUE</code>. To take a look at the standardzied parameter estimates, you can use the optional argument <code>standardized = TRUE</code>. The standardized solutions are listed in the column labeled “Std.all”.</p>
+<p>Next you can summarize the results using the
+<code>summary()</code>function. To get more info on the model fit
+measures, you can use the optional argument
+<code>fit.measures = TRUE</code>. To take a look at the standardzied
+parameter estimates, you can use the optional argument
+<code>standardized = TRUE</code>. The standardized solutions are listed
+in the column labeled “Std.all”.</p>
 <pre class="r"><code>summary(mvpa.fit.1, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-9 ended normally after 51 iterations
+<pre><code>## lavaan 0.6.15 ended normally after 16 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
 ##   Number of model parameters                        10
-##                                                       
+## 
 ##   Number of observations                          1000
-##                                                       
+## 
 ## Model Test User Model:
 ##                                                       
 ##   Test statistic                                 0.000
@@ -527,14 +559,15 @@ MathSC1 ~~ MathSC1
 ##                                                       
 ##   Akaike (AIC)                               19645.219
 ##   Bayesian (BIC)                             19694.297
-##   Sample-size adjusted Bayesian (BIC)        19662.536
+##   Sample-size adjusted Bayesian (SABIC)      19662.536
 ## 
 ## Root Mean Square Error of Approximation:
 ## 
 ##   RMSEA                                          0.000
 ##   90 Percent confidence interval - lower         0.000
 ##   90 Percent confidence interval - upper         0.000
-##   P-value RMSEA &lt;= 0.05                             NA
+##   P-value H_0: RMSEA &lt;= 0.050                       NA
+##   P-value H_0: RMSEA &gt;= 0.080                       NA
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -572,12 +605,15 @@ MathSC1 ~~ MathSC1
 </div>
 <div id="example-2" class="section level2">
 <h2>Example 2</h2>
-<p>In the second example, there are 3 measured variables of interest: ReadSC1, MathSC1, and SATmath.</p>
-<div id="htmlwidget-c9e1afddd8d6172bf2b9" style="width:30%;height:480px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-c9e1afddd8d6172bf2b9">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n ReadSC1; MathSC1; SATmath \n node [shape = oval] \n  \n \n edge [ color = grey ] \n ReadSC1->MathSC1 MathSC1->SATmath  \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<p>In the second example, there are 3 measured variables of interest:
+ReadSC1, MathSC1, and SATmath.</p>
+<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-2814b1cfc5f24ab2f648" style="width:30%;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-2814b1cfc5f24ab2f648">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n ReadSC1; MathSC1; SATmath \n node [shape = oval] \n  \n \n edge [ color = grey ] \n ReadSC1->MathSC1 MathSC1->SATmath  \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <div id="import-the-data-1" class="section level3">
 <h3>Import the data</h3>
-<p>In this example, our data is still a correlation matrix. Similarly, we first read in the lower half of the correlation matrix and convert it to a full symmetrix covariance matrix.</p>
+<p>In this example, our data is still a correlation matrix. Similarly,
+we first read in the lower half of the correlation matrix and convert it
+to a full symmetrix covariance matrix.</p>
 <pre class="r"><code># read in lower half of the correlation matrix
 cormat &lt;- &#39;
 1.000
@@ -603,7 +639,8 @@ covmat</code></pre>
 </div>
 <div id="write-the-model-syntax-1" class="section level3">
 <h3>Write the model syntax</h3>
-<p>Now we tell <code>lavaan</code> what our model looks like using the model syntax.</p>
+<p>Now we tell <code>lavaan</code> what our model looks like using the
+model syntax.</p>
 <pre class="r"><code>mvpa.model2 &lt;- &#39;
 MathSC1 ~ ReadSC1
 SATmath ~ MathSC1
@@ -612,22 +649,33 @@ SATmath ~ MathSC1
 </div>
 <div id="fit-the-model-to-the-data-1" class="section level3">
 <h3>Fit the model to the data</h3>
-<p>After you specify the model syntax, you can fit the model to the variance-covariance matrix using the <code>sem()</code> function. In this function, we first specify the model syntax. Then we tell <code>lavaan</code> that our data is a variance-covariance matrix using the <code>sample.cov =</code> argument. We also tell <code>lavaan</code> that our sample size is 1000.</p>
+<p>After you specify the model syntax, you can fit the model to the
+variance-covariance matrix using the <code>sem()</code> function. In
+this function, we first specify the model syntax. Then we tell
+<code>lavaan</code> that our data is a variance-covariance matrix using
+the <code>sample.cov =</code> argument. We also tell <code>lavaan</code>
+that our sample size is 1000.</p>
 <pre class="r"><code>mvpa.fit.2 &lt;- sem(mvpa.model2, sample.cov=covmat, sample.nobs = 1000)</code></pre>
 <p><br></p>
 </div>
 <div id="summarize-the-results-1" class="section level3">
 <h3>Summarize the results</h3>
-<p>Next you can summarize the results using the <code>summary()</code>function. To get more info on the model fit measures, you can use the optional argument <code>fit.measures = TRUE</code>. To take a look at the standardzied parameter estimates, you can use the optional argument <code>standardized = TRUE</code>. The standardized solutions are listed in the column labeled “Std.all”.</p>
+<p>Next you can summarize the results using the
+<code>summary()</code>function. To get more info on the model fit
+measures, you can use the optional argument
+<code>fit.measures = TRUE</code>. To take a look at the standardzied
+parameter estimates, you can use the optional argument
+<code>standardized = TRUE</code>. The standardized solutions are listed
+in the column labeled “Std.all”.</p>
 <pre class="r"><code>summary(mvpa.fit.2, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-9 ended normally after 24 iterations
+<pre><code>## lavaan 0.6.15 ended normally after 1 iteration
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
 ##   Number of model parameters                         4
-##                                                       
+## 
 ##   Number of observations                          1000
-##                                                       
+## 
 ## Model Test User Model:
 ##                                                       
 ##   Test statistic                                 3.328
@@ -652,14 +700,15 @@ SATmath ~ MathSC1
 ##                                                       
 ##   Akaike (AIC)                               13176.742
 ##   Bayesian (BIC)                             13196.373
-##   Sample-size adjusted Bayesian (BIC)        13183.669
+##   Sample-size adjusted Bayesian (SABIC)      13183.669
 ## 
 ## Root Mean Square Error of Approximation:
 ## 
 ##   RMSEA                                          0.048
 ##   90 Percent confidence interval - lower         0.000
 ##   90 Percent confidence interval - upper         0.110
-##   P-value RMSEA &lt;= 0.05                          0.404
+##   P-value H_0: RMSEA &lt;= 0.050                    0.404
+##   P-value H_0: RMSEA &gt;= 0.080                    0.240
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -682,14 +731,15 @@ SATmath ~ MathSC1
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
 ##    .MathSC1           1.891    0.085   22.361    0.000    1.891    0.970
 ##    .SATmath         949.296   42.454   22.361    0.000  949.296    0.691</code></pre>
-<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+<div class="tocify-extend-page" data-unique="tocify-extend-page"
+style="height: 0;">
 
 </div>
 </div>
 </div>
 
 <hr>
-© Copyright 2022 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

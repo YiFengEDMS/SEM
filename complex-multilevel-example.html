@@ -13,10 +13,10 @@
 
 <title>Complex and Multilevel Samples</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -29,7 +29,7 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
@@ -63,6 +63,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -83,6 +84,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -140,11 +144,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -173,8 +181,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -182,16 +190,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -305,10 +306,10 @@ div.tocify {
 
 
 
-<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -318,7 +319,7 @@ div.tocify {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     In-class Examples
      
     <span class="caret"></span>
@@ -329,6 +330,9 @@ div.tocify {
     </li>
     <li>
       <a href="mvpa-example.html">Measured Variable Path Analysis</a>
+    </li>
+    <li>
+      <a href="MVPA-mediation.html">Mediation</a>
     </li>
     <li>
       <a href="cfa-example-v2.html">Confirmatory Factor Analysis</a>
@@ -348,7 +352,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions
      
     <span class="caret"></span>
@@ -384,7 +388,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise Solutions-DEMO
      
     <span class="caret"></span>
@@ -424,7 +428,9 @@ div.tocify {
 </div>
 
 
-<p>In this tutorial, we are going to use <code>lavaan</code> for data collected from complex survey designs. The example corresponds to the <em>Monitoring the Future Study</em> example in your course slides.</p>
+<p>In this tutorial, we are going to use <code>lavaan</code> for data
+collected from complex survey designs. The example corresponds to the
+<em>Monitoring the Future Study</em> example in your course slides.</p>
 <div id="load-the-pacakges" class="section level2">
 <h2>Load the pacakges</h2>
 <pre class="r"><code>library(lavaan)
@@ -433,7 +439,8 @@ library(lavaan.survey)</code></pre>
 </div>
 <div id="read-the-data" class="section level2">
 <h2>Read the data</h2>
-<p>The data for this example is saved in a csv file named “accidents.csv”, which is provided as part of the course materials.</p>
+<p>The data for this example is saved in a csv file named
+“accidents.csv”, which is provided as part of the course materials.</p>
 <pre class="r"><code>setwd(mypath)  # change it to the path of your own data folder
 
 complex.data &lt;- read.table(&quot;accidents.csv&quot;, sep = &quot;,&quot;, header = T)
@@ -444,11 +451,20 @@ complex.data$ids &lt;- 1:nrow(complex.data)</code></pre>
 </div>
 <div id="design-based-approach" class="section level2">
 <h2>Design-based approach</h2>
-<p>To handle clustered data, we can either use the model-based approach or design-based approach. As for the model-based approach, <code>lavaan</code> is capable of fitting a two-level SEM with random intercepts. You can refer to this <a href="http://lavaan.ugent.be/tutorial/multilevel.html">tutorial</a> for more detailed information on this feature of <code>lavaan</code>.</p>
-<p>On the other hand, to use the design-based approach, we need to introduce another package <code>lavaan.survey</code>, which is developed to account for complex survey designs when <code>lavaan</code> is used for SEM.</p>
+<p>To handle clustered data, we can either use the model-based approach
+or design-based approach. As for the model-based approach,
+<code>lavaan</code> is capable of fitting a two-level SEM with random
+intercepts. You can refer to this <a
+href="http://lavaan.ugent.be/tutorial/multilevel.html">tutorial</a> for
+more detailed information on this feature of <code>lavaan</code>.</p>
+<p>On the other hand, to use the design-based approach, we need to
+introduce another package <code>lavaan.survey</code>, which is developed
+to account for complex survey designs when <code>lavaan</code> is used
+for SEM.</p>
 <div id="naive-estimates" class="section level3">
 <h3>Naive estimates</h3>
-<p>We can take a look at the naive estimates when we do not consider the survey design.</p>
+<p>We can take a look at the naive estimates when we do not consider the
+survey design.</p>
 <pre class="r"><code>complex.model &lt;- &#39;
 
 violate ~ alcohol + marij
@@ -459,14 +475,14 @@ alcohol ~~ marij
 
 naive.fit &lt;- sem(complex.model, complex.data, meanstructure = T)
 summary(naive.fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6-9 ended normally after 30 iterations
+<pre><code>## lavaan 0.6.15 ended normally after 26 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
 ##   Number of model parameters                        14
-##                                                       
+## 
 ##   Number of observations                          1607
-##                                                       
+## 
 ## Model Test User Model:
 ##                                                       
 ##   Test statistic                                 0.000
@@ -490,14 +506,15 @@ summary(naive.fit, fit.measures = T, standardized = T)</code></pre>
 ##                                                       
 ##   Akaike (AIC)                               21039.691
 ##   Bayesian (BIC)                             21115.041
-##   Sample-size adjusted Bayesian (BIC)        21070.566
+##   Sample-size adjusted Bayesian (SABIC)      21070.566
 ## 
 ## Root Mean Square Error of Approximation:
 ## 
 ##   RMSEA                                          0.000
 ##   90 Percent confidence interval - lower         0.000
 ##   90 Percent confidence interval - upper         0.000
-##   P-value RMSEA &lt;= 0.05                             NA
+##   P-value H_0: RMSEA &lt;= 0.050                       NA
+##   P-value H_0: RMSEA &gt;= 0.080                       NA
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -540,7 +557,9 @@ summary(naive.fit, fit.measures = T, standardized = T)</code></pre>
 </div>
 <div id="adjusted-estimates" class="section level3">
 <h3>Adjusted estimates</h3>
-<p>Next we use the <code>svydesign()</code> function to define the complex survey design. We then call up the <code>lavaan.survey</code> function to update our estimation given the complex survey design.</p>
+<p>Next we use the <code>svydesign()</code> function to define the
+complex survey design. We then call up the <code>lavaan.survey</code>
+function to update our estimation given the complex survey design.</p>
 <pre class="r"><code>design &lt;- svydesign(ids = ~school, 
                     strata = ~region, 
                     weights = ~rawwt,
@@ -548,16 +567,16 @@ summary(naive.fit, fit.measures = T, standardized = T)</code></pre>
 
 design.fit &lt;- lavaan.survey(naive.fit, design)
 summary(design.fit, fit.measures = T)</code></pre>
-<pre><code>## lavaan 0.6-9 ended normally after 30 iterations
+<pre><code>## lavaan 0.6.15 ended normally after 26 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
 ##   Number of model parameters                        14
-##                                                       
+## 
 ##   Number of observations                          1607
-##                                                       
+## 
 ## Model Test User Model:
-##                                               Standard      Robust
+##                                               Standard      Scaled
 ##   Test Statistic                                 0.000       0.000
 ##   Degrees of freedom                                 0           0
 ## 
@@ -583,18 +602,21 @@ summary(design.fit, fit.measures = T)</code></pre>
 ##                                                                   
 ##   Akaike (AIC)                               21059.806   21059.806
 ##   Bayesian (BIC)                             21135.156   21135.156
-##   Sample-size adjusted Bayesian (BIC)        21090.680   21090.680
+##   Sample-size adjusted Bayesian (SABIC)      21090.680   21090.680
 ## 
 ## Root Mean Square Error of Approximation:
 ## 
-##   RMSEA                                          0.000       0.000
-##   90 Percent confidence interval - lower         0.000       0.000
-##   90 Percent confidence interval - upper         0.000       0.000
-##   P-value RMSEA &lt;= 0.05                             NA          NA
+##   RMSEA                                          0.000          NA
+##   90 Percent confidence interval - lower         0.000          NA
+##   90 Percent confidence interval - upper         0.000          NA
+##   P-value H_0: RMSEA &lt;= 0.050                       NA          NA
+##   P-value H_0: RMSEA &gt;= 0.080                       NA          NA
 ##                                                                   
 ##   Robust RMSEA                                               0.000
 ##   90 Percent confidence interval - lower                     0.000
 ##   90 Percent confidence interval - upper                     0.000
+##   P-value H_0: Robust RMSEA &lt;= 0.050                            NA
+##   P-value H_0: Robust RMSEA &gt;= 0.080                            NA
 ## 
 ## Standardized Root Mean Square Residual:
 ## 
@@ -634,14 +656,15 @@ summary(design.fit, fit.measures = T)</code></pre>
 ##    .accident          0.401    0.022   18.146    0.000
 ##     alcohol           5.054    0.099   51.152    0.000
 ##     marij             5.098    0.211   24.141    0.000</code></pre>
-<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+<div class="tocify-extend-page" data-unique="tocify-extend-page"
+style="height: 0;">
 
 </div>
 </div>
 </div>
 
 <hr>
-© Copyright 2022 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

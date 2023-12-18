@@ -1,6 +1,6 @@
 name: "lavaan tutorials for the SEM short course taught by Dr. Greg Hancock"
 navbar:
-  type: inverse 
+#  type: inverse 
   title: "HOME"
   left:
     - text: "In-class Examples"
@@ -92,7 +92,9 @@ navbar:
 output_dir: "."
 output:
   html_document:
-    theme: yeti
+    bootstrap_version: 4+3
+    theme: flatly
 #    highlight: kate
+#    css: bootstrap.css
     include:
       after_body: _footer.html
