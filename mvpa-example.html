@@ -13,7 +13,7 @@
 
 <title>Measured Variable Path Analysis</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -35,10 +35,11 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<script src="site_libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
 <script src="site_libs/viz-1.8.2/viz.js"></script>
 <link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
-<script src="site_libs/grViz-binding-1.0.10/grViz.js"></script>
+<script src="site_libs/grViz-binding-1.0.11/grViz.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -445,8 +446,8 @@ library(lavaanPlot)</code></pre>
 <h2>Example 1</h2>
 <p>In this example, there are 4 measured variables: ReadSC1, MathSC1,
 Goals2, and SATmath.</p>
-<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-8f629ef92857ebdaec3d" style="width:40%;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-8f629ef92857ebdaec3d">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n ReadSC1; MathSC1; Goals2; SATmath \n node [shape = oval] \n  \n \n edge [ color = grey ] \n ReadSC1->Goals2 MathSC1->Goals2 Goals2->SATmath ReadSC1->SATmath MathSC1->SATmath  \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-0ab39a3a71a6c2f0b4cc" style="width:40%;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-0ab39a3a71a6c2f0b4cc">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n ReadSC1; MathSC1; Goals2; SATmath \n node [shape = oval] \n  \n \n edge [ color = grey ] \n ReadSC1->Goals2 MathSC1->Goals2 Goals2->SATmath ReadSC1->SATmath MathSC1->SATmath  \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <div id="import-the-data" class="section level3">
 <h3>Import the data</h3>
 <p>In this example, our data is a correlation matrix. For more
@@ -528,7 +529,7 @@ parameter estimates, you can use the optional argument
 <code>standardized = TRUE</code>. The standardized solutions are listed
 in the column labeled “Std.all”.</p>
 <pre class="r"><code>summary(mvpa.fit.1, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 16 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 16 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -580,26 +581,42 @@ in the column labeled “Std.all”.</p>
 ##   Information saturated (h1) model          Structured
 ## 
 ## Regressions:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   Goals2 ~                                                              
-##     ReadSC1           0.155    0.031    4.947    0.000    0.155    0.155
-##     MathSC1           0.173    0.029    6.064    0.000    0.173    0.190
-##   SATmath ~                                                             
-##     Goals2            8.781    0.731   12.004    0.000    8.781    0.302
-##     ReadSC1           0.054    0.734    0.074    0.941    0.054    0.002
-##     MathSC1          13.462    0.673   19.994    0.000   13.462    0.507
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   Goals2 ~                                            
+##     ReadSC1           0.155    0.031    4.947    0.000
+##     MathSC1           0.173    0.029    6.064    0.000
+##   SATmath ~                                           
+##     Goals2            8.781    0.731   12.004    0.000
+##     ReadSC1           0.054    0.734    0.074    0.941
+##     MathSC1          13.462    0.673   19.994    0.000
+##    Std.lv  Std.all
+##                   
+##     0.155    0.155
+##     0.173    0.190
+##                   
+##     8.781    0.302
+##     0.054    0.002
+##    13.462    0.507
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   ReadSC1 ~~                                                            
-##     MathSC1          -0.308    0.057   -5.391    0.000   -0.308   -0.173
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   ReadSC1 ~~                                          
+##     MathSC1          -0.308    0.057   -5.391    0.000
+##    Std.lv  Std.all
+##                   
+##    -0.308   -0.173
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##     ReadSC1           1.621    0.073   22.361    0.000    1.621    1.000
-##     MathSC1           1.950    0.087   22.361    0.000    1.950    1.000
-##    .Goals2            1.546    0.069   22.361    0.000    1.546    0.950
-##    .SATmath         826.971   36.983   22.361    0.000  826.971    0.602</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     ReadSC1           1.621    0.073   22.361    0.000
+##     MathSC1           1.950    0.087   22.361    0.000
+##    .Goals2            1.546    0.069   22.361    0.000
+##    .SATmath         826.971   36.983   22.361    0.000
+##    Std.lv  Std.all
+##     1.621    1.000
+##     1.950    1.000
+##     1.546    0.950
+##   826.971    0.602</code></pre>
 <hr />
 </div>
 </div>
@@ -607,8 +624,8 @@ in the column labeled “Std.all”.</p>
 <h2>Example 2</h2>
 <p>In the second example, there are 3 measured variables of interest:
 ReadSC1, MathSC1, and SATmath.</p>
-<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-2814b1cfc5f24ab2f648" style="width:30%;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-2814b1cfc5f24ab2f648">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n ReadSC1; MathSC1; SATmath \n node [shape = oval] \n  \n \n edge [ color = grey ] \n ReadSC1->MathSC1 MathSC1->SATmath  \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-06500d5dab4ec2311814" style="width:30%;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-06500d5dab4ec2311814">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n ReadSC1; MathSC1; SATmath \n node [shape = oval] \n  \n \n edge [ color = grey ] \n ReadSC1->MathSC1 MathSC1->SATmath  \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <div id="import-the-data-1" class="section level3">
 <h3>Import the data</h3>
 <p>In this example, our data is still a correlation matrix. Similarly,
@@ -668,7 +685,7 @@ parameter estimates, you can use the optional argument
 <code>standardized = TRUE</code>. The standardized solutions are listed
 in the column labeled “Std.all”.</p>
 <pre class="r"><code>summary(mvpa.fit.2, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 1 iteration
+<pre><code>## lavaan 0.6-19 ended normally after 1 iteration
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -721,16 +738,24 @@ in the column labeled “Std.all”.</p>
 ##   Information saturated (h1) model          Structured
 ## 
 ## Regressions:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   MathSC1 ~                                                             
-##     ReadSC1          -0.190    0.034   -5.554    0.000   -0.190   -0.173
-##   SATmath ~                                                             
-##     MathSC1          14.760    0.698   21.153    0.000   14.760    0.556
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   MathSC1 ~                                           
+##     ReadSC1          -0.190    0.034   -5.554    0.000
+##   SATmath ~                                           
+##     MathSC1          14.760    0.698   21.153    0.000
+##    Std.lv  Std.all
+##                   
+##    -0.190   -0.173
+##                   
+##    14.760    0.556
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .MathSC1           1.891    0.085   22.361    0.000    1.891    0.970
-##    .SATmath         949.296   42.454   22.361    0.000  949.296    0.691</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .MathSC1           1.891    0.085   22.361    0.000
+##    .SATmath         949.296   42.454   22.361    0.000
+##    Std.lv  Std.all
+##     1.891    0.970
+##   949.296    0.691</code></pre>
 <div class="tocify-extend-page" data-unique="tocify-extend-page"
 style="height: 0;">
 
@@ -739,7 +764,7 @@ style="height: 0;">
 </div>
 
 <hr>
-© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2025 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

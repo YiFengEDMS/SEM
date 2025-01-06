@@ -13,7 +13,7 @@
 
 <title>Latent Interaction Exercise</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -375,7 +375,7 @@ motive ~ expect + value + expval
 
 int.fit2 &lt;- sem(int.model2, int.data2, estimator = &quot;MLM&quot;)
 summary(int.fit2, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 258 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 258 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -440,60 +440,105 @@ summary(int.fit2, fit.measures = T, standardized = T)</code></pre>
 ##   Information saturated (h1) model          Structured
 ## 
 ## Latent Variables:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   expect =~                                                             
-##     expect1c          1.000                               8.526    0.833
-##     expect2c          0.885    0.135    6.548    0.000    7.542    0.726
-##   value =~                                                              
-##     value1c           1.000                              10.250    1.010
-##     value2c           0.467    0.195    2.391    0.017    4.791    0.466
-##   expval =~                                                             
-##     expval1c          1.000                               6.364    0.608
-##     expval2c          0.983    0.418    2.355    0.019    6.258    0.555
-##   motive =~                                                             
-##     motive1c          1.000                               6.413    0.619
-##     motive2c          1.078    0.199    5.421    0.000    6.916    0.678
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   expect =~                                           
+##     expect1c          1.000                           
+##     expect2c          0.885    0.135    6.548    0.000
+##   value =~                                            
+##     value1c           1.000                           
+##     value2c           0.467    0.195    2.391    0.017
+##   expval =~                                           
+##     expval1c          1.000                           
+##     expval2c          0.983    0.418    2.355    0.019
+##   motive =~                                           
+##     motive1c          1.000                           
+##     motive2c          1.078    0.199    5.421    0.000
+##    Std.lv  Std.all
+##                   
+##     8.526    0.833
+##     7.542    0.726
+##                   
+##    10.250    1.010
+##     4.791    0.466
+##                   
+##     6.364    0.608
+##     6.258    0.555
+##                   
+##     6.413    0.619
+##     6.916    0.678
 ## 
 ## Regressions:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   motive ~                                                              
-##     expect            0.462    0.099    4.659    0.000    0.614    0.614
-##     value             0.085    0.066    1.278    0.201    0.135    0.135
-##     expval            0.426    0.149    2.849    0.004    0.423    0.423
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   motive ~                                            
+##     expect            0.462    0.099    4.659    0.000
+##     value             0.085    0.066    1.278    0.201
+##     expval            0.426    0.149    2.849    0.004
+##    Std.lv  Std.all
+##                   
+##     0.614    0.614
+##     0.135    0.135
+##     0.423    0.423
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##  .expect1c ~~                                                           
-##    .expval1c         -6.473    8.834   -0.733    0.464   -6.473   -0.137
-##  .value1c ~~                                                            
-##    .expval1c          6.382    8.851    0.721    0.471    6.382    0.522
-##  .expect2c ~~                                                           
-##    .expval2c         -3.767   10.264   -0.367    0.714   -3.767   -0.056
-##  .value2c ~~                                                            
-##    .expval2c        -15.300   11.041   -1.386    0.166  -15.300   -0.179
-##   expect ~~                                                             
-##     value            25.003    6.875    3.637    0.000    0.286    0.286
-##     expval           -9.072    9.822   -0.924    0.356   -0.167   -0.167
-##   value ~~                                                              
-##     expval           -2.078    9.856   -0.211    0.833   -0.032   -0.032
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##  .expect1c ~~                                         
+##    .expval1c         -6.473    8.834   -0.733    0.464
+##  .value1c ~~                                          
+##    .expval1c          6.382    8.851    0.721    0.471
+##  .expect2c ~~                                         
+##    .expval2c         -3.767   10.264   -0.367    0.714
+##  .value2c ~~                                          
+##    .expval2c        -15.300   11.041   -1.386    0.166
+##   expect ~~                                           
+##     value            25.003    6.875    3.637    0.000
+##     expval           -9.072    9.822   -0.924    0.356
+##   value ~~                                            
+##     expval           -2.078    9.856   -0.211    0.833
+##    Std.lv  Std.all
+##                   
+##    -6.473   -0.137
+##                   
+##     6.382    0.522
+##                   
+##    -3.767   -0.056
+##                   
+##   -15.300   -0.179
+##                   
+##     0.286    0.286
+##    -0.167   -0.167
+##                   
+##    -0.032   -0.032
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .expect1c         32.144   10.273    3.129    0.002   32.144    0.307
-##    .expect2c         51.074    9.398    5.435    0.000   51.074    0.473
-##    .value1c          -2.161   42.273   -0.051    0.959   -2.161   -0.021
-##    .value2c          82.979   11.624    7.139    0.000   82.979    0.783
-##    .expval1c         69.083   16.114    4.287    0.000   69.083    0.630
-##    .expval2c         87.951   24.052    3.657    0.000   87.951    0.692
-##    .motive1c         66.317    8.685    7.636    0.000   66.317    0.617
-##    .motive2c         56.257    8.410    6.689    0.000   56.257    0.540
-##     expect           72.693   14.447    5.032    0.000    1.000    1.000
-##     value           105.058   42.734    2.458    0.014    1.000    1.000
-##     expval           40.504   16.546    2.448    0.014    1.000    1.000
-##    .motive           19.281    7.643    2.523    0.012    0.469    0.469</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .expect1c         32.144   10.273    3.129    0.002
+##    .expect2c         51.074    9.398    5.435    0.000
+##    .value1c          -2.161   42.273   -0.051    0.959
+##    .value2c          82.979   11.624    7.139    0.000
+##    .expval1c         69.083   16.114    4.287    0.000
+##    .expval2c         87.951   24.052    3.657    0.000
+##    .motive1c         66.317    8.685    7.636    0.000
+##    .motive2c         56.257    8.410    6.689    0.000
+##     expect           72.693   14.447    5.032    0.000
+##     value           105.058   42.734    2.458    0.014
+##     expval           40.504   16.546    2.448    0.014
+##    .motive           19.281    7.643    2.523    0.012
+##    Std.lv  Std.all
+##    32.144    0.307
+##    51.074    0.473
+##    -2.161   -0.021
+##    82.979    0.783
+##    69.083    0.630
+##    87.951    0.692
+##    66.317    0.617
+##    56.257    0.540
+##     1.000    1.000
+##     1.000    1.000
+##     1.000    1.000
+##     0.469    0.469</code></pre>
 
 <hr>
-© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2025 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

@@ -13,7 +13,7 @@
 
 <title>APIM Exercise</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -377,7 +377,7 @@ apim_mod &lt;- &#39;
 
 apim_fit &lt;- sem(apim_mod, data = dat)
 summary(apim_fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 36 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 36 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -429,39 +429,63 @@ summary(apim_fit, fit.measures = T, standardized = T)</code></pre>
 ##   Information saturated (h1) model          Structured
 ## 
 ## Regressions:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   momperc2 ~                                                            
-##     momperc1  (a1)    0.569    0.058    9.887    0.000    0.569    0.622
-##     kidach1  (p21)    0.223    0.083    2.700    0.007    0.223    0.170
-##   kidach2 ~                                                             
-##     kidach1   (a2)    0.550    0.054   10.097    0.000    0.550    0.602
-##     momperc1 (p12)    0.154    0.038    4.040    0.000    0.154    0.241
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   momperc2 ~                                          
+##     momperc1  (a1)    0.569    0.058    9.887    0.000
+##     kidach1  (p21)    0.223    0.083    2.700    0.007
+##   kidach2 ~                                           
+##     kidach1   (a2)    0.550    0.054   10.097    0.000
+##     momperc1 (p12)    0.154    0.038    4.040    0.000
+##    Std.lv  Std.all
+##                   
+##     0.569    0.622
+##     0.223    0.170
+##                   
+##     0.550    0.602
+##     0.154    0.241
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   momperc1 ~~                                                           
-##     kidach1          15.818    2.514    6.292    0.000   15.818    0.551
-##  .momperc2 ~~                                                           
-##    .kidach2           2.484    0.839    2.960    0.003    2.484    0.233
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   momperc1 ~~                                         
+##     kidach1          15.818    2.514    6.292    0.000
+##  .momperc2 ~~                                         
+##    .kidach2           2.484    0.839    2.960    0.003
+##    Std.lv  Std.all
+##                   
+##    15.818    0.551
+##                   
+##     2.484    0.233
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .momperc2         16.133    1.750    9.220    0.000   16.133    0.468
-##    .kidach2           7.038    0.763    9.220    0.000    7.038    0.420
-##     momperc1         41.176    4.466    9.220    0.000   41.176    1.000
-##     kidach1          20.018    2.171    9.220    0.000   20.018    1.000
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .momperc2         16.133    1.750    9.220    0.000
+##    .kidach2           7.038    0.763    9.220    0.000
+##     momperc1         41.176    4.466    9.220    0.000
+##     kidach1          20.018    2.171    9.220    0.000
+##    Std.lv  Std.all
+##    16.133    0.468
+##     7.038    0.420
+##    41.176    1.000
+##    20.018    1.000
 ## 
 ## Defined Parameters:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##     a1a2              0.019    0.084    0.220    0.826    0.019    0.020
-##     p12p21           -0.069    0.095   -0.728    0.467   -0.069    0.071
-##     a1p21             0.346    0.124    2.793    0.005    0.346    0.452
-##     a2p12             0.397    0.082    4.849    0.000    0.397    0.361
-##     a1p12             0.415    0.061    6.796    0.000    0.415    0.381
-##     a2p21             0.327    0.088    3.736    0.000    0.327    0.432</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     a1a2              0.019    0.084    0.220    0.826
+##     p12p21           -0.069    0.095   -0.728    0.467
+##     a1p21             0.346    0.124    2.793    0.005
+##     a2p12             0.397    0.082    4.849    0.000
+##     a1p12             0.415    0.061    6.796    0.000
+##     a2p21             0.327    0.088    3.736    0.000
+##    Std.lv  Std.all
+##     0.019    0.020
+##    -0.069    0.071
+##     0.346    0.452
+##     0.397    0.361
+##     0.415    0.381
+##     0.327    0.432</code></pre>
 
 <hr>
-© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2025 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

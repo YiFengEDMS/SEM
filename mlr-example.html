@@ -13,7 +13,7 @@
 
 <title>MLR Path Analysis</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -510,7 +510,7 @@ parameter estimates, you can use the optional argument
 in the column labled “Estimate”. The standardized solutions are listed
 in the column labeled “Std.all”.</p>
 <pre class="r"><code>summary(mlr.fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 16 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 16 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -562,21 +562,32 @@ in the column labeled “Std.all”.</p>
 ##   Information saturated (h1) model          Structured
 ## 
 ## Regressions:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   Goals2 ~                                                              
-##     ReadSC1           0.155    0.031    4.941    0.000    0.155    0.155
-##     MathSC1           0.173    0.029    6.056    0.000    0.173    0.190
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   Goals2 ~                                            
+##     ReadSC1           0.155    0.031    4.941    0.000
+##     MathSC1           0.173    0.029    6.056    0.000
+##    Std.lv  Std.all
+##                   
+##     0.155    0.155
+##     0.173    0.190
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   ReadSC1 ~~                                                            
-##     MathSC1          -0.308    0.057   -5.393    0.000   -0.308   -0.173
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   ReadSC1 ~~                                          
+##     MathSC1          -0.308    0.057   -5.393    0.000
+##    Std.lv  Std.all
+##                   
+##    -0.308   -0.173
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .Goals2            1.545    0.069   22.361    0.000    1.545    0.950
-##     ReadSC1           1.621    0.073   22.361    0.000    1.621    1.000
-##     MathSC1           1.949    0.087   22.361    0.000    1.949    1.000</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .Goals2            1.545    0.069   22.361    0.000
+##     ReadSC1           1.621    0.073   22.361    0.000
+##     MathSC1           1.949    0.087   22.361    0.000
+##    Std.lv  Std.all
+##     1.545    0.950
+##     1.621    1.000
+##     1.949    1.000</code></pre>
 <div class="tocify-extend-page" data-unique="tocify-extend-page"
 style="height: 0;">
 
@@ -584,7 +595,7 @@ style="height: 0;">
 </div>
 
 <hr>
-© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2025 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

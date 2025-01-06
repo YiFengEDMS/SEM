@@ -13,7 +13,7 @@
 
 <title>Latent Variable Moderation</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -473,27 +473,41 @@ str(int.data)</code></pre>
 ##  Mean   :   0.00   Mean   :   0.0004   Mean   :  -0.0004  
 ##  3rd Qu.:  82.55   3rd Qu.:  83.8590   3rd Qu.:  81.0510  
 ##  Max.   : 334.80   Max.   : 321.1090   Max.   : 364.0510  
-##      com1c               com2c               com3c          
-##  Min.   :-7.071000   Min.   :-4.983000   Min.   :-6.123000  
-##  1st Qu.:-1.071000   1st Qu.:-0.983000   1st Qu.:-1.123000  
-##  Median :-0.071000   Median : 0.017000   Median :-0.123000  
-##  Mean   : 0.000429   Mean   :-0.000143   Mean   :-0.000143  
-##  3rd Qu.: 0.929000   3rd Qu.: 1.017000   3rd Qu.: 1.627000  
-##  Max.   : 5.929000   Max.   : 6.017000   Max.   : 4.877000  
-##      sup1c                sup2c                sup3c           
-##  Min.   :-10.209000   Min.   :-12.266000   Min.   :-10.037000  
-##  1st Qu.: -2.209000   1st Qu.: -2.266000   1st Qu.: -3.037000  
-##  Median : -0.209000   Median : -0.266000   Median : -0.037000  
-##  Mean   : -0.000429   Mean   : -0.000286   Mean   :  0.000143  
-##  3rd Qu.:  2.791000   3rd Qu.:  2.734000   3rd Qu.:  2.963000  
-##  Max.   :  9.791000   Max.   :  9.734000   Max.   : 10.963000  
-##       cs1c                cs2c                cs3c          
-##  Min.   :-26.23000   Min.   :-32.32300   Min.   :-26.11100  
-##  1st Qu.: -3.04750   1st Qu.: -3.05500   1st Qu.: -3.57100  
-##  Median : -1.61600   Median : -1.33800   Median : -1.38650  
-##  Mean   :  0.00006   Mean   : -0.00003   Mean   :  0.00004  
-##  3rd Qu.:  3.42375   3rd Qu.:  2.44800   3rd Qu.:  2.82600  
-##  Max.   : 36.56100   Max.   : 59.76800   Max.   : 39.85500</code></pre>
+##      com1c               com2c          
+##  Min.   :-7.071000   Min.   :-4.983000  
+##  1st Qu.:-1.071000   1st Qu.:-0.983000  
+##  Median :-0.071000   Median : 0.017000  
+##  Mean   : 0.000429   Mean   :-0.000143  
+##  3rd Qu.: 0.929000   3rd Qu.: 1.017000  
+##  Max.   : 5.929000   Max.   : 6.017000  
+##      com3c               sup1c           
+##  Min.   :-6.123000   Min.   :-10.209000  
+##  1st Qu.:-1.123000   1st Qu.: -2.209000  
+##  Median :-0.123000   Median : -0.209000  
+##  Mean   :-0.000143   Mean   : -0.000429  
+##  3rd Qu.: 1.627000   3rd Qu.:  2.791000  
+##  Max.   : 4.877000   Max.   :  9.791000  
+##      sup2c                sup3c           
+##  Min.   :-12.266000   Min.   :-10.037000  
+##  1st Qu.: -2.266000   1st Qu.: -3.037000  
+##  Median : -0.266000   Median : -0.037000  
+##  Mean   : -0.000286   Mean   :  0.000143  
+##  3rd Qu.:  2.734000   3rd Qu.:  2.963000  
+##  Max.   :  9.734000   Max.   : 10.963000  
+##       cs1c                cs2c          
+##  Min.   :-26.23000   Min.   :-32.32300  
+##  1st Qu.: -3.04750   1st Qu.: -3.05500  
+##  Median : -1.61600   Median : -1.33800  
+##  Mean   :  0.00006   Mean   : -0.00003  
+##  3rd Qu.:  3.42375   3rd Qu.:  2.44800  
+##  Max.   : 36.56100   Max.   : 59.76800  
+##       cs3c          
+##  Min.   :-26.11100  
+##  1st Qu.: -3.57100  
+##  Median : -1.38650  
+##  Mean   :  0.00004  
+##  3rd Qu.:  2.82600  
+##  Max.   : 39.85500</code></pre>
 <p>If you have raw data, you can easily follow the rules discussed in
 class to create the centered variables in R. Or you could make use of
 the <code>indProd</code> function within the <code>semTools</code>
@@ -512,20 +526,27 @@ summary(int.data2)</code></pre>
 ##  Mean   :   0.00   Mean   :   0.0004   Mean   :  -0.0004  
 ##  3rd Qu.:  82.55   3rd Qu.:  83.8590   3rd Qu.:  81.0510  
 ##  Max.   : 334.80   Max.   : 321.1090   Max.   : 364.0510  
-##      com1c               com2c               com3c          
-##  Min.   :-7.071000   Min.   :-4.983000   Min.   :-6.123000  
-##  1st Qu.:-1.071000   1st Qu.:-0.983000   1st Qu.:-1.123000  
-##  Median :-0.071000   Median : 0.017000   Median :-0.123000  
-##  Mean   : 0.000429   Mean   :-0.000143   Mean   :-0.000143  
-##  3rd Qu.: 0.929000   3rd Qu.: 1.017000   3rd Qu.: 1.627000  
-##  Max.   : 5.929000   Max.   : 6.017000   Max.   : 4.877000  
-##      sup1c                sup2c                sup3c           
-##  Min.   :-10.209000   Min.   :-12.266000   Min.   :-10.037000  
-##  1st Qu.: -2.209000   1st Qu.: -2.266000   1st Qu.: -3.037000  
-##  Median : -0.209000   Median : -0.266000   Median : -0.037000  
-##  Mean   : -0.000429   Mean   : -0.000286   Mean   :  0.000143  
-##  3rd Qu.:  2.791000   3rd Qu.:  2.734000   3rd Qu.:  2.963000  
-##  Max.   :  9.791000   Max.   :  9.734000   Max.   : 10.963000  
+##      com1c               com2c          
+##  Min.   :-7.071000   Min.   :-4.983000  
+##  1st Qu.:-1.071000   1st Qu.:-0.983000  
+##  Median :-0.071000   Median : 0.017000  
+##  Mean   : 0.000429   Mean   :-0.000143  
+##  3rd Qu.: 0.929000   3rd Qu.: 1.017000  
+##  Max.   : 5.929000   Max.   : 6.017000  
+##      com3c               sup1c           
+##  Min.   :-6.123000   Min.   :-10.209000  
+##  1st Qu.:-1.123000   1st Qu.: -2.209000  
+##  Median :-0.123000   Median : -0.209000  
+##  Mean   :-0.000143   Mean   : -0.000429  
+##  3rd Qu.: 1.627000   3rd Qu.:  2.791000  
+##  Max.   : 4.877000   Max.   :  9.791000  
+##      sup2c                sup3c           
+##  Min.   :-12.266000   Min.   :-10.037000  
+##  1st Qu.: -2.266000   1st Qu.: -3.037000  
+##  Median : -0.266000   Median : -0.037000  
+##  Mean   : -0.000286   Mean   :  0.000143  
+##  3rd Qu.:  2.734000   3rd Qu.:  2.963000  
+##  Max.   :  9.734000   Max.   : 10.963000  
 ##   com1c.sup1c       com2c.sup2c       com3c.sup3c     
 ##  Min.   :-26.230   Min.   :-32.323   Min.   :-26.111  
 ##  1st Qu.: -3.047   1st Qu.: -3.055   1st Qu.: -3.571  
@@ -560,7 +581,7 @@ achieve ~ commit + support + comsup
 
 int.fit &lt;- sem(int.model, int.data, estimator = &quot;MLM&quot;)  # request robust standard errors
 summary(int.fit, fit.measures = T, standardized = F)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 262 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 262 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -729,7 +750,7 @@ style="height: 0;">
 </div>
 
 <hr>
-© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2025 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

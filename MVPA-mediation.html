@@ -13,7 +13,7 @@
 
 <title>MVPA-Mediation Example</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -406,7 +406,6 @@ summary(mediation.fit, fit.measures = T, standardized = F)</code></pre>
 ## Loglikelihood and Information Criteria:
 ## 
 ##   Loglikelihood user model (H0)              -8059.340
-##   Loglikelihood unrestricted model (H1)      -8059.340
 ##                                                       
 ##   Akaike (AIC)                               16136.680
 ##   Bayesian (BIC)                             16180.849
@@ -485,7 +484,6 @@ summary(mediation.fit, fit.measures = T, standardized = F)</code></pre>
 ## Loglikelihood and Information Criteria:
 ## 
 ##   Loglikelihood user model (H0)              -8059.340
-##   Loglikelihood unrestricted model (H1)      -8059.340
 ##                                                       
 ##   Akaike (AIC)                               16136.680
 ##   Bayesian (BIC)                             16180.849
@@ -510,39 +508,59 @@ summary(mediation.fit, fit.measures = T, standardized = F)</code></pre>
 ##   Number of successful bootstrap draws            1000
 ## 
 ## Regressions:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   V3 ~                                                                  
-##     V1         (a)   -0.158    0.029   -5.531    0.000   -0.158   -0.173
-##   V2 ~                                                                  
-##     V1         (b)    0.149    0.027    5.478    0.000    0.149    0.163
-##   V4 ~                                                                  
-##     V1         (c)   13.457    0.666   20.203    0.000   13.457    0.507
-##     V2         (d)    8.804    0.727   12.106    0.000    8.804    0.303
-##     V3         (e)    0.046    0.718    0.065    0.948    0.046    0.002
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   V3 ~                                                
+##     V1         (a)   -0.158    0.029   -5.531    0.000
+##   V2 ~                                                
+##     V1         (b)    0.149    0.027    5.478    0.000
+##   V4 ~                                                
+##     V1         (c)   13.457    0.666   20.203    0.000
+##     V2         (d)    8.804    0.727   12.106    0.000
+##     V3         (e)    0.046    0.718    0.065    0.948
+##    Std.lv  Std.all
+##                   
+##    -0.158   -0.173
+##                   
+##     0.149    0.163
+##                   
+##    13.457    0.507
+##     8.804    0.303
+##     0.046    0.002
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##  .V3 ~~                                                                 
-##    .V2                0.244    0.049    4.998    0.000    0.244    0.155
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##  .V3 ~~                                               
+##    .V2                0.244    0.049    4.998    0.000
+##    Std.lv  Std.all
+##                   
+##     0.244    0.155
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .V3                1.573    0.059   26.629    0.000    1.573    0.970
-##    .V2                1.583    0.058   27.135    0.000    1.583    0.974
-##    .V4              826.683   35.926   23.010    0.000  826.683    0.602
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .V3                1.573    0.059   26.629    0.000
+##    .V2                1.583    0.058   27.135    0.000
+##    .V4              826.683   35.926   23.010    0.000
+##    Std.lv  Std.all
+##     1.573    0.970
+##     1.583    0.974
+##   826.683    0.602
 ## 
 ## Defined Parameters:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##     ae               -0.007    0.116   -0.063    0.950   -0.007   -0.000
-##     bd                1.308    0.262    4.995    0.000    1.308    0.049
-##     t                14.758    0.685   21.554    0.000   14.758    0.556</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     ae               -0.007    0.116   -0.063    0.950
+##     bd                1.308    0.262    4.995    0.000
+##     t                14.758    0.685   21.554    0.000
+##    Std.lv  Std.all
+##    -0.007   -0.000
+##     1.308    0.049
+##    14.758    0.556</code></pre>
 <div class="tocify-extend-page" data-unique="tocify-extend-page"
 style="height: 0;">
 
 </div>
 
 <hr>
-© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2025 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

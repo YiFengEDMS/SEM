@@ -13,7 +13,7 @@
 
 <title>Repeated Measure Means Exercise</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -390,7 +390,7 @@ english3 ~ NA*1
 
 repeat.fit &lt;- sem(repeat.model, data = repeat.data)
 summary(repeat.fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 93 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 93 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -444,51 +444,87 @@ summary(repeat.fit, fit.measures = T, standardized = T)</code></pre>
 ##   Information saturated (h1) model          Structured
 ## 
 ## Latent Variables:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   english1 =~                                                           
-##     read1             1.000                               4.722    0.675
-##     speak1     (b)    0.419    0.055    7.639    0.000    1.978    0.666
-##     write1     (c)    0.941    0.117    8.044    0.000    4.445    1.050
-##   english3 =~                                                           
-##     read3             1.000                               4.573    0.641
-##     speak3     (b)    0.419    0.055    7.639    0.000    1.916    0.632
-##     write3     (c)    0.941    0.117    8.044    0.000    4.304    1.043
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   english1 =~                                         
+##     read1             1.000                           
+##     speak1     (b)    0.419    0.055    7.639    0.000
+##     write1     (c)    0.941    0.117    8.044    0.000
+##   english3 =~                                         
+##     read3             1.000                           
+##     speak3     (b)    0.419    0.055    7.639    0.000
+##     write3     (c)    0.941    0.117    8.044    0.000
+##    Std.lv  Std.all
+##                   
+##     4.722    0.675
+##     1.978    0.666
+##     4.445    1.050
+##                   
+##     4.573    0.641
+##     1.916    0.632
+##     4.304    1.043
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##  .read1 ~~                                                              
-##    .read3            12.787    3.716    3.441    0.001   12.787    0.452
-##  .speak1 ~~                                                             
-##    .speak3            2.971    0.704    4.218    0.000    2.971    0.571
-##  .write1 ~~                                                             
-##    .write3           -4.164    1.577   -2.641    0.008   -4.164   -2.516
-##   english1 ~~                                                           
-##     english3         20.379    5.301    3.844    0.000    0.944    0.944
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##  .read1 ~~                                            
+##    .read3            12.787    3.716    3.441    0.001
+##  .speak1 ~~                                           
+##    .speak3            2.971    0.704    4.218    0.000
+##  .write1 ~~                                           
+##    .write3           -4.164    1.577   -2.641    0.008
+##   english1 ~~                                         
+##     english3         20.379    5.301    3.844    0.000
+##    Std.lv  Std.all
+##                   
+##    12.787    0.452
+##                   
+##     2.971    0.571
+##                   
+##    -4.164   -2.516
+##                   
+##     0.944    0.944
 ## 
 ## Intercepts:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .read1      (d)   16.290    0.719   22.655    0.000   16.290    2.328
-##    .read3      (d)   16.290    0.719   22.655    0.000   16.290    2.282
-##    .speak1     (f)   17.674    0.310   57.029    0.000   17.674    5.953
-##    .speak3     (f)   17.674    0.310   57.029    0.000   17.674    5.828
-##    .write1     (g)   18.039    0.454   39.774    0.000   18.039    4.261
-##    .write3     (g)   18.039    0.454   39.774    0.000   18.039    4.370
-##     english1          0.000                               0.000    0.000
-##     english3          2.269    0.357    6.356    0.000    0.496    0.496
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .read1      (d)   16.290    0.719   22.655    0.000
+##    .read3      (d)   16.290    0.719   22.655    0.000
+##    .speak1     (f)   17.674    0.310   57.029    0.000
+##    .speak3     (f)   17.674    0.310   57.029    0.000
+##    .write1     (g)   18.039    0.454   39.774    0.000
+##    .write3     (g)   18.039    0.454   39.774    0.000
+##     english1          0.000                           
+##     english3          2.269    0.357    6.356    0.000
+##    Std.lv  Std.all
+##    16.290    2.328
+##    16.290    2.282
+##    17.674    5.953
+##    17.674    5.828
+##    18.039    4.261
+##    18.039    4.370
+##     0.000    0.000
+##     0.496    0.496
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .read1            26.669    4.327    6.163    0.000   26.669    0.545
-##    .speak1            4.899    0.798    6.141    0.000    4.899    0.556
-##    .write1           -1.837    1.817   -1.011    0.312   -1.837   -0.102
-##    .read3            30.035    4.708    6.380    0.000   30.035    0.590
-##    .speak3            5.525    0.868    6.362    0.000    5.525    0.601
-##    .write3           -1.491    1.775   -0.840    0.401   -1.491   -0.088
-##     english1         22.296    5.779    3.858    0.000    1.000    1.000
-##     english3         20.909    5.475    3.819    0.000    1.000    1.000</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .read1            26.669    4.327    6.163    0.000
+##    .speak1            4.899    0.798    6.141    0.000
+##    .write1           -1.837    1.817   -1.011    0.312
+##    .read3            30.035    4.708    6.380    0.000
+##    .speak3            5.525    0.868    6.362    0.000
+##    .write3           -1.491    1.775   -0.840    0.401
+##     english1         22.296    5.779    3.858    0.000
+##     english3         20.909    5.475    3.819    0.000
+##    Std.lv  Std.all
+##    26.669    0.545
+##     4.899    0.556
+##    -1.837   -0.102
+##    30.035    0.590
+##     5.525    0.601
+##    -1.491   -0.088
+##     1.000    1.000
+##     1.000    1.000</code></pre>
 
 <hr>
-© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2025 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

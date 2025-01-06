@@ -13,7 +13,7 @@
 
 <title>Power Analysis Exercise</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -482,14 +482,23 @@ V4 ~ 0*1
 ## [1] &quot;lavaan&quot;
 ## ========= Fit Indices Cutoffs ============
 ##            Alpha
-## Fit Indices      0.1     0.05     0.01    0.001     Mean     SD
-##       chisq    9.116   11.144   14.342   18.761    4.916  3.108
-##       aic   1218.903 1229.157 1248.090 1268.953 1176.910 32.507
-##       bic   1244.711 1254.965 1273.898 1294.760 1202.717 32.507
-##       rmsea    0.080    0.097    0.120    0.146    0.024  0.035
-##       cfi      0.988    0.983    0.973    0.956    0.997  0.006
-##       tli      0.986    0.980    0.967    0.947    1.000  0.011
-##       srmr     0.052    0.060    0.073    0.086    0.034  0.014
+## Fit Indices      0.1     0.05     0.01    0.001     Mean
+##       chisq    9.116   11.144   14.342   18.761    4.916
+##       aic   1218.903 1229.157 1248.090 1268.953 1176.910
+##       bic   1244.711 1254.965 1273.898 1294.760 1202.717
+##       rmsea    0.080    0.097    0.120    0.146    0.024
+##       cfi      0.988    0.983    0.973    0.956    0.997
+##       tli      0.986    0.980    0.967    0.947    1.000
+##       srmr     0.052    0.060    0.073    0.086    0.034
+##            Alpha
+## Fit Indices     SD
+##       chisq  3.108
+##       aic   32.507
+##       bic   32.507
+##       rmsea  0.035
+##       cfi    0.006
+##       tli    0.011
+##       srmr   0.014
 ## ========= Parameter Estimates and Standard Errors ============
 ##                Estimate Average Estimate SD Average SE
 ## INTERC~~INTERC            0.985       0.152      0.147
@@ -501,26 +510,36 @@ V4 ~ 0*1
 ## V2~~V2                    0.251       0.043      0.043
 ## V3~~V3                    0.249       0.042      0.042
 ## V4~~V4                    0.253       0.066      0.063
-##                Power (Not equal 0) Std Est Std Est SD Std Ave SE
-## INTERC~~INTERC               1.000   1.000      0.000      0.000
-## SLOPE~~SLOPE                 0.817   1.000      0.000      0.000
-## INTERC~~SLOPE                0.833  -0.500      0.119      0.122
-## INTERC~1                     1.000   5.083      0.416      0.395
-## SLOPE~1                      1.000   2.677      0.664      0.654
-## V1~~V1                       0.978   0.203      0.057      0.054
-## V2~~V2                       1.000   0.234      0.040      0.039
-## V3~~V3                       1.000   0.251      0.041      0.041
-## V4~~V4                       0.990   0.253      0.063      0.062
-##                Average Param Average Bias Coverage
-## INTERC~~INTERC          1.00       -0.015    0.939
-## SLOPE~~SLOPE            0.04        0.000    0.950
-## INTERC~~SLOPE          -0.10        0.001    0.939
-## INTERC~1                5.00       -0.002    0.932
-## SLOPE~1                 0.50        0.000    0.948
-## V1~~V1                  0.25       -0.001    0.943
-## V2~~V2                  0.25        0.001    0.955
-## V3~~V3                  0.25       -0.001    0.940
-## V4~~V4                  0.25        0.003    0.943
+##                Power (Not equal 0) Std Est Std Est SD
+## INTERC~~INTERC               1.000   1.000      0.000
+## SLOPE~~SLOPE                 0.817   1.000      0.000
+## INTERC~~SLOPE                0.833  -0.500      0.119
+## INTERC~1                     1.000   5.083      0.416
+## SLOPE~1                      1.000   2.677      0.664
+## V1~~V1                       0.978   0.203      0.057
+## V2~~V2                       1.000   0.234      0.040
+## V3~~V3                       1.000   0.251      0.041
+## V4~~V4                       0.990   0.253      0.063
+##                Std Ave SE Average Param Average Bias
+## INTERC~~INTERC      0.000          1.00       -0.015
+## SLOPE~~SLOPE        0.000          0.04        0.000
+## INTERC~~SLOPE       0.122         -0.10        0.001
+## INTERC~1            0.395          5.00       -0.002
+## SLOPE~1             0.654          0.50        0.000
+## V1~~V1              0.054          0.25       -0.001
+## V2~~V2              0.039          0.25        0.001
+## V3~~V3              0.041          0.25       -0.001
+## V4~~V4              0.062          0.25        0.003
+##                Coverage
+## INTERC~~INTERC    0.939
+## SLOPE~~SLOPE      0.950
+## INTERC~~SLOPE     0.939
+## INTERC~1          0.932
+## SLOPE~1           0.948
+## V1~~V1            0.943
+## V2~~V2            0.955
+## V3~~V3            0.940
+## V4~~V4            0.943
 ## ========= Correlation between Fit Indices ============
 ##        chisq    aic    bic  rmsea    cfi    tli   srmr
 ## chisq  1.000  0.077  0.077  0.946 -0.913 -0.993  0.788
@@ -545,7 +564,7 @@ style="height: 0;">
 </div>
 
 <hr>
-© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2025 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

@@ -13,7 +13,7 @@
 
 <title>Latent Path Analysis Exercise</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -392,7 +392,7 @@ SATIS ~ ACHIEVE + VERBAL + PERFORM
 
 lv.pa.fit &lt;- sem(lv.pa.model, sample.cov = covmat, sample.nobs = 122)
 summary(lv.pa.fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 84 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 84 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -445,56 +445,97 @@ summary(lv.pa.fit, fit.measures = T, standardized = T)</code></pre>
 ##   Information saturated (h1) model          Structured
 ## 
 ## Latent Variables:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   PERFORM =~                                                            
-##     Per1              1.000                               2.081    1.000
-##   ACHIEVE =~                                                            
-##     Mot1              1.000                               1.105    0.569
-##     Mot2              1.169    0.336    3.484    0.000    1.292    0.630
-##   SATIS =~                                                              
-##     JS1               1.000                               2.704    0.787
-##     JS2               0.834    0.134    6.221    0.000    2.254    0.801
-##   ESTEEM =~                                                             
-##     SE1               1.000                               1.648    0.766
-##     SE2               0.861    0.137    6.283    0.000    1.419    0.692
-##   VERBAL =~                                                             
-##     VI1               1.000                               3.635    1.000
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   PERFORM =~                                          
+##     Per1              1.000                           
+##   ACHIEVE =~                                          
+##     Mot1              1.000                           
+##     Mot2              1.169    0.336    3.484    0.000
+##   SATIS =~                                            
+##     JS1               1.000                           
+##     JS2               0.834    0.134    6.221    0.000
+##   ESTEEM =~                                           
+##     SE1               1.000                           
+##     SE2               0.861    0.137    6.283    0.000
+##   VERBAL =~                                           
+##     VI1               1.000                           
+##    Std.lv  Std.all
+##                   
+##     2.081    1.000
+##                   
+##     1.105    0.569
+##     1.292    0.630
+##                   
+##     2.704    0.787
+##     2.254    0.801
+##                   
+##     1.648    0.766
+##     1.419    0.692
+##                   
+##     3.635    1.000
 ## 
 ## Regressions:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   PERFORM ~                                                             
-##     ESTEEM            0.922    0.144    6.425    0.000    0.730    0.730
-##   SATIS ~                                                               
-##     ACHIEVE           1.179    0.452    2.609    0.009    0.482    0.482
-##     VERBAL            0.175    0.085    2.065    0.039    0.235    0.235
-##     PERFORM           0.583    0.138    4.223    0.000    0.449    0.449
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   PERFORM ~                                           
+##     ESTEEM            0.922    0.144    6.425    0.000
+##   SATIS ~                                             
+##     ACHIEVE           1.179    0.452    2.609    0.009
+##     VERBAL            0.175    0.085    2.065    0.039
+##     PERFORM           0.583    0.138    4.223    0.000
+##    Std.lv  Std.all
+##                   
+##     0.730    0.730
+##                   
+##     0.482    0.482
+##     0.235    0.235
+##     0.449    0.449
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   ACHIEVE ~~                                                            
-##     ESTEEM            0.741    0.294    2.516    0.012    0.407    0.407
-##     VERBAL           -1.614    0.585   -2.761    0.006   -0.402   -0.402
-##   ESTEEM ~~                                                             
-##     VERBAL           -2.297    0.675   -3.402    0.001   -0.383   -0.383
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   ACHIEVE ~~                                          
+##     ESTEEM            0.741    0.294    2.516    0.012
+##     VERBAL           -1.614    0.585   -2.761    0.006
+##   ESTEEM ~~                                           
+##     VERBAL           -2.297    0.675   -3.402    0.001
+##    Std.lv  Std.all
+##                   
+##     0.407    0.407
+##    -0.402   -0.402
+##                   
+##    -0.383   -0.383
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .Per1              0.000                               0.000    0.000
-##    .VI1               0.000                               0.000    0.000
-##    .Mot1              2.550    0.473    5.388    0.000    2.550    0.676
-##    .Mot2              2.540    0.568    4.472    0.000    2.540    0.604
-##    .JS1               4.480    1.161    3.860    0.000    4.480    0.380
-##    .JS2               2.834    0.790    3.588    0.000    2.834    0.358
-##    .SE1               1.913    0.419    4.564    0.000    1.913    0.413
-##    .SE2               2.196    0.383    5.730    0.000    2.196    0.522
-##    .PERFORM           2.023    0.391    5.170    0.000    0.467    0.467
-##     ACHIEVE           1.222    0.494    2.473    0.013    1.000    1.000
-##    .SATIS             3.893    1.190    3.273    0.001    0.533    0.533
-##     ESTEEM            2.715    0.638    4.256    0.000    1.000    1.000
-##     VERBAL           13.213    1.692    7.810    0.000    1.000    1.000</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .Per1              0.000                           
+##    .VI1               0.000                           
+##    .Mot1              2.550    0.473    5.388    0.000
+##    .Mot2              2.540    0.568    4.472    0.000
+##    .JS1               4.480    1.161    3.860    0.000
+##    .JS2               2.834    0.790    3.588    0.000
+##    .SE1               1.913    0.419    4.564    0.000
+##    .SE2               2.196    0.383    5.730    0.000
+##    .PERFORM           2.023    0.391    5.170    0.000
+##     ACHIEVE           1.222    0.494    2.473    0.013
+##    .SATIS             3.893    1.190    3.273    0.001
+##     ESTEEM            2.715    0.638    4.256    0.000
+##     VERBAL           13.213    1.692    7.810    0.000
+##    Std.lv  Std.all
+##     0.000    0.000
+##     0.000    0.000
+##     2.550    0.676
+##     2.540    0.604
+##     4.480    0.380
+##     2.834    0.358
+##     1.913    0.413
+##     2.196    0.522
+##     0.467    0.467
+##     1.000    1.000
+##     0.533    0.533
+##     1.000    1.000
+##     1.000    1.000</code></pre>
 
 <hr>
-© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2025 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

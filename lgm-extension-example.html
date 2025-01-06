@@ -13,7 +13,7 @@
 
 <title>Latent Growth Models Extensions</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -500,7 +500,7 @@ read3 ~ 1
 
 tdc.fit &lt;- growth(tdc.model, sample.cov = covmat, sample.mean = smeans, sample.nobs = 324)
 summary(tdc.fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 165 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 165 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -553,68 +553,116 @@ summary(tdc.fit, fit.measures = T, standardized = T)</code></pre>
 ##   Information saturated (h1) model          Structured
 ## 
 ## Latent Variables:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   interc =~                                                             
-##     write1            1.000                               4.180    0.919
-##     write2            1.000                               4.180    0.982
-##     write3            1.000                               4.180    0.987
-##   slope =~                                                              
-##     write1            0.000                                  NA       NA
-##     write2            1.000                                  NA       NA
-##     write3            2.000                                  NA       NA
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   interc =~                                           
+##     write1            1.000                           
+##     write2            1.000                           
+##     write3            1.000                           
+##   slope =~                                            
+##     write1            0.000                           
+##     write2            1.000                           
+##     write3            2.000                           
+##    Std.lv  Std.all
+##                   
+##     4.180    0.919
+##     4.180    0.982
+##     4.180    0.987
+##                   
+##        NA       NA
+##        NA       NA
+##        NA       NA
 ## 
 ## Regressions:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   write1 ~                                                              
-##     read1            -0.077    0.076   -1.012    0.312   -0.077   -0.110
-##   write2 ~                                                              
-##     read2             0.001    0.039    0.032    0.975    0.001    0.002
-##   write3 ~                                                              
-##     read3             0.080    0.071    1.135    0.256    0.080    0.116
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   write1 ~                                            
+##     read1            -0.077    0.076   -1.012    0.312
+##   write2 ~                                            
+##     read2             0.001    0.039    0.032    0.975
+##   write3 ~                                            
+##     read3             0.080    0.071    1.135    0.256
+##    Std.lv  Std.all
+##                   
+##    -0.077   -0.110
+##                   
+##     0.001    0.002
+##                   
+##     0.080    0.116
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   interc ~~                                                             
-##     read1            21.146    3.637    5.814    0.000    5.059    0.773
-##   slope ~~                                                              
-##     read1            -3.197    2.310   -1.384    0.166   -5.913   -0.904
-##   read1 ~~                                                              
-##     read2            31.961    2.887   11.072    0.000   31.961    0.780
-##     read3            29.574    2.762   10.709    0.000   29.574    0.740
-##   interc ~~                                                             
-##     read2            19.790    3.129    6.326    0.000    4.735    0.756
-##   slope ~~                                                              
-##     read2            -2.506    1.943   -1.289    0.197   -4.634   -0.740
-##   read2 ~~                                                              
-##     read3            28.707    2.657   10.803    0.000   28.707    0.750
-##   interc ~~                                                             
-##     read3            18.664    2.943    6.342    0.000    4.466    0.731
-##   slope ~~                                                              
-##     read3            -2.405    2.125   -1.132    0.258   -4.447   -0.728
-##   interc ~~                                                             
-##     slope            -1.477    1.567   -0.942    0.346   -0.653   -0.653
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   interc ~~                                           
+##     read1            21.146    3.637    5.814    0.000
+##   slope ~~                                            
+##     read1            -3.197    2.310   -1.384    0.166
+##   read1 ~~                                            
+##     read2            31.961    2.887   11.072    0.000
+##     read3            29.574    2.762   10.709    0.000
+##   interc ~~                                           
+##     read2            19.790    3.129    6.326    0.000
+##   slope ~~                                            
+##     read2            -2.506    1.943   -1.289    0.197
+##   read2 ~~                                            
+##     read3            28.707    2.657   10.803    0.000
+##   interc ~~                                           
+##     read3            18.664    2.943    6.342    0.000
+##   slope ~~                                            
+##     read3            -2.405    2.125   -1.132    0.258
+##   interc ~~                                           
+##     slope            -1.477    1.567   -0.942    0.346
+##    Std.lv  Std.all
+##                   
+##     5.059    0.773
+##                   
+##    -5.913   -0.904
+##                   
+##    31.961    0.780
+##    29.574    0.740
+##                   
+##     4.735    0.756
+##                   
+##    -4.634   -0.740
+##                   
+##    28.707    0.750
+##                   
+##     4.466    0.731
+##                   
+##    -4.447   -0.728
+##                   
+##    -0.653   -0.653
 ## 
 ## Intercepts:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##     read1            17.080    0.363   47.003    0.000   17.080    2.611
-##     read2            18.404    0.348   52.891    0.000   18.404    2.938
-##     read3            19.228    0.339   56.660    0.000   19.228    3.148
-##    .write1            0.000                               0.000    0.000
-##    .write2            0.000                               0.000    0.000
-##    .write3            0.000                               0.000    0.000
-##     interc           19.907    1.321   15.070    0.000    4.763    4.763
-##     slope            -0.588    1.115   -0.528    0.598       NA       NA
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     read1            17.080    0.363   47.003    0.000
+##     read2            18.404    0.348   52.891    0.000
+##     read3            19.228    0.339   56.660    0.000
+##     interc           19.907    1.321   15.070    0.000
+##     slope            -0.588    1.115   -0.528    0.598
+##    Std.lv  Std.all
+##    17.080    2.611
+##    18.404    2.938
+##    19.228    3.148
+##     4.763    4.763
+##        NA       NA
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .write1            6.218    1.046    5.945    0.000    6.218    0.300
-##    .write2            3.864    0.486    7.942    0.000    3.864    0.213
-##    .write3            5.061    0.913    5.541    0.000    5.061    0.282
-##     read1            42.784    3.361   12.728    0.000   42.784    1.000
-##     read2            39.229    3.082   12.728    0.000   39.229    1.000
-##     read3            37.312    2.932   12.728    0.000   37.312    1.000
-##     interc           17.469    3.596    4.858    0.000    1.000    1.000
-##     slope            -0.292    0.591   -0.495    0.621       NA       NA</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .write1            6.218    1.046    5.945    0.000
+##    .write2            3.864    0.486    7.942    0.000
+##    .write3            5.061    0.913    5.541    0.000
+##     read1            42.784    3.361   12.728    0.000
+##     read2            39.229    3.082   12.728    0.000
+##     read3            37.312    2.932   12.728    0.000
+##     interc           17.469    3.596    4.858    0.000
+##     slope            -0.292    0.591   -0.495    0.621
+##    Std.lv  Std.all
+##     6.218    0.300
+##     3.864    0.213
+##     5.061    0.282
+##    42.784    1.000
+##    39.229    1.000
+##    37.312    1.000
+##     1.000    1.000
+##        NA       NA</code></pre>
 <hr />
 </div>
 </div>
@@ -649,27 +697,34 @@ str(second.data)</code></pre>
 ##  $ write2: int  22 20 24 21 20 17 18 25 20 18 ...
 ##  $ write3: int  21 25 27 22 22 21 18 22 17 18 ...</code></pre>
 <pre class="r"><code>summary(second.data)</code></pre>
-<pre><code>##      read1           read2           read3           list1      
-##  Min.   : 0.00   Min.   : 3.00   Min.   : 4.00   Min.   : 1.00  
-##  1st Qu.:13.00   1st Qu.:14.00   1st Qu.:16.00   1st Qu.:13.00  
-##  Median :17.00   Median :19.00   Median :20.00   Median :17.00  
-##  Mean   :17.38   Mean   :18.55   Mean   :19.55   Mean   :16.56  
-##  3rd Qu.:22.00   3rd Qu.:23.00   3rd Qu.:23.00   3rd Qu.:21.00  
-##  Max.   :30.00   Max.   :30.00   Max.   :30.00   Max.   :30.00  
-##      list2           list3           speak1          speak2     
-##  Min.   : 1.00   Min.   : 1.00   Min.   : 0.00   Min.   : 5.00  
-##  1st Qu.:14.00   1st Qu.:15.00   1st Qu.:15.00   1st Qu.:17.00  
-##  Median :18.00   Median :19.00   Median :18.00   Median :18.00  
-##  Mean   :17.63   Mean   :18.58   Mean   :17.96   Mean   :18.73  
-##  3rd Qu.:21.75   3rd Qu.:23.00   3rd Qu.:20.00   3rd Qu.:22.00  
-##  Max.   :30.00   Max.   :30.00   Max.   :28.00   Max.   :27.00  
-##      speak3          write1          write2          write3     
-##  Min.   :10.00   Min.   : 7.00   Min.   : 8.00   Min.   : 7.00  
-##  1st Qu.:17.00   1st Qu.:15.00   1st Qu.:17.00   1st Qu.:18.00  
-##  Median :19.00   Median :20.00   Median :20.00   Median :20.50  
-##  Mean   :19.24   Mean   :18.59   Mean   :19.58   Mean   :20.11  
-##  3rd Qu.:22.00   3rd Qu.:21.00   3rd Qu.:22.00   3rd Qu.:22.00  
-##  Max.   :29.00   Max.   :30.00   Max.   :28.00   Max.   :29.00</code></pre>
+<pre><code>##      read1           read2           read3      
+##  Min.   : 0.00   Min.   : 3.00   Min.   : 4.00  
+##  1st Qu.:13.00   1st Qu.:14.00   1st Qu.:16.00  
+##  Median :17.00   Median :19.00   Median :20.00  
+##  Mean   :17.38   Mean   :18.55   Mean   :19.55  
+##  3rd Qu.:22.00   3rd Qu.:23.00   3rd Qu.:23.00  
+##  Max.   :30.00   Max.   :30.00   Max.   :30.00  
+##      list1           list2           list3      
+##  Min.   : 1.00   Min.   : 1.00   Min.   : 1.00  
+##  1st Qu.:13.00   1st Qu.:14.00   1st Qu.:15.00  
+##  Median :17.00   Median :18.00   Median :19.00  
+##  Mean   :16.56   Mean   :17.63   Mean   :18.58  
+##  3rd Qu.:21.00   3rd Qu.:21.75   3rd Qu.:23.00  
+##  Max.   :30.00   Max.   :30.00   Max.   :30.00  
+##      speak1          speak2          speak3     
+##  Min.   : 0.00   Min.   : 5.00   Min.   :10.00  
+##  1st Qu.:15.00   1st Qu.:17.00   1st Qu.:17.00  
+##  Median :18.00   Median :18.00   Median :19.00  
+##  Mean   :17.96   Mean   :18.73   Mean   :19.24  
+##  3rd Qu.:20.00   3rd Qu.:22.00   3rd Qu.:22.00  
+##  Max.   :28.00   Max.   :27.00   Max.   :29.00  
+##      write1          write2          write3     
+##  Min.   : 7.00   Min.   : 8.00   Min.   : 7.00  
+##  1st Qu.:15.00   1st Qu.:17.00   1st Qu.:18.00  
+##  Median :20.00   Median :20.00   Median :20.50  
+##  Mean   :18.59   Mean   :19.58   Mean   :20.11  
+##  3rd Qu.:21.00   3rd Qu.:22.00   3rd Qu.:22.00  
+##  Max.   :30.00   Max.   :28.00   Max.   :29.00</code></pre>
 </div>
 <div id="fit-the-model-1" class="section level3">
 <h3>Fit the model</h3>
@@ -739,7 +794,7 @@ write3 ~ f*1
 
 second.fit &lt;- sem(second.model, second.data)
 summary(second.fit, fit.measures = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 188 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 188 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -859,9 +914,6 @@ summary(second.fit, fit.measures = T)</code></pre>
 ##    .write1     (f)    3.934    1.310    3.002    0.003
 ##    .write2     (f)    3.934    1.310    3.002    0.003
 ##    .write3     (f)    3.934    1.310    3.002    0.003
-##    .english1          0.000                           
-##    .english2          0.000                           
-##    .english3          0.000                           
 ## 
 ## Variances:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)
@@ -900,7 +952,7 @@ colnames(cat.data) &lt;- c(&quot;y1&quot;, &quot;y2&quot;, &quot;y3&quot;, &quot
 cat.data &lt;- apply(cat.data, 2, ordered)
 
 str(cat.data)</code></pre>
-<pre><code>##  chr [1:369, 1:4] &quot;0&quot; &quot;0&quot; &quot;1&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; ...
+<pre><code>##  chr [1:369, 1:4] &quot;0&quot; &quot;0&quot; &quot;1&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; ...
 ##  - attr(*, &quot;dimnames&quot;)=List of 2
 ##   ..$ : NULL
 ##   ..$ : chr [1:4] &quot;y1&quot; &quot;y2&quot; &quot;y3&quot; &quot;y4&quot;</code></pre>
@@ -963,7 +1015,7 @@ y4 ~~ y4
 cat.fit &lt;- sem(cat.lgm, cat.data, ordered = c(&quot;y1&quot;,&quot;y2&quot;,&quot;y3&quot;,&quot;y4&quot;), parameterization = &quot;theta&quot;)
 
 summary(cat.fit, fit.measures = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 61 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 61 iterations
 ## 
 ##   Estimator                                       DWLS
 ##   Optimization method                           NLMINB
@@ -1016,6 +1068,7 @@ summary(cat.fit, fit.measures = T)</code></pre>
 ## 
 ## Parameter Estimates:
 ## 
+##   Parameterization                               Theta
 ##   Standard errors                           Robust.sem
 ##   Information                                 Expected
 ##   Information saturated (h1) model        Unstructured
@@ -1042,10 +1095,6 @@ summary(cat.fit, fit.measures = T)</code></pre>
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)
 ##     interc            0.000                           
 ##     slope             0.441    0.199    2.214    0.027
-##    .y1                0.000                           
-##    .y2                0.000                           
-##    .y3                0.000                           
-##    .y4                0.000                           
 ## 
 ## Thresholds:
 ##                    Estimate  Std.Err  z-value  P(&gt;|z|)
@@ -1108,21 +1157,21 @@ str(mix.data)</code></pre>
 ##   .. )
 ##  - attr(*, &quot;problems&quot;)=&lt;externalptr&gt;</code></pre>
 <pre class="r"><code>summary(mix.data)</code></pre>
-<pre><code>##     TALC1YR1        TALC1YR2        TALC1YR3         PROB5       
-##  Min.   :1.000   Min.   :1.000   Min.   :1.000   Min.   :0.0000  
-##  1st Qu.:2.000   1st Qu.:3.000   1st Qu.:5.000   1st Qu.:0.0000  
-##  Median :3.000   Median :5.000   Median :6.000   Median :0.0000  
-##  Mean   :3.665   Mean   :4.709   Mean   :5.524   Mean   :0.2124  
-##  3rd Qu.:5.000   3rd Qu.:6.000   3rd Qu.:7.000   3rd Qu.:0.0000  
-##  Max.   :8.000   Max.   :9.000   Max.   :9.000   Max.   :1.0000  
-##                  NA&#39;s   :26      NA&#39;s   :25                      
-##      TAGE1          TGENDER1     
-##  Min.   :11.00   Min.   :0.0000  
-##  1st Qu.:14.00   1st Qu.:0.0000  
-##  Median :16.00   Median :0.0000  
-##  Mean   :15.43   Mean   :0.4077  
-##  3rd Qu.:17.00   3rd Qu.:1.0000  
-##  Max.   :17.00   Max.   :1.0000  
+<pre><code>##     TALC1YR1        TALC1YR2        TALC1YR3    
+##  Min.   :1.000   Min.   :1.000   Min.   :1.000  
+##  1st Qu.:2.000   1st Qu.:3.000   1st Qu.:5.000  
+##  Median :3.000   Median :5.000   Median :6.000  
+##  Mean   :3.665   Mean   :4.709   Mean   :5.524  
+##  3rd Qu.:5.000   3rd Qu.:6.000   3rd Qu.:7.000  
+##  Max.   :8.000   Max.   :9.000   Max.   :9.000  
+##                  NA&#39;s   :26      NA&#39;s   :25     
+##      PROB5            TAGE1          TGENDER1     
+##  Min.   :0.0000   Min.   :11.00   Min.   :0.0000  
+##  1st Qu.:0.0000   1st Qu.:14.00   1st Qu.:0.0000  
+##  Median :0.0000   Median :16.00   Median :0.0000  
+##  Mean   :0.2124   Mean   :15.43   Mean   :0.4077  
+##  3rd Qu.:0.0000   3rd Qu.:17.00   3rd Qu.:1.0000  
+##  Max.   :1.0000   Max.   :17.00   Max.   :1.0000  
 ## </code></pre>
 </div>
 <div id="fit-the-model-3" class="section level3">
@@ -1195,9 +1244,6 @@ gmm &lt;- mxModel(&quot;Growth Mixture Model&quot;,
 # Run the model
 gmmFit &lt;- mxRun(gmm, suppressWarnings = TRUE)</code></pre>
 <pre><code>## Running Growth Mixture Model with 14 parameters</code></pre>
-<pre><code>## 
-MxComputeNumericDeriv 27/105
-                            </code></pre>
 <p>Check the results (note that the results may depend heavily on the
 starting value; so it is recommended to run the model with multiple
 starting values.)</p>
@@ -1205,57 +1251,64 @@ starting values.)</p>
 <pre><code>## Summary of Growth Mixture Model 
 ##  
 ## free parameters:
-##         name   matrix       row       col   Estimate  Std.Error A lbound
-## 1         p1    Props         1         1  0.6025157 0.08287281    0.001
-## 2         p2    Props         2         1  0.2998648 0.04972634    0.001
-## 3  residual1 Class1.S  TALC1YR1  TALC1YR1  0.6655948 0.20136582         
-## 4  residual2 Class1.S  TALC1YR2  TALC1YR2  2.3037195 0.17084577         
-## 5  residual3 Class1.S  TALC1YR3  TALC1YR3  0.1483959 0.16777658         
-## 6    var_int Class1.S intercept intercept  0.4316945 0.19734383         
-## 7     cov_is Class1.S intercept     slope -0.1584045 0.10385332         
-## 8    var_slp Class1.S     slope     slope  0.2429209 0.07891560         
-## 9  mean_int1 Class1.M         1 intercept  5.5799572 0.11475964         
-## 10 mean_slp1 Class1.M         1     slope  0.4316336 0.06457702         
-## 11 mean_int2 Class2.M         1 intercept  4.0081868 0.13200825         
-## 12 mean_slp2 Class2.M         1     slope -0.7183990 0.10298722         
-## 13 mean_int3 Class3.M         1 intercept  2.4392891 0.09080534         
-## 14 mean_slp3 Class3.M         1     slope  1.7049538 0.05997288         
-##    ubound
-## 1        
-## 2        
-## 3        
-## 4        
-## 5        
-## 6        
-## 7        
-## 8        
-## 9        
-## 10       
-## 11       
-## 12       
-## 13       
-## 14       
+##         name   matrix       row       col   Estimate
+## 1         p1    Props         1         1  0.6025157
+## 2         p2    Props         2         1  0.2998648
+## 3  residual1 Class1.S  TALC1YR1  TALC1YR1  0.6655948
+## 4  residual2 Class1.S  TALC1YR2  TALC1YR2  2.3037195
+## 5  residual3 Class1.S  TALC1YR3  TALC1YR3  0.1483959
+## 6    var_int Class1.S intercept intercept  0.4316945
+## 7     cov_is Class1.S intercept     slope -0.1584045
+## 8    var_slp Class1.S     slope     slope  0.2429209
+## 9  mean_int1 Class1.M         1 intercept  5.5799572
+## 10 mean_slp1 Class1.M         1     slope  0.4316336
+## 11 mean_int2 Class2.M         1 intercept  4.0081868
+## 12 mean_slp2 Class2.M         1     slope -0.7183990
+## 13 mean_int3 Class3.M         1 intercept  2.4392891
+## 14 mean_slp3 Class3.M         1     slope  1.7049538
+##     Std.Error A lbound ubound
+## 1  0.08287281    0.001       
+## 2  0.04972634    0.001       
+## 3  0.20136582                
+## 4  0.17084577                
+## 5  0.16777658                
+## 6  0.19734383                
+## 7  0.10385332                
+## 8  0.07891560                
+## 9  0.11475964                
+## 10 0.06457702                
+## 11 0.13200825                
+## 12 0.10298722                
+## 13 0.09080534                
+## 14 0.05997288                
 ## 
 ## Model Statistics: 
-##                |  Parameters  |  Degrees of Freedom  |  Fit (-2lnL units)
-##        Model:             14                   4027              4938.904
-##    Saturated:             NA                     NA                    NA
-## Independence:             NA                     NA                    NA
+##                |  Parameters  |  Degrees of Freedom
+##        Model:             14                   4027
+##    Saturated:             NA                     NA
+## Independence:             NA                     NA
+##                |  Fit (-2lnL units)
+##        Model:              4938.904
+##    Saturated:                    NA
+## Independence:                    NA
 ## Number of observations/statistics: 466/4041
 ## 
 ## Information Criteria: 
-##       |  df Penalty  |  Parameters Penalty  |  Sample-Size Adjusted
-## AIC:      -3115.096               4966.904                 4967.835
-## BIC:     -19803.732               5024.923                 4980.490
+##       |  df Penalty  |  Parameters Penalty
+## AIC:      -3115.096               4966.904
+## BIC:     -19803.732               5024.923
+##       |  Sample-Size Adjusted
+## AIC:                 4967.835
+## BIC:                 4980.490
 ## CFI: NA 
 ## TLI: 1   (also known as NNFI) 
 ## RMSEA:  0  [95% CI (NA, NA)]
 ## Prob(RMSEA &lt;= 0.05): NA
 ## To get additional fit indices, see help(mxRefModels)
-## timestamp: 2023-12-18 12:10:41 
-## Wall clock time: 0.462878 secs 
+## timestamp: 2025-01-06 15:20:05 
+## Wall clock time: 0.4770379 secs 
 ## optimizer:  SLSQP 
-## OpenMx version number: 2.21.8 
+## OpenMx version number: 2.21.13 
 ## Need help?  See help(mxSummary)</code></pre>
 <div class="tocify-extend-page" data-unique="tocify-extend-page"
 style="height: 0;">
@@ -1265,7 +1318,7 @@ style="height: 0;">
 </div>
 
 <hr>
-© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2025 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

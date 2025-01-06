@@ -13,7 +13,7 @@
 
 <title>Mediation Exercise</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -414,7 +414,6 @@ mediation.fit &lt;- sem(mediation.model, data = mediation.data, se = &quot;boots
 ## Loglikelihood and Information Criteria:
 ## 
 ##   Loglikelihood user model (H0)              -1101.180
-##   Loglikelihood unrestricted model (H1)      -1099.238
 ##                                                       
 ##   Akaike (AIC)                                2226.361
 ##   Bayesian (BIC)                              2258.657
@@ -439,44 +438,73 @@ mediation.fit &lt;- sem(mediation.model, data = mediation.data, se = &quot;boots
 ##   Number of successful bootstrap draws            1000
 ## 
 ## Regressions:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   burnout ~                                                             
-##     climate    (a)   -0.380    0.082   -4.630    0.000   -0.380   -0.409
-##     control    (b)    0.292    0.091    3.220    0.001    0.292    0.249
-##   attitude ~                                                            
-##     burnout    (c)    0.025    0.011    2.264    0.024    0.025    0.232
-##     climate    (d)    0.015    0.009    1.591    0.112    0.015    0.150
-##     control    (e)   -0.056    0.012   -4.683    0.000   -0.056   -0.443
-##   educout ~                                                             
-##     attitude   (f)    2.215    0.290    7.645    0.000    2.215    0.633
-##   psychout ~                                                            
-##     attitude   (g)    3.447    0.319   10.795    0.000    3.447    0.691
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   burnout ~                                           
+##     climate    (a)   -0.380    0.082   -4.630    0.000
+##     control    (b)    0.292    0.091    3.220    0.001
+##   attitude ~                                          
+##     burnout    (c)    0.025    0.011    2.264    0.024
+##     climate    (d)    0.015    0.009    1.591    0.112
+##     control    (e)   -0.056    0.012   -4.683    0.000
+##   educout ~                                           
+##     attitude   (f)    2.215    0.290    7.645    0.000
+##   psychout ~                                          
+##     attitude   (g)    3.447    0.319   10.795    0.000
+##    Std.lv  Std.all
+##                   
+##    -0.380   -0.409
+##     0.292    0.249
+##                   
+##     0.025    0.232
+##     0.015    0.150
+##    -0.056   -0.443
+##                   
+##     2.215    0.633
+##                   
+##     3.447    0.691
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##  .educout ~~                                                            
-##    .psychout          1.139    0.983    1.159    0.246    1.139    0.105
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##  .educout ~~                                          
+##    .psychout          1.139    0.983    1.159    0.246
+##    Std.lv  Std.all
+##                   
+##     1.139    0.105
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .burnout          67.858    8.124    8.353    0.000   67.858    0.719
-##    .attitude          0.886    0.106    8.395    0.000    0.886    0.799
-##    .educout           8.166    1.018    8.021    0.000    8.166    0.600
-##    .psychout         14.411    1.781    8.092    0.000   14.411    0.522
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .burnout          67.858    8.124    8.353    0.000
+##    .attitude          0.886    0.106    8.395    0.000
+##    .educout           8.166    1.018    8.021    0.000
+##    .psychout         14.411    1.781    8.092    0.000
+##    Std.lv  Std.all
+##    67.858    0.719
+##     0.886    0.799
+##     8.166    0.600
+##    14.411    0.522
 ## 
 ## Defined Parameters:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##     ac               -0.010    0.005   -2.021    0.043   -0.010   -0.095
-##     bc                0.007    0.004    1.753    0.080    0.007    0.058
-##     fd                0.033    0.022    1.522    0.128    0.033    0.095
-##     fe               -0.125    0.032   -3.893    0.000   -0.125   -0.281
-##     fc                0.056    0.026    2.116    0.034    0.056    0.147
-##     gd                0.052    0.033    1.572    0.116    0.052    0.103
-##     ge               -0.195    0.044   -4.449    0.000   -0.195   -0.307
-##     gc                0.087    0.037    2.345    0.019    0.087    0.160</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     ac               -0.010    0.005   -2.021    0.043
+##     bc                0.007    0.004    1.753    0.080
+##     fd                0.033    0.022    1.522    0.128
+##     fe               -0.125    0.032   -3.893    0.000
+##     fc                0.056    0.026    2.116    0.034
+##     gd                0.052    0.033    1.572    0.116
+##     ge               -0.195    0.044   -4.449    0.000
+##     gc                0.087    0.037    2.345    0.019
+##    Std.lv  Std.all
+##    -0.010   -0.095
+##     0.007    0.058
+##     0.033    0.095
+##    -0.125   -0.281
+##     0.056    0.147
+##     0.052    0.103
+##    -0.195   -0.307
+##     0.087    0.160</code></pre>
 
 <hr>
-© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2025 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

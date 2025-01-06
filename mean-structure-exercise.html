@@ -13,7 +13,7 @@
 
 <title>Structured Means Analysis Exercise</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -379,7 +379,7 @@ read3 ~ c(e,e)*1
 
 language.fit &lt;- sem(language.model, both.data, group = &quot;country&quot;)
 summary(language.fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 88 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 88 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -441,52 +441,82 @@ summary(language.fit, fit.measures = T, standardized = T)</code></pre>
 ## Group 1 [1]:
 ## 
 ## Latent Variables:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   read =~                                                               
-##     read1             1.000                               6.106    0.880
-##     read2      (a)    1.001    0.060   16.704    0.000    6.115    0.867
-##     read3      (b)    0.900    0.059   15.289    0.000    5.497    0.763
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   read =~                                             
+##     read1             1.000                           
+##     read2      (a)    1.001    0.060   16.704    0.000
+##     read3      (b)    0.900    0.059   15.289    0.000
+##    Std.lv  Std.all
+##                   
+##     6.106    0.880
+##     6.115    0.867
+##     5.497    0.763
 ## 
 ## Intercepts:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##     read              0.000                               0.000    0.000
-##    .read1      (c)   16.208    0.719   22.532    0.000   16.208    2.336
-##    .read2      (d)   17.335    0.722   24.002    0.000   17.335    2.456
-##    .read3      (e)   18.180    0.675   26.926    0.000   18.180    2.523
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     read              0.000                           
+##    .read1      (c)   16.208    0.719   22.532    0.000
+##    .read2      (d)   17.335    0.722   24.002    0.000
+##    .read3      (e)   18.180    0.675   26.926    0.000
+##    Std.lv  Std.all
+##     0.000    0.000
+##    16.208    2.336
+##    17.335    2.456
+##    18.180    2.523
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .read1            10.840    3.042    3.564    0.000   10.840    0.225
-##    .read2            12.410    3.188    3.892    0.000   12.410    0.249
-##    .read3            21.697    3.996    5.430    0.000   21.697    0.418
-##     read             37.287    6.849    5.444    0.000    1.000    1.000
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .read1            10.840    3.042    3.564    0.000
+##    .read2            12.410    3.188    3.892    0.000
+##    .read3            21.697    3.996    5.430    0.000
+##     read             37.287    6.849    5.444    0.000
+##    Std.lv  Std.all
+##    10.840    0.225
+##    12.410    0.249
+##    21.697    0.418
+##     1.000    1.000
 ## 
 ## 
 ## Group 2 [2]:
 ## 
 ## Latent Variables:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   read =~                                                               
-##     read1             1.000                               5.660    0.885
-##     read2      (a)    1.001    0.060   16.704    0.000    5.668    0.931
-##     read3      (b)    0.900    0.059   15.289    0.000    5.095    0.890
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   read =~                                             
+##     read1             1.000                           
+##     read2      (a)    1.001    0.060   16.704    0.000
+##     read3      (b)    0.900    0.059   15.289    0.000
+##    Std.lv  Std.all
+##                   
+##     5.660    0.885
+##     5.668    0.931
+##     5.095    0.890
 ## 
 ## Intercepts:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##     read              2.948    0.927    3.180    0.001    0.521    0.521
-##    .read1      (c)   16.208    0.719   22.532    0.000   16.208    2.535
-##    .read2      (d)   17.335    0.722   24.002    0.000   17.335    2.848
-##    .read3      (e)   18.180    0.675   26.926    0.000   18.180    3.174
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     read              2.948    0.927    3.180    0.001
+##    .read1      (c)   16.208    0.719   22.532    0.000
+##    .read2      (d)   17.335    0.722   24.002    0.000
+##    .read3      (e)   18.180    0.675   26.926    0.000
+##    Std.lv  Std.all
+##     0.521    0.521
+##    16.208    2.535
+##    17.335    2.848
+##    18.180    3.174
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .read1             8.844    1.787    4.949    0.000    8.844    0.216
-##    .read2             4.915    1.432    3.432    0.001    4.915    0.133
-##    .read3             6.837    1.418    4.822    0.000    6.837    0.208
-##     read             32.034    5.574    5.747    0.000    1.000    1.000</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .read1             8.844    1.787    4.949    0.000
+##    .read2             4.915    1.432    3.432    0.001
+##    .read3             6.837    1.418    4.822    0.000
+##     read             32.034    5.574    5.747    0.000
+##    Std.lv  Std.all
+##     8.844    0.216
+##     4.915    0.133
+##     6.837    0.208
+##     1.000    1.000</code></pre>
 
 <hr>
-© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2025 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

@@ -13,7 +13,7 @@
 
 <title>Growth Models with Predictor Exercise</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -381,7 +381,7 @@ total3 ~~ a*total3
 
 cond.fit &lt;- sem(cond.model, sample.cov = covmat, sample.nobs = 324)
 summary(cond.fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 78 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 78 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -435,38 +435,61 @@ summary(cond.fit, fit.measures = T, standardized = T)</code></pre>
 ##   Information saturated (h1) model          Structured
 ## 
 ## Latent Variables:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   final =~                                                              
-##     total1            1.000                              16.231    0.912
-##     total2            1.000                              16.231    0.936
-##     total3            1.000                              16.231    0.947
-##   slope =~                                                              
-##     total1           -2.000                              -4.262   -0.240
-##     total2           -1.000                              -2.131   -0.123
-##     total3            0.000                               0.000    0.000
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   final =~                                            
+##     total1            1.000                           
+##     total2            1.000                           
+##     total3            1.000                           
+##   slope =~                                            
+##     total1           -2.000                           
+##     total2           -1.000                           
+##     total3            0.000                           
+##    Std.lv  Std.all
+##                   
+##    16.231    0.912
+##    16.231    0.936
+##    16.231    0.947
+##                   
+##    -4.262   -0.240
+##    -2.131   -0.123
+##     0.000    0.000
 ## 
 ## Regressions:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   final ~                                                               
-##     gender            0.395    1.922    0.205    0.837    0.024    0.012
-##   slope ~                                                               
-##     gender            0.267    0.503    0.530    0.596    0.125    0.061
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   final ~                                             
+##     gender            0.395    1.922    0.205    0.837
+##   slope ~                                             
+##     gender            0.267    0.503    0.530    0.596
+##    Std.lv  Std.all
+##                   
+##     0.024    0.012
+##                   
+##     0.125    0.061
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##  .final ~~                                                              
-##    .slope            -1.138    4.438   -0.256    0.798   -0.033   -0.033
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##  .final ~~                                            
+##    .slope            -1.138    4.438   -0.256    0.798
+##    Std.lv  Std.all
+##                   
+##    -0.033   -0.033
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .total1     (a)   30.533    2.399   12.728    0.000   30.533    0.096
-##    .total2     (a)   30.533    2.399   12.728    0.000   30.533    0.102
-##    .total3     (a)   30.533    2.399   12.728    0.000   30.533    0.104
-##    .final           263.394   22.781   11.562    0.000    1.000    1.000
-##    .slope             4.523    1.964    2.304    0.021    0.996    0.996</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .total1     (a)   30.533    2.399   12.728    0.000
+##    .total2     (a)   30.533    2.399   12.728    0.000
+##    .total3     (a)   30.533    2.399   12.728    0.000
+##    .final           263.394   22.781   11.562    0.000
+##    .slope             4.523    1.964    2.304    0.021
+##    Std.lv  Std.all
+##    30.533    0.096
+##    30.533    0.102
+##    30.533    0.104
+##     1.000    1.000
+##     0.996    0.996</code></pre>
 
 <hr>
-© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2025 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

@@ -13,7 +13,7 @@
 
 <title>Latent Path Analysis Exercise-DEMO</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -392,7 +392,7 @@ SATIS ~ VERBAL + PERFORM
 
 lv.pa.fit &lt;- sem(lv.pa.model, sample.cov = covmat, sample.nobs = 122)
 summary(lv.pa.fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 65 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 65 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -445,46 +445,77 @@ summary(lv.pa.fit, fit.measures = T, standardized = T)</code></pre>
 ##   Information saturated (h1) model          Structured
 ## 
 ## Latent Variables:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   PERFORM =~                                                            
-##     Per1              1.000                               2.081    1.000
-##   SATIS =~                                                              
-##     JS1               1.000                               2.745    0.802
-##     JS2               0.799    0.151    5.280    0.000    2.194    0.783
-##   ESTEEM =~                                                             
-##     SE1               1.000                               1.639    0.762
-##     SE2               0.860    0.139    6.198    0.000    1.409    0.687
-##   VERBAL =~                                                             
-##     VI1               1.000                               3.635    1.000
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   PERFORM =~                                          
+##     Per1              1.000                           
+##   SATIS =~                                            
+##     JS1               1.000                           
+##     JS2               0.799    0.151    5.280    0.000
+##   ESTEEM =~                                           
+##     SE1               1.000                           
+##     SE2               0.860    0.139    6.198    0.000
+##   VERBAL =~                                           
+##     VI1               1.000                           
+##    Std.lv  Std.all
+##                   
+##     2.081    1.000
+##                   
+##     2.745    0.802
+##     2.194    0.783
+##                   
+##     1.639    0.762
+##     1.409    0.687
+##                   
+##     3.635    1.000
 ## 
 ## Regressions:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   PERFORM ~                                                             
-##     ESTEEM            0.937    0.147    6.358    0.000    0.738    0.738
-##   SATIS ~                                                               
-##     VERBAL            0.049    0.072    0.678    0.498    0.065    0.065
-##     PERFORM           0.706    0.141    5.017    0.000    0.535    0.535
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   PERFORM ~                                           
+##     ESTEEM            0.937    0.147    6.358    0.000
+##   SATIS ~                                             
+##     VERBAL            0.049    0.072    0.678    0.498
+##     PERFORM           0.706    0.141    5.017    0.000
+##    Std.lv  Std.all
+##                   
+##     0.738    0.738
+##                   
+##     0.065    0.065
+##     0.535    0.535
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   ESTEEM ~~                                                             
-##     VERBAL           -2.296    0.674   -3.408    0.001   -0.385   -0.385
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   ESTEEM ~~                                           
+##     VERBAL           -2.296    0.674   -3.408    0.001
+##    Std.lv  Std.all
+##                   
+##    -0.385   -0.385
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .Per1              0.000                               0.000    0.000
-##    .VI1               0.000                               0.000    0.000
-##    .JS1               4.170    1.390    2.999    0.003    4.170    0.356
-##    .JS2               3.040    0.908    3.348    0.001    3.040    0.387
-##    .SE1               1.941    0.425    4.565    0.000    1.941    0.419
-##    .SE2               2.222    0.387    5.746    0.000    2.222    0.528
-##    .PERFORM           1.974    0.396    4.985    0.000    0.456    0.456
-##    .SATIS             5.496    1.464    3.754    0.000    0.729    0.729
-##     ESTEEM            2.687    0.639    4.204    0.000    1.000    1.000
-##     VERBAL           13.213    1.692    7.810    0.000    1.000    1.000</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .Per1              0.000                           
+##    .VI1               0.000                           
+##    .JS1               4.170    1.390    2.999    0.003
+##    .JS2               3.040    0.908    3.348    0.001
+##    .SE1               1.941    0.425    4.565    0.000
+##    .SE2               2.222    0.387    5.746    0.000
+##    .PERFORM           1.974    0.396    4.985    0.000
+##    .SATIS             5.496    1.464    3.754    0.000
+##     ESTEEM            2.687    0.639    4.204    0.000
+##     VERBAL           13.213    1.692    7.810    0.000
+##    Std.lv  Std.all
+##     0.000    0.000
+##     0.000    0.000
+##     4.170    0.356
+##     3.040    0.387
+##     1.941    0.419
+##     2.222    0.528
+##     0.456    0.456
+##     0.729    0.729
+##     1.000    1.000
+##     1.000    1.000</code></pre>
 
 <hr>
-© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2025 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

@@ -13,7 +13,7 @@
 
 <title>Nonnormal Continuous Data</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -470,27 +470,34 @@ str(nonnormal)</code></pre>
 ##  $ map2: num  18 18 20 18 20 20 18 14 18 16 ...
 ##  $ map3: num  20 18 20 18 20 18 20 18 18 20 ...</code></pre>
 <pre class="r"><code>summary(nonnormal)</code></pre>
-<pre><code>##       pap1            pap2            pap3            pav1      
-##  Min.   : 0.00   Min.   : 0.00   Min.   : 0.00   Min.   : 0.00  
-##  1st Qu.:14.00   1st Qu.:14.00   1st Qu.:14.00   1st Qu.:14.00  
-##  Median :16.00   Median :16.00   Median :16.00   Median :16.00  
-##  Mean   :16.28   Mean   :15.85   Mean   :15.18   Mean   :14.75  
-##  3rd Qu.:18.00   3rd Qu.:18.00   3rd Qu.:18.00   3rd Qu.:18.00  
-##  Max.   :20.00   Max.   :20.00   Max.   :20.00   Max.   :20.00  
-##       pav2            pav3            mav1           mav2      
-##  Min.   : 0.00   Min.   : 0.00   Min.   : 0.0   Min.   : 0.00  
-##  1st Qu.:11.00   1st Qu.:11.00   1st Qu.:11.0   1st Qu.:14.00  
-##  Median :14.00   Median :16.00   Median :14.0   Median :16.00  
-##  Mean   :12.97   Mean   :14.46   Mean   :12.9   Mean   :15.74  
-##  3rd Qu.:16.50   3rd Qu.:18.00   3rd Qu.:16.0   3rd Qu.:18.00  
-##  Max.   :20.00   Max.   :20.00   Max.   :20.0   Max.   :20.00  
-##       mav3            map1            map2            map3     
-##  Min.   : 0.00   Min.   : 0.00   Min.   : 0.00   Min.   : 0.0  
-##  1st Qu.: 7.00   1st Qu.:18.00   1st Qu.:16.00   1st Qu.:16.0  
-##  Median :14.00   Median :20.00   Median :18.00   Median :18.0  
-##  Mean   :12.01   Mean   :18.46   Mean   :17.85   Mean   :17.3  
-##  3rd Qu.:16.00   3rd Qu.:20.00   3rd Qu.:20.00   3rd Qu.:20.0  
-##  Max.   :20.00   Max.   :20.00   Max.   :20.00   Max.   :20.0</code></pre>
+<pre><code>##       pap1            pap2            pap3      
+##  Min.   : 0.00   Min.   : 0.00   Min.   : 0.00  
+##  1st Qu.:14.00   1st Qu.:14.00   1st Qu.:14.00  
+##  Median :16.00   Median :16.00   Median :16.00  
+##  Mean   :16.28   Mean   :15.85   Mean   :15.18  
+##  3rd Qu.:18.00   3rd Qu.:18.00   3rd Qu.:18.00  
+##  Max.   :20.00   Max.   :20.00   Max.   :20.00  
+##       pav1            pav2            pav3      
+##  Min.   : 0.00   Min.   : 0.00   Min.   : 0.00  
+##  1st Qu.:14.00   1st Qu.:11.00   1st Qu.:11.00  
+##  Median :16.00   Median :14.00   Median :16.00  
+##  Mean   :14.75   Mean   :12.97   Mean   :14.46  
+##  3rd Qu.:18.00   3rd Qu.:16.50   3rd Qu.:18.00  
+##  Max.   :20.00   Max.   :20.00   Max.   :20.00  
+##       mav1           mav2            mav3      
+##  Min.   : 0.0   Min.   : 0.00   Min.   : 0.00  
+##  1st Qu.:11.0   1st Qu.:14.00   1st Qu.: 7.00  
+##  Median :14.0   Median :16.00   Median :14.00  
+##  Mean   :12.9   Mean   :15.74   Mean   :12.01  
+##  3rd Qu.:16.0   3rd Qu.:18.00   3rd Qu.:16.00  
+##  Max.   :20.0   Max.   :20.00   Max.   :20.00  
+##       map1            map2            map3     
+##  Min.   : 0.00   Min.   : 0.00   Min.   : 0.0  
+##  1st Qu.:18.00   1st Qu.:16.00   1st Qu.:16.0  
+##  Median :20.00   Median :18.00   Median :18.0  
+##  Mean   :18.46   Mean   :17.85   Mean   :17.3  
+##  3rd Qu.:20.00   3rd Qu.:20.00   3rd Qu.:20.0  
+##  Max.   :20.00   Max.   :20.00   Max.   :20.0</code></pre>
 <pre class="r"><code># cor(nonnormal, use = &quot;pairwise.complete.obs&quot;)</code></pre>
 <p><br></p>
 </div>
@@ -519,7 +526,7 @@ map ~~  1*map
 
 nonnormal.fit &lt;- sem(nonnormal.model, data = nonnormal, estimator = &quot;MLM&quot;, meanstructure = T)
 summary(nonnormal.fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 26 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 26 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -584,73 +591,126 @@ summary(nonnormal.fit, fit.measures = T, standardized = T)</code></pre>
 ##   Information saturated (h1) model          Structured
 ## 
 ## Latent Variables:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   pap =~                                                                
-##     pap1              3.230    0.353    9.164    0.000    3.230    0.866
-##     pap2              2.966    0.382    7.775    0.000    2.966    0.730
-##     pap3              3.332    0.380    8.765    0.000    3.332    0.767
-##   pav =~                                                                
-##     pav1              3.707    0.418    8.866    0.000    3.707    0.655
-##     pav2              4.557    0.331   13.765    0.000    4.557    0.839
-##     pav3              3.272    0.395    8.290    0.000    3.272    0.623
-##   mav =~                                                                
-##     mav1              4.191    0.336   12.464    0.000    4.191    0.848
-##     mav2              1.944    0.308    6.318    0.000    1.944    0.513
-##     mav3              4.750    0.309   15.387    0.000    4.750    0.826
-##   map =~                                                                
-##     map1              1.730    0.354    4.881    0.000    1.730    0.821
-##     map2              1.578    0.371    4.255    0.000    1.578    0.616
-##     map3              1.794    0.294    6.105    0.000    1.794    0.682
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   pap =~                                              
+##     pap1              3.230    0.353    9.164    0.000
+##     pap2              2.966    0.382    7.775    0.000
+##     pap3              3.332    0.380    8.765    0.000
+##   pav =~                                              
+##     pav1              3.707    0.418    8.866    0.000
+##     pav2              4.557    0.331   13.765    0.000
+##     pav3              3.272    0.395    8.290    0.000
+##   mav =~                                              
+##     mav1              4.191    0.336   12.464    0.000
+##     mav2              1.944    0.308    6.318    0.000
+##     mav3              4.750    0.309   15.387    0.000
+##   map =~                                              
+##     map1              1.730    0.354    4.881    0.000
+##     map2              1.578    0.371    4.255    0.000
+##     map3              1.794    0.294    6.105    0.000
+##    Std.lv  Std.all
+##                   
+##     3.230    0.866
+##     2.966    0.730
+##     3.332    0.767
+##                   
+##     3.707    0.655
+##     4.557    0.839
+##     3.272    0.623
+##                   
+##     4.191    0.848
+##     1.944    0.513
+##     4.750    0.826
+##                   
+##     1.730    0.821
+##     1.578    0.616
+##     1.794    0.682
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   pap ~~                                                                
-##     pav               0.488    0.083    5.855    0.000    0.488    0.488
-##     mav               0.180    0.089    2.018    0.044    0.180    0.180
-##     map               0.212    0.109    1.943    0.052    0.212    0.212
-##   pav ~~                                                                
-##     mav               0.537    0.069    7.827    0.000    0.537    0.537
-##     map               0.024    0.070    0.342    0.732    0.024    0.024
-##   mav ~~                                                                
-##     map               0.101    0.093    1.087    0.277    0.101    0.101
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   pap ~~                                              
+##     pav               0.488    0.083    5.855    0.000
+##     mav               0.180    0.089    2.018    0.044
+##     map               0.212    0.109    1.943    0.052
+##   pav ~~                                              
+##     mav               0.537    0.069    7.827    0.000
+##     map               0.024    0.070    0.342    0.732
+##   mav ~~                                              
+##     map               0.101    0.093    1.087    0.277
+##    Std.lv  Std.all
+##                   
+##     0.488    0.488
+##     0.180    0.180
+##     0.212    0.212
+##                   
+##     0.537    0.537
+##     0.024    0.024
+##                   
+##     0.101    0.101
 ## 
 ## Intercepts:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .pap1             16.277    0.215   75.562    0.000   16.277    4.363
-##    .pap2             15.847    0.235   67.564    0.000   15.847    3.901
-##    .pap3             15.183    0.251   60.562    0.000   15.183    3.497
-##    .pav1             14.753    0.327   45.150    0.000   14.753    2.607
-##    .pav2             12.973    0.313   41.386    0.000   12.973    2.389
-##    .pav3             14.460    0.303   47.712    0.000   14.460    2.755
-##    .mav1             12.897    0.285   45.210    0.000   12.897    2.610
-##    .mav2             15.740    0.219   71.912    0.000   15.740    4.152
-##    .mav3             12.007    0.332   36.161    0.000   12.007    2.088
-##    .map1             18.460    0.122  151.825    0.000   18.460    8.766
-##    .map2             17.853    0.148  120.625    0.000   17.853    6.964
-##    .map3             17.303    0.152  113.892    0.000   17.303    6.576
-##     pap               0.000                               0.000    0.000
-##     pav               0.000                               0.000    0.000
-##     mav               0.000                               0.000    0.000
-##     map               0.000                               0.000    0.000
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .pap1             16.277    0.215   75.562    0.000
+##    .pap2             15.847    0.235   67.564    0.000
+##    .pap3             15.183    0.251   60.562    0.000
+##    .pav1             14.753    0.327   45.150    0.000
+##    .pav2             12.973    0.313   41.386    0.000
+##    .pav3             14.460    0.303   47.712    0.000
+##    .mav1             12.897    0.285   45.210    0.000
+##    .mav2             15.740    0.219   71.912    0.000
+##    .mav3             12.007    0.332   36.161    0.000
+##    .map1             18.460    0.122  151.825    0.000
+##    .map2             17.853    0.148  120.625    0.000
+##    .map3             17.303    0.152  113.892    0.000
+##    Std.lv  Std.all
+##    16.277    4.363
+##    15.847    3.901
+##    15.183    3.497
+##    14.753    2.607
+##    12.973    2.389
+##    14.460    2.755
+##    12.897    2.610
+##    15.740    4.152
+##    12.007    2.088
+##    18.460    8.766
+##    17.853    6.964
+##    17.303    6.576
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##     pap               1.000                               1.000    1.000
-##     pav               1.000                               1.000    1.000
-##     mav               1.000                               1.000    1.000
-##     map               1.000                               1.000    1.000
-##    .pap1              3.485    0.738    4.720    0.000    3.485    0.250
-##    .pap2              7.705    1.648    4.676    0.000    7.705    0.467
-##    .pap3              7.752    1.963    3.948    0.000    7.752    0.411
-##    .pav1             18.294    2.781    6.578    0.000   18.294    0.571
-##    .pav2              8.709    2.430    3.585    0.000    8.709    0.295
-##    .pav3             16.848    2.254    7.476    0.000   16.848    0.611
-##    .mav1              6.849    1.721    3.981    0.000    6.849    0.281
-##    .mav2             10.592    1.246    8.499    0.000   10.592    0.737
-##    .mav3             10.514    2.171    4.844    0.000   10.514    0.318
-##    .map1              1.442    0.353    4.090    0.000    1.442    0.325
-##    .map2              4.081    0.791    5.157    0.000    4.081    0.621
-##    .map3              3.707    1.214    3.053    0.002    3.707    0.535</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##     pap               1.000                           
+##     pav               1.000                           
+##     mav               1.000                           
+##     map               1.000                           
+##    .pap1              3.485    0.738    4.720    0.000
+##    .pap2              7.705    1.648    4.676    0.000
+##    .pap3              7.752    1.963    3.948    0.000
+##    .pav1             18.294    2.781    6.578    0.000
+##    .pav2              8.709    2.430    3.585    0.000
+##    .pav3             16.848    2.254    7.476    0.000
+##    .mav1              6.849    1.721    3.981    0.000
+##    .mav2             10.592    1.246    8.499    0.000
+##    .mav3             10.514    2.171    4.844    0.000
+##    .map1              1.442    0.353    4.090    0.000
+##    .map2              4.081    0.791    5.157    0.000
+##    .map3              3.707    1.214    3.053    0.002
+##    Std.lv  Std.all
+##     1.000    1.000
+##     1.000    1.000
+##     1.000    1.000
+##     1.000    1.000
+##     3.485    0.250
+##     7.705    0.467
+##     7.752    0.411
+##    18.294    0.571
+##     8.709    0.295
+##    16.848    0.611
+##     6.849    0.281
+##    10.592    0.737
+##    10.514    0.318
+##     1.442    0.325
+##     4.081    0.621
+##     3.707    0.535</code></pre>
 <div class="tocify-extend-page" data-unique="tocify-extend-page"
 style="height: 0;">
 
@@ -658,7 +718,7 @@ style="height: 0;">
 </div>
 
 <hr>
-© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2025 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

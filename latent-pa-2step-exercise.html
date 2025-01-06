@@ -13,7 +13,7 @@
 
 <title>Latent Path Analysis Exercise: Two step SEM</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -382,7 +382,7 @@ SES =~ educ + sei
 
 step1.fit &lt;- sem(step1.model, sample.cov = covmat, sample.nobs = 932)
 summary(step1.fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 71 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 71 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -436,45 +436,78 @@ summary(step1.fit, fit.measures = T, standardized = T)</code></pre>
 ##   Information saturated (h1) model          Structured
 ## 
 ## Latent Variables:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   Alien67 =~                                                            
-##     anomia67          1.000                               2.826    0.818
-##     powles67   (a)    0.869    0.029   30.200    0.000    2.454    0.806
-##   Alien71 =~                                                            
-##     anomia71          1.000                               2.938    0.834
-##     powles71   (a)    0.869    0.029   30.200    0.000    2.552    0.804
-##   SES =~                                                                
-##     educ              1.000                               2.579    0.832
-##     sei               0.533    0.043   12.409    0.000    1.376    0.649
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   Alien67 =~                                          
+##     anomia67          1.000                           
+##     powles67   (a)    0.869    0.029   30.200    0.000
+##   Alien71 =~                                          
+##     anomia71          1.000                           
+##     powles71   (a)    0.869    0.029   30.200    0.000
+##   SES =~                                              
+##     educ              1.000                           
+##     sei               0.533    0.043   12.409    0.000
+##    Std.lv  Std.all
+##                   
+##     2.826    0.818
+##     2.454    0.806
+##                   
+##     2.938    0.834
+##     2.552    0.804
+##                   
+##     2.579    0.832
+##     1.376    0.649
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   Alien67 ~~                                                            
-##     Alien71           6.221    0.440   14.148    0.000    0.749    0.749
-##     SES              -4.126    0.353  -11.680    0.000   -0.566   -0.566
-##   Alien71 ~~                                                            
-##     SES              -4.004    0.359  -11.141    0.000   -0.528   -0.528
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   Alien67 ~~                                          
+##     Alien71           6.221    0.440   14.148    0.000
+##     SES              -4.126    0.353  -11.680    0.000
+##   Alien71 ~~                                          
+##     SES              -4.004    0.359  -11.141    0.000
+##    Std.lv  Std.all
+##                   
+##     0.749    0.749
+##    -0.566   -0.566
+##                   
+##    -0.528   -0.528
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .anomia67          3.939    0.321   12.255    0.000    3.939    0.330
-##    .powles67          3.245    0.250   12.987    0.000    3.245    0.350
-##    .anomia71          3.786    0.336   11.267    0.000    3.786    0.305
-##    .powles71          3.557    0.272   13.085    0.000    3.557    0.353
-##    .educ              2.948    0.499    5.912    0.000    2.948    0.307
-##    .sei               2.606    0.182   14.303    0.000    2.606    0.579
-##     Alien67           7.985    0.541   14.768    0.000    1.000    1.000
-##     Alien71           8.633    0.575   15.011    0.000    1.000    1.000
-##     SES               6.652    0.640   10.401    0.000    1.000    1.000</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .anomia67          3.939    0.321   12.255    0.000
+##    .powles67          3.245    0.250   12.987    0.000
+##    .anomia71          3.786    0.336   11.267    0.000
+##    .powles71          3.557    0.272   13.085    0.000
+##    .educ              2.948    0.499    5.912    0.000
+##    .sei               2.606    0.182   14.303    0.000
+##     Alien67           7.985    0.541   14.768    0.000
+##     Alien71           8.633    0.575   15.011    0.000
+##     SES               6.652    0.640   10.401    0.000
+##    Std.lv  Std.all
+##     3.939    0.330
+##     3.245    0.350
+##     3.786    0.305
+##     3.557    0.353
+##     2.948    0.307
+##     2.606    0.579
+##     1.000    1.000
+##     1.000    1.000
+##     1.000    1.000</code></pre>
 <pre class="r"><code>step1.mod &lt;- modindices(step1.fit)
 step1.mod[step1.mod$mi &gt;= 3.841, ]</code></pre>
-<pre><code>##         lhs op      rhs     mi    epc sepc.lv sepc.all sepc.nox
-## 33 anomia67 ~~ anomia71 63.584  1.949   1.949    0.505    0.505
-## 34 anomia67 ~~ powles71 45.489 -1.328  -1.328   -0.355   -0.355
-## 35 anomia67 ~~     educ  6.296  0.560   0.560    0.164    0.164
-## 37 powles67 ~~ anomia71 36.071 -1.159  -1.159   -0.330   -0.330
-## 38 powles67 ~~ powles71 36.813  1.150   1.150    0.338    0.338
-## 39 powles67 ~~     educ  7.912 -0.551  -0.551   -0.178   -0.178</code></pre>
+<pre><code>##         lhs op      rhs     mi    epc sepc.lv sepc.all
+## 33 anomia67 ~~ anomia71 63.584  1.949   1.949    0.505
+## 34 anomia67 ~~ powles71 45.489 -1.328  -1.328   -0.355
+## 35 anomia67 ~~     educ  6.296  0.560   0.560    0.164
+## 37 powles67 ~~ anomia71 36.071 -1.159  -1.159   -0.330
+## 38 powles67 ~~ powles71 36.813  1.150   1.150    0.338
+## 39 powles67 ~~     educ  7.912 -0.551  -0.551   -0.178
+##    sepc.nox
+## 33    0.505
+## 34   -0.355
+## 35    0.164
+## 37   -0.330
+## 38    0.338
+## 39   -0.178</code></pre>
 <pre class="r"><code>#  modified measurement model
 
 step1.model2 &lt;-&#39;
@@ -488,7 +521,7 @@ powles67~~powles71
 
 step1.fit2 &lt;- sem(step1.model2, sample.cov = covmat, sample.nobs = 932)
 summary(step1.fit2, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 79 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 79 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -542,44 +575,74 @@ summary(step1.fit2, fit.measures = T, standardized = T)</code></pre>
 ##   Information saturated (h1) model          Structured
 ## 
 ## Latent Variables:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   Alien67 =~                                                            
-##     anomia67          1.000                               2.699    0.782
-##     powles67   (a)    0.951    0.052   18.137    0.000    2.568    0.843
-##   Alien71 =~                                                            
-##     anomia71          1.000                               2.808    0.796
-##     powles71   (a)    0.951    0.052   18.137    0.000    2.671    0.843
-##   SES =~                                                                
-##     educ              1.000                               2.605    0.841
-##     sei               0.523    0.042   12.371    0.000    1.362    0.642
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   Alien67 =~                                          
+##     anomia67          1.000                           
+##     powles67   (a)    0.951    0.052   18.137    0.000
+##   Alien71 =~                                          
+##     anomia71          1.000                           
+##     powles71   (a)    0.951    0.052   18.137    0.000
+##   SES =~                                              
+##     educ              1.000                           
+##     sei               0.523    0.042   12.371    0.000
+##    Std.lv  Std.all
+##                   
+##     2.699    0.782
+##     2.568    0.843
+##                   
+##     2.808    0.796
+##     2.671    0.843
+##                   
+##     2.605    0.841
+##     1.362    0.642
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##  .anomia67 ~~                                                           
-##    .anomia71          1.629    0.313    5.198    0.000    1.629    0.355
-##  .powles67 ~~                                                           
-##    .powles71          0.327    0.261    1.254    0.210    0.327    0.117
-##   Alien67 ~~                                                            
-##     Alien71           5.189    0.482   10.763    0.000    0.685    0.685
-##     SES              -3.968    0.360  -11.024    0.000   -0.564   -0.564
-##   Alien71 ~~                                                            
-##     SES              -3.853    0.364  -10.570    0.000   -0.527   -0.527
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##  .anomia67 ~~                                         
+##    .anomia71          1.629    0.313    5.198    0.000
+##  .powles67 ~~                                         
+##    .powles71          0.327    0.261    1.254    0.210
+##   Alien67 ~~                                          
+##     Alien71           5.189    0.482   10.763    0.000
+##     SES              -3.968    0.360  -11.024    0.000
+##   Alien71 ~~                                          
+##     SES              -3.853    0.364  -10.570    0.000
+##    Std.lv  Std.all
+##                   
+##     1.629    0.355
+##                   
+##     0.327    0.117
+##                   
+##     0.685    0.685
+##    -0.564   -0.564
+##                   
+##    -0.527   -0.527
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .anomia67          4.614    0.441   10.454    0.000    4.614    0.388
-##    .powles67          2.686    0.373    7.196    0.000    2.686    0.289
-##    .anomia71          4.561    0.476    9.576    0.000    4.561    0.367
-##    .powles71          2.917    0.412    7.088    0.000    2.917    0.290
-##    .educ              2.812    0.506    5.554    0.000    2.812    0.293
-##    .sei               2.643    0.181   14.583    0.000    2.643    0.588
-##     Alien67           7.287    0.610   11.942    0.000    1.000    1.000
-##     Alien71           7.883    0.652   12.091    0.000    1.000    1.000
-##     SES               6.788    0.648   10.473    0.000    1.000    1.000</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .anomia67          4.614    0.441   10.454    0.000
+##    .powles67          2.686    0.373    7.196    0.000
+##    .anomia71          4.561    0.476    9.576    0.000
+##    .powles71          2.917    0.412    7.088    0.000
+##    .educ              2.812    0.506    5.554    0.000
+##    .sei               2.643    0.181   14.583    0.000
+##     Alien67           7.287    0.610   11.942    0.000
+##     Alien71           7.883    0.652   12.091    0.000
+##     SES               6.788    0.648   10.473    0.000
+##    Std.lv  Std.all
+##     4.614    0.388
+##     2.686    0.289
+##     4.561    0.367
+##     2.917    0.290
+##     2.812    0.293
+##     2.643    0.588
+##     1.000    1.000
+##     1.000    1.000
+##     1.000    1.000</code></pre>
 <pre class="r"><code>step1.mod2 &lt;- modindices(step1.fit2)
 step1.mod2[step1.mod2$mi &gt;= 3.841, ]</code></pre>
-<pre><code>## [1] lhs      op       rhs      mi       epc      sepc.lv  sepc.all
-## [8] sepc.nox
+<pre><code>## [1] lhs      op       rhs      mi       epc      sepc.lv 
+## [7] sepc.all sepc.nox
 ## &lt;0 rows&gt; (or 0-length row.names)</code></pre>
 <pre class="r"><code># step 2: structural phase
 
@@ -598,7 +661,7 @@ powles67 ~~ powles71
 
 step2.fit &lt;- sem(step2.model, sample.cov = covmat, sample.nobs = 932)
 summary(step2.fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 68 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 68 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -652,51 +715,82 @@ summary(step2.fit, fit.measures = T, standardized = T)</code></pre>
 ##   Information saturated (h1) model          Structured
 ## 
 ## Latent Variables:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   Alien67 =~                                                            
-##     anomia67          1.000                               2.699    0.782
-##     powles67   (a)    0.951    0.052   18.137    0.000    2.568    0.843
-##   Alien71 =~                                                            
-##     anomia71          1.000                               2.808    0.796
-##     powles71   (a)    0.951    0.052   18.137    0.000    2.671    0.843
-##   SES =~                                                                
-##     educ              1.000                               2.605    0.841
-##     sei               0.523    0.042   12.371    0.000    1.362    0.642
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   Alien67 =~                                          
+##     anomia67          1.000                           
+##     powles67   (a)    0.951    0.052   18.137    0.000
+##   Alien71 =~                                          
+##     anomia71          1.000                           
+##     powles71   (a)    0.951    0.052   18.137    0.000
+##   SES =~                                              
+##     educ              1.000                           
+##     sei               0.523    0.042   12.371    0.000
+##    Std.lv  Std.all
+##                   
+##     2.699    0.782
+##     2.568    0.843
+##                   
+##     2.808    0.796
+##     2.671    0.843
+##                   
+##     2.605    0.841
+##     1.362    0.642
 ## 
 ## Regressions:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   Alien71 ~                                                             
-##     SES              -0.222    0.052   -4.309    0.000   -0.206   -0.206
-##     Alien67           0.591    0.047   12.479    0.000    0.568    0.568
-##   Alien67 ~                                                             
-##     SES              -0.585    0.056  -10.413    0.000   -0.564   -0.564
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   Alien71 ~                                           
+##     SES              -0.222    0.052   -4.309    0.000
+##     Alien67           0.591    0.047   12.479    0.000
+##   Alien67 ~                                           
+##     SES              -0.585    0.056  -10.413    0.000
+##    Std.lv  Std.all
+##                   
+##    -0.206   -0.206
+##     0.568    0.568
+##                   
+##    -0.564   -0.564
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##  .anomia67 ~~                                                           
-##    .anomia71          1.629    0.313    5.198    0.000    1.629    0.355
-##  .powles67 ~~                                                           
-##    .powles71          0.327    0.261    1.254    0.210    0.327    0.117
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##  .anomia67 ~~                                         
+##    .anomia71          1.629    0.313    5.198    0.000
+##  .powles67 ~~                                         
+##    .powles71          0.327    0.261    1.254    0.210
+##    Std.lv  Std.all
+##                   
+##     1.629    0.355
+##                   
+##     0.327    0.117
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .anomia67          4.614    0.441   10.454    0.000    4.614    0.388
-##    .powles67          2.686    0.373    7.196    0.000    2.686    0.289
-##    .anomia71          4.561    0.476    9.576    0.000    4.561    0.367
-##    .powles71          2.917    0.412    7.088    0.000    2.917    0.290
-##    .educ              2.812    0.506    5.554    0.000    2.812    0.293
-##    .sei               2.643    0.181   14.583    0.000    2.643    0.588
-##    .Alien67           4.967    0.459   10.827    0.000    0.682    0.682
-##    .Alien71           3.960    0.368   10.755    0.000    0.502    0.502
-##     SES               6.788    0.648   10.473    0.000    1.000    1.000</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .anomia67          4.614    0.441   10.454    0.000
+##    .powles67          2.686    0.373    7.196    0.000
+##    .anomia71          4.561    0.476    9.576    0.000
+##    .powles71          2.917    0.412    7.088    0.000
+##    .educ              2.812    0.506    5.554    0.000
+##    .sei               2.643    0.181   14.583    0.000
+##    .Alien67           4.967    0.459   10.827    0.000
+##    .Alien71           3.960    0.368   10.755    0.000
+##     SES               6.788    0.648   10.473    0.000
+##    Std.lv  Std.all
+##     4.614    0.388
+##     2.686    0.289
+##     4.561    0.367
+##     2.917    0.290
+##     2.812    0.293
+##     2.643    0.588
+##     0.682    0.682
+##     0.502    0.502
+##     1.000    1.000</code></pre>
 <pre class="r"><code>step2.mod &lt;- modindices(step2.fit)
 step2.mod[step2.mod$mi &gt;= 3.841, ]</code></pre>
-<pre><code>## [1] lhs      op       rhs      mi       epc      sepc.lv  sepc.all
-## [8] sepc.nox
+<pre><code>## [1] lhs      op       rhs      mi       epc      sepc.lv 
+## [7] sepc.all sepc.nox
 ## &lt;0 rows&gt; (or 0-length row.names)</code></pre>
 
 <hr>
-© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2025 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

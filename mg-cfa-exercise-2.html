@@ -13,7 +13,7 @@
 
 <title>Multi-group CFA exercise</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -382,7 +382,7 @@ spatial ~ 1
 
 fit.constrained &lt;- sem(cfa.constrained, data, group = &quot;group&quot;, group.equal = c(&quot;loadings&quot;), meanstructure = F)
 summary(fit.constrained, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 78 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 78 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -444,97 +444,149 @@ summary(fit.constrained, fit.measures = T, standardized = T)</code></pre>
 ## Group 1 [1]:
 ## 
 ## Latent Variables:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   SEQUENT =~                                                            
-##     hand              1.000                               1.526    0.552
-##     number  (.p2.)    0.960    0.212    4.531    0.000    1.465    0.718
-##     word    (.p3.)    1.004    0.223    4.508    0.000    1.532    0.761
-##   SIMULTAN =~                                                           
-##     triangl           1.000                               1.589    0.700
-##     matrix  (.p5.)    1.459    0.297    4.918    0.000    2.318    0.678
-##     spatial (.p6.)    1.434    0.336    4.266    0.000    2.278    0.186
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   SEQUENT =~                                          
+##     hand              1.000                           
+##     number  (.p2.)    0.960    0.212    4.531    0.000
+##     word    (.p3.)    1.004    0.223    4.508    0.000
+##   SIMULTAN =~                                         
+##     triangl           1.000                           
+##     matrix  (.p5.)    1.459    0.297    4.918    0.000
+##     spatial (.p6.)    1.434    0.336    4.266    0.000
+##    Std.lv  Std.all
+##                   
+##     1.526    0.552
+##     1.465    0.718
+##     1.532    0.761
+##                   
+##     1.589    0.700
+##     2.318    0.678
+##     2.278    0.186
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   SEQUENT ~~                                                            
-##     SIMULTAN          1.412    0.491    2.874    0.004    0.582    0.582
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   SEQUENT ~~                                          
+##     SIMULTAN          1.412    0.491    2.874    0.004
+##    Std.lv  Std.all
+##                   
+##     0.582    0.582
 ## 
 ## Intercepts:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .hand             -0.001    0.298   -0.003    0.998   -0.001   -0.000
-##    .number           -0.001    0.220   -0.003    0.998   -0.001   -0.000
-##    .word              0.001    0.217    0.004    0.997    0.001    0.000
-##    .triangle         -0.000    0.245   -0.000    1.000   -0.000   -0.000
-##    .matrix            0.001    0.368    0.004    0.997    0.001    0.000
-##    .spatial          -0.003    1.318   -0.002    0.998   -0.003   -0.000
-##     SEQUENT           0.000                               0.000    0.000
-##     SIMULTAN          0.000                               0.000    0.000
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .hand             -0.001    0.298   -0.003    0.998
+##    .number           -0.001    0.220   -0.003    0.998
+##    .word              0.001    0.217    0.004    0.997
+##    .triangle         -0.000    0.245   -0.000    1.000
+##    .matrix            0.001    0.368    0.004    0.997
+##    .spatial          -0.003    1.318   -0.002    0.998
+##    Std.lv  Std.all
+##    -0.001   -0.000
+##    -0.001   -0.000
+##     0.001    0.000
+##    -0.000   -0.000
+##     0.001    0.000
+##    -0.003   -0.000
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .hand              5.306    0.942    5.635    0.000    5.306    0.695
-##    .number            2.020    0.485    4.162    0.000    2.020    0.485
-##    .word              1.701    0.481    3.536    0.000    1.701    0.420
-##    .triangle          2.627    0.712    3.693    0.000    2.627    0.510
-##    .matrix            6.300    1.581    3.984    0.000    6.300    0.540
-##    .spatial         144.165   22.248    6.480    0.000  144.165    0.965
-##     SEQUENT           2.329    0.916    2.544    0.011    1.000    1.000
-##     SIMULTAN          2.524    0.804    3.137    0.002    1.000    1.000
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .hand              5.306    0.942    5.635    0.000
+##    .number            2.020    0.485    4.162    0.000
+##    .word              1.701    0.481    3.536    0.000
+##    .triangle          2.627    0.712    3.693    0.000
+##    .matrix            6.300    1.581    3.984    0.000
+##    .spatial         144.165   22.248    6.480    0.000
+##     SEQUENT           2.329    0.916    2.544    0.011
+##     SIMULTAN          2.524    0.804    3.137    0.002
+##    Std.lv  Std.all
+##     5.306    0.695
+##     2.020    0.485
+##     1.701    0.420
+##     2.627    0.510
+##     6.300    0.540
+##   144.165    0.965
+##     1.000    1.000
+##     1.000    1.000
 ## 
 ## 
 ## Group 2 [2]:
 ## 
 ## Latent Variables:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   SEQUENT =~                                                            
-##     hand              1.000                               1.119    0.263
-##     number  (.p2.)    0.960    0.212    4.531    0.000    1.074    0.566
-##     word    (.p3.)    1.004    0.223    4.508    0.000    1.123    0.727
-##   SIMULTAN =~                                                           
-##     triangl           1.000                               1.249    0.624
-##     matrix  (.p5.)    1.459    0.297    4.918    0.000    1.823    0.543
-##     spatial (.p6.)    1.434    0.336    4.266    0.000    1.791    0.769
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   SEQUENT =~                                          
+##     hand              1.000                           
+##     number  (.p2.)    0.960    0.212    4.531    0.000
+##     word    (.p3.)    1.004    0.223    4.508    0.000
+##   SIMULTAN =~                                         
+##     triangl           1.000                           
+##     matrix  (.p5.)    1.459    0.297    4.918    0.000
+##     spatial (.p6.)    1.434    0.336    4.266    0.000
+##    Std.lv  Std.all
+##                   
+##     1.119    0.263
+##     1.074    0.566
+##     1.123    0.727
+##                   
+##     1.249    0.624
+##     1.823    0.543
+##     1.791    0.769
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   SEQUENT ~~                                                            
-##     SIMULTAN          0.752    0.303    2.477    0.013    0.538    0.538
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   SEQUENT ~~                                          
+##     SIMULTAN          0.752    0.303    2.477    0.013
+##    Std.lv  Std.all
+##                   
+##     0.538    0.538
 ## 
 ## Intercepts:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .hand             -0.002    0.459   -0.004    0.997   -0.002   -0.000
-##    .number           -0.001    0.205   -0.005    0.996   -0.001   -0.001
-##    .word              0.000    0.167    0.001    0.999    0.000    0.000
-##    .triangle         -0.000    0.216   -0.002    0.998   -0.000   -0.000
-##    .matrix            0.000    0.362    0.001    0.999    0.000    0.000
-##    .spatial          -0.001    0.251   -0.003    0.998   -0.001   -0.000
-##     SEQUENT           0.000                               0.000    0.000
-##     SIMULTAN          0.000                               0.000    0.000
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .hand             -0.002    0.459   -0.004    0.997
+##    .number           -0.001    0.205   -0.005    0.996
+##    .word              0.000    0.167    0.001    0.999
+##    .triangle         -0.000    0.216   -0.002    0.998
+##    .matrix            0.000    0.362    0.001    0.999
+##    .spatial          -0.001    0.251   -0.003    0.998
+##    Std.lv  Std.all
+##    -0.002   -0.000
+##    -0.001   -0.001
+##     0.000    0.000
+##    -0.000   -0.000
+##     0.000    0.000
+##    -0.001   -0.000
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .hand             16.881    2.648    6.375    0.000   16.881    0.931
-##    .number            2.449    0.479    5.115    0.000    2.449    0.680
-##    .word              1.123    0.360    3.120    0.002    1.123    0.471
-##    .triangle          2.451    0.507    4.832    0.000    2.451    0.611
-##    .matrix            7.934    1.437    5.520    0.000    7.934    0.705
-##    .spatial           2.214    0.771    2.872    0.004    2.214    0.408
-##     SEQUENT           1.252    0.579    2.164    0.030    1.000    1.000
-##     SIMULTAN          1.561    0.547    2.853    0.004    1.000    1.000</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .hand             16.881    2.648    6.375    0.000
+##    .number            2.449    0.479    5.115    0.000
+##    .word              1.123    0.360    3.120    0.002
+##    .triangle          2.451    0.507    4.832    0.000
+##    .matrix            7.934    1.437    5.520    0.000
+##    .spatial           2.214    0.771    2.872    0.004
+##     SEQUENT           1.252    0.579    2.164    0.030
+##     SIMULTAN          1.561    0.547    2.853    0.004
+##    Std.lv  Std.all
+##    16.881    0.931
+##     2.449    0.680
+##     1.123    0.471
+##     2.451    0.611
+##     7.934    0.705
+##     2.214    0.408
+##     1.000    1.000
+##     1.000    1.000</code></pre>
 <pre class="r"><code>mod.constrained &lt;- modindices(fit.constrained, sort = T)
 mod.constrained[mod.constrained$mi &gt;= 3.841, ]  # different from the Mplus output</code></pre>
-<pre><code>##         lhs op      rhs block group level    mi    epc sepc.lv sepc.all
-## 62   number ~~     word     1     1     1 8.130  2.023   2.023    1.091
-## 87     word ~~ triangle     2     2     1 5.747 -0.649  -0.649   -0.391
-## 69 triangle ~~   matrix     1     1     1 4.679 -5.443  -5.443   -1.338
-## 73  SEQUENT =~   matrix     2     2     1 4.173  0.933   1.043    0.311
-## 60     hand ~~   matrix     1     1     1 4.108  1.603   1.603    0.277
-##    sepc.nox
-## 62    1.091
-## 87   -0.391
-## 69   -1.338
-## 73    0.311
-## 60    0.277</code></pre>
+<pre><code>##         lhs op      rhs block group level    mi    epc
+## 62   number ~~     word     1     1     1 8.130  2.023
+## 87     word ~~ triangle     2     2     1 5.747 -0.649
+## 69 triangle ~~   matrix     1     1     1 4.679 -5.443
+## 73  SEQUENT =~   matrix     2     2     1 4.173  0.933
+## 60     hand ~~   matrix     1     1     1 4.108  1.603
+##    sepc.lv sepc.all sepc.nox
+## 62   2.023    1.091    1.091
+## 87  -0.649   -0.391   -0.391
+## 69  -5.443   -1.338   -1.338
+## 73   1.043    0.311    0.311
+## 60   1.603    0.277    0.277</code></pre>
 <pre class="r"><code>### Release the constraints
 ## free the loading based on the modification indices obtained in Mplus (to be consistent with your practice in class)
 
@@ -547,7 +599,7 @@ SIMULTAN =~ triangle + matrix + c(a,b)*spatial
 
 fit.unconstrained &lt;- sem(cfa.unconstrained, data, group = &quot;group&quot;, group.equal = c(&quot;loadings&quot;), meanstructure = F)
 summary(fit.unconstrained, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 79 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 79 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -609,78 +661,120 @@ summary(fit.unconstrained, fit.measures = T, standardized = T)</code></pre>
 ## Group 1 [1]:
 ## 
 ## Latent Variables:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   SEQUENT =~                                                            
-##     hand              1.000                               1.536    0.556
-##     number  (.p2.)    0.949    0.209    4.549    0.000    1.458    0.713
-##     word    (.p3.)    0.998    0.220    4.530    0.000    1.533    0.763
-##   SIMULTAN =~                                                           
-##     triangl           1.000                               1.526    0.684
-##     matrix  (.p5.)    1.449    0.267    5.428    0.000    2.212    0.650
-##     spatial    (a)    4.264    1.186    3.595    0.000    6.508    0.512
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   SEQUENT =~                                          
+##     hand              1.000                           
+##     number  (.p2.)    0.949    0.209    4.549    0.000
+##     word    (.p3.)    0.998    0.220    4.530    0.000
+##   SIMULTAN =~                                         
+##     triangl           1.000                           
+##     matrix  (.p5.)    1.449    0.267    5.428    0.000
+##     spatial    (a)    4.264    1.186    3.595    0.000
+##    Std.lv  Std.all
+##                   
+##     1.536    0.556
+##     1.458    0.713
+##     1.533    0.763
+##                   
+##     1.526    0.684
+##     2.212    0.650
+##     6.508    0.512
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   SEQUENT ~~                                                            
-##     SIMULTAN          1.371    0.473    2.901    0.004    0.585    0.585
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   SEQUENT ~~                                          
+##     SIMULTAN          1.371    0.473    2.901    0.004
+##    Std.lv  Std.all
+##                   
+##     0.585    0.585
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .hand              5.278    0.939    5.618    0.000    5.278    0.691
-##    .number            2.060    0.486    4.238    0.000    2.060    0.492
-##    .word              1.683    0.478    3.517    0.000    1.683    0.417
-##    .triangle          2.649    0.635    4.170    0.000    2.649    0.532
-##    .matrix            6.670    1.457    4.577    0.000    6.670    0.577
-##    .spatial         119.507   21.702    5.507    0.000  119.507    0.738
-##     SEQUENT           2.359    0.921    2.560    0.010    1.000    1.000
-##     SIMULTAN          2.329    0.734    3.175    0.002    1.000    1.000
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .hand              5.278    0.939    5.618    0.000
+##    .number            2.060    0.486    4.238    0.000
+##    .word              1.683    0.478    3.517    0.000
+##    .triangle          2.649    0.635    4.170    0.000
+##    .matrix            6.670    1.457    4.577    0.000
+##    .spatial         119.507   21.702    5.507    0.000
+##     SEQUENT           2.359    0.921    2.560    0.010
+##     SIMULTAN          2.329    0.734    3.175    0.002
+##    Std.lv  Std.all
+##     5.278    0.691
+##     2.060    0.492
+##     1.683    0.417
+##     2.649    0.532
+##     6.670    0.577
+##   119.507    0.738
+##     1.000    1.000
+##     1.000    1.000
 ## 
 ## 
 ## Group 2 [2]:
 ## 
 ## Latent Variables:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   SEQUENT =~                                                            
-##     hand              1.000                               1.125    0.264
-##     number  (.p2.)    0.949    0.209    4.549    0.000    1.068    0.564
-##     word    (.p3.)    0.998    0.220    4.530    0.000    1.123    0.725
-##   SIMULTAN =~                                                           
-##     triangl           1.000                               1.369    0.671
-##     matrix  (.p5.)    1.449    0.267    5.428    0.000    1.984    0.586
-##     spatial    (b)    1.190    0.274    4.345    0.000    1.629    0.712
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   SEQUENT =~                                          
+##     hand              1.000                           
+##     number  (.p2.)    0.949    0.209    4.549    0.000
+##     word    (.p3.)    0.998    0.220    4.530    0.000
+##   SIMULTAN =~                                         
+##     triangl           1.000                           
+##     matrix  (.p5.)    1.449    0.267    5.428    0.000
+##     spatial    (b)    1.190    0.274    4.345    0.000
+##    Std.lv  Std.all
+##                   
+##     1.125    0.264
+##     1.068    0.564
+##     1.123    0.725
+##                   
+##     1.369    0.671
+##     1.984    0.586
+##     1.629    0.712
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   SEQUENT ~~                                                            
-##     SIMULTAN          0.833    0.328    2.543    0.011    0.541    0.541
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   SEQUENT ~~                                          
+##     SIMULTAN          0.833    0.328    2.543    0.011
+##    Std.lv  Std.all
+##                   
+##     0.541    0.541
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .hand             16.860    2.646    6.372    0.000   16.860    0.930
-##    .number            2.439    0.476    5.120    0.000    2.439    0.681
-##    .word              1.135    0.362    3.138    0.002    1.135    0.474
-##    .triangle          2.289    0.518    4.416    0.000    2.289    0.550
-##    .matrix            7.515    1.424    5.277    0.000    7.515    0.656
-##    .spatial           2.578    0.691    3.733    0.000    2.578    0.493
-##     SEQUENT           1.266    0.583    2.171    0.030    1.000    1.000
-##     SIMULTAN          1.874    0.606    3.094    0.002    1.000    1.000</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .hand             16.860    2.646    6.372    0.000
+##    .number            2.439    0.476    5.120    0.000
+##    .word              1.135    0.362    3.138    0.002
+##    .triangle          2.289    0.518    4.416    0.000
+##    .matrix            7.515    1.424    5.277    0.000
+##    .spatial           2.578    0.691    3.733    0.000
+##     SEQUENT           1.266    0.583    2.171    0.030
+##     SIMULTAN          1.874    0.606    3.094    0.002
+##    Std.lv  Std.all
+##    16.860    0.930
+##     2.439    0.681
+##     1.135    0.474
+##     2.289    0.550
+##     7.515    0.656
+##     2.578    0.493
+##     1.000    1.000
+##     1.000    1.000</code></pre>
 <pre class="r"><code>mod.constrained &lt;- modindices(fit.constrained, sort = T)
 mod.constrained[mod.constrained$mi &gt;= 3.841, ]</code></pre>
-<pre><code>##         lhs op      rhs block group level    mi    epc sepc.lv sepc.all
-## 62   number ~~     word     1     1     1 8.130  2.023   2.023    1.091
-## 87     word ~~ triangle     2     2     1 5.747 -0.649  -0.649   -0.391
-## 69 triangle ~~   matrix     1     1     1 4.679 -5.443  -5.443   -1.338
-## 73  SEQUENT =~   matrix     2     2     1 4.173  0.933   1.043    0.311
-## 60     hand ~~   matrix     1     1     1 4.108  1.603   1.603    0.277
-##    sepc.nox
-## 62    1.091
-## 87   -0.391
-## 69   -1.338
-## 73    0.311
-## 60    0.277</code></pre>
+<pre><code>##         lhs op      rhs block group level    mi    epc
+## 62   number ~~     word     1     1     1 8.130  2.023
+## 87     word ~~ triangle     2     2     1 5.747 -0.649
+## 69 triangle ~~   matrix     1     1     1 4.679 -5.443
+## 73  SEQUENT =~   matrix     2     2     1 4.173  0.933
+## 60     hand ~~   matrix     1     1     1 4.108  1.603
+##    sepc.lv sepc.all sepc.nox
+## 62   2.023    1.091    1.091
+## 87  -0.649   -0.391   -0.391
+## 69  -5.443   -1.338   -1.338
+## 73   1.043    0.311    0.311
+## 60   1.603    0.277    0.277</code></pre>
 
 <hr>
-© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2025 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 

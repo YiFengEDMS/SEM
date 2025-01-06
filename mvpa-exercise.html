@@ -13,7 +13,7 @@
 
 <title>MLR Path Analysis Exercise</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -379,7 +379,7 @@ Exercise~~Hardy
 
 path.fit &lt;- sem(path.model, sample.cov = covmat, sample.nobs = 373)
 summary(path.fit, fit.measures = T, standardized = T)</code></pre>
-<pre><code>## lavaan 0.6.15 ended normally after 26 iterations
+<pre><code>## lavaan 0.6-19 ended normally after 26 iterations
 ## 
 ##   Estimator                                         ML
 ##   Optimization method                           NLMINB
@@ -432,30 +432,47 @@ summary(path.fit, fit.measures = T, standardized = T)</code></pre>
 ##   Information saturated (h1) model          Structured
 ## 
 ## Regressions:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   Illness ~                                                             
-##     Fitness          -0.849    0.159   -5.323    0.000   -0.849   -0.253
-##     Stress            2.868    0.438    6.546    0.000    2.868    0.311
-##   Fitness ~                                                             
-##     Exercise          0.108    0.013    8.180    0.000    0.108    0.390
-##   Stress ~                                                              
-##     Hardy            -0.406    0.089   -4.564    0.000   -0.406   -0.230
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   Illness ~                                           
+##     Fitness          -0.849    0.159   -5.323    0.000
+##     Stress            2.868    0.438    6.546    0.000
+##   Fitness ~                                           
+##     Exercise          0.108    0.013    8.180    0.000
+##   Stress ~                                            
+##     Hardy            -0.406    0.089   -4.564    0.000
+##    Std.lv  Std.all
+##                   
+##    -0.849   -0.253
+##     2.868    0.311
+##                   
+##     0.108    0.390
+##                   
+##    -0.406   -0.230
 ## 
 ## Covariances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##   Exercise ~~                                                           
-##     Hardy            -7.561   13.055   -0.579    0.562   -7.561   -0.030
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##   Exercise ~~                                         
+##     Hardy            -7.561   13.055   -0.579    0.562
+##    Std.lv  Std.all
+##                   
+##    -7.561   -0.030
 ## 
 ## Variances:
-##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-##    .Illness        3203.954  234.610   13.657    0.000 3203.954    0.840
-##    .Fitness         286.295   20.964   13.657    0.000  286.295    0.848
-##    .Stress           42.401    3.105   13.657    0.000   42.401    0.947
-##     Exercise       4410.394  322.952   13.657    0.000 4410.394    1.000
-##     Hardy            14.401    1.055   13.657    0.000   14.401    1.000</code></pre>
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)
+##    .Illness        3203.954  234.610   13.657    0.000
+##    .Fitness         286.295   20.964   13.657    0.000
+##    .Stress           42.401    3.105   13.657    0.000
+##     Exercise       4410.394  322.952   13.657    0.000
+##     Hardy            14.401    1.055   13.657    0.000
+##    Std.lv  Std.all
+##  3203.954    0.840
+##   286.295    0.848
+##    42.401    0.947
+##  4410.394    1.000
+##    14.401    1.000</code></pre>
 
 <hr>
-© Copyright 2024 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
+© Copyright 2025 <a href="https://twitter.com/TheYiFeng?ref_src=twsrc%5Etfw">@Yi Feng</a>
 and <a href="https://twitter.com/GregoryRHancock?ref_src=twsrc%5Etfw">@Gregory R. Hancock</a>.
 
 
